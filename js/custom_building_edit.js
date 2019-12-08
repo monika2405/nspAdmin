@@ -128,12 +128,9 @@ function uploadDB(buildType,buildNo) {
 	}
 	const dbRefBuild = firebase.database().ref().child("property/"+buildType+"/"+"building_no:"+buildNo);
 	dbRefBuild.update({
-<<<<<<< HEAD
-=======
 		alias : $("#alias").val(),
 		address_street : $("#adstreet").val(),
 		address_zipcode : $("#adzip").val(),
->>>>>>> 12/05/19
 		coord_latitude : $("#latitude").val(),
 		coord_longitude : $("#longitude").val(),
 		facilities: {
@@ -621,11 +618,8 @@ function memutar(count,limit) {
 	
 }
 
-<<<<<<< HEAD
-=======
 
 
->>>>>>> 12/05/19
 $(document).ready(function() {
 	
 	//check building
@@ -642,18 +636,11 @@ $(document).ready(function() {
 		//exist
 		if (snapshot.child("address_street").val() != null) {
 			//fill form with data from database
-<<<<<<< HEAD
-			$("#adstreet").html(snapshot.child("address_street").val());
-			$("#adcity").html(snapshot.child("address_city").val());
-			$("#adprov").html(snapshot.child("address_province").val());
-			$("#adzip").html(snapshot.child("address_zipcode").val());
-=======
 			$("#alias").val(snapshot.child("alias").val());
 			$("#adstreet").val(snapshot.child("address_street").val());
 			$("#adcity").html(snapshot.child("address_city").val());
 			$("#adprov").html(snapshot.child("address_province").val());
 			$("#adzip").val(snapshot.child("address_zipcode").val());
->>>>>>> 12/05/19
 			$("#latitude").val(snapshot.child("coord_latitude").val());
 			$("#longitude").val(snapshot.child("coord_longitude").val());
 			$("#bed").prop("checked",snapshot.child("facilities/bed").val());

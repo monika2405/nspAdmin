@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 function split_ph(phoneNumb) {
 	
 	var reformat = phoneNumb.replace(/(\d{4})/g, function(match){
@@ -12,7 +10,6 @@ function split_ph(phoneNumb) {
 	
 }
 
->>>>>>> 12/05/19
 function date_diff_indays(d1, d2) {
 	
 	var diff = Date.parse(d2) - Date.parse(d1);
@@ -43,8 +40,6 @@ function reformatDate(inputDate) {
 	
 }
 
-<<<<<<< HEAD
-=======
 //fungsi untuk Non-Active Tenant
 function nonactiveModal(){
 	var refNumber = $("#tenant_id").html()
@@ -514,23 +509,15 @@ function extendTenant() {
 
 }
 
->>>>>>> 12/05/19
 $(document).ready(function() {
 	
 	// ALMOST EXPIRED LIST
 	// select table to work with jquery datatables
-<<<<<<< HEAD
-	var table1 = $('#data-table').DataTable({
-		"aLengthMenu": [[5, 10, -1], [5, 10, "All"]],
-		"iDisplayLength": 5,
-		"paging":false,
-=======
 	var table1 = $('#expiredTable').DataTable({
 		"aLengthMenu": [[5, 10, -1], [5, 10, "All"]],
 		"iDisplayLength": 5,
 		"paging":false,
 		"fixedHeader": true,
->>>>>>> 12/05/19
 		"order": [[ 2,"asc" ]],
 		"columnDefs": [
 			{
@@ -555,23 +542,6 @@ $(document).ready(function() {
 			},
 			{
 				targets: 4,
-<<<<<<< HEAD
-				width: "8%",
-				className: 'dt-head-center'
-			},
-			{
-				targets: 5,
-				width: "8%",
-				className: 'dt-head-center'
-			},
-			{
-				targets: 6,
-				width: "8%",
-				className: 'dt-head-center'
-			},
-			{
-				targets: 7,
-=======
 				width: "5%",
 				className: 'dt-head-center dt-body-center'
 			},
@@ -592,15 +562,10 @@ $(document).ready(function() {
 			},
 			{
 				targets: 8,
->>>>>>> 12/05/19
 				width: "12%",
 				orderable:false,
 				className: 'dt-head-center'
 			}
-<<<<<<< HEAD
-			
-=======
->>>>>>> 12/05/19
 		]
 	});
 	
@@ -632,19 +597,11 @@ $(document).ready(function() {
 							var roomNo = refNumber.substring(5,7);
 							tenantRef.child(tenantID).once('value', function(snapshot) {
 								tenantName = snapshot.child("full_name").val();
-<<<<<<< HEAD
-								tenantPhone = snapshot.child("cont_mobile").val();
-								tenantObj = {
-									"tenant_id":tenantID,
-									"refNum":refNumber,
-									"content":[refNumFormat,"<a href='tenant_details.html?id="+tenantID+"' class='pull-left'>"+tenantName+"</a>",reformatDate(endDate),propertyAddress,buildNo,floorNo,roomNo,tenantPhone],
-=======
 								tenantPhone = split_ph(snapshot.child("cont_mobile").val());
 								tenantObj = {
 									"tenant_id":tenantID,
 									"refNum":refNumber,
 									"content":[refNumFormat,"<a href='tenant_details.html?id="+tenantID+"' class='pull-left'>"+tenantName+"</a>",reformatDate(endDate),propertyAddress,buildNo,floorNo,roomNo,tenantPhone,`<button id="extender" type="button" class="btn btn-xs btn-primary" title="Send email"><i class="fa fa-envelope"></i></button> `+`<button id="extender" type="button" class="btn btn-xs btn-success" title="Extend"><i class="fa fa-plus"></i></button> `+`<button id="end" type="button" class="btn btn-xs btn-danger" onclick="endContractModal()" title="End contract"><i class="fa fa-times"></i></button> `+`<button id="nonactive" type="button" class="btn btn-xs btn-warning" onclick="nonactiveModal()" title="Non-Active"><i class="fa fa-minus"></i></button>`],
->>>>>>> 12/05/19
 								}
 								listTenant.push(tenantObj);
 								

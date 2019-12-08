@@ -1,4 +1,12 @@
 //define table to work with jquery datatables
+function printContent(el) {
+	var restorepage = document.body.innerHTML;
+	var printcontent = document.getElementById(el).innerHTML;
+	document.body.innerHTML = printcontent;
+	window.print();
+	location.reload();
+}
+
 var table = $('#data-table1').DataTable({
 	"aLengthMenu": [[10, 20, -1], [10, 20, "All"]],
 	"iDisplayLength": -1,
@@ -207,11 +215,7 @@ function countTotalDue() {
 	
 	var totalDue = 0;
 	for (i=0;i<table3.rows().count();i++) {
-<<<<<<< HEAD
-		var ledgerDue = table3.row(i).data()[9];
-=======
 		var ledgerDue = table3.row(i).data()[8];
->>>>>>> 12/05/19
 		if (ledgerDue != null) {
 			totalDue = totalDue+ledgerDue;
 		}
@@ -224,11 +228,7 @@ function countTotalReceived() {
 	
 	var totalReceived = 0;
 	for (i=0;i<table3.rows().count();i++) {
-<<<<<<< HEAD
-		var ledgerReceived = table3.row(i).data()[10];
-=======
 		var ledgerReceived = table3.row(i).data()[9];
->>>>>>> 12/05/19
 		if (ledgerReceived != null) {
 			totalReceived = totalReceived+ledgerReceived;
 		}
@@ -316,11 +316,7 @@ function reformatDate2(inputDate) {
 			break
 		}
 	}
-<<<<<<< HEAD
-	outputYear = "20"+inputYear;
-=======
 	outputYear = inputYear;
->>>>>>> 12/05/19
 	return (outputMonth+"/"+outputDay+"/"+outputYear);
 	
 }
@@ -332,8 +328,6 @@ function date_diff_indays(d1, d2) {
 	
 }
 
-<<<<<<< HEAD
-=======
 function sumMonth(date,month) {
   var d = new Date(date);
   d.setMonth(d.getMonth()+month);
@@ -344,7 +338,6 @@ function sumMonth(date,month) {
   return reformatDate2(endDay+"-"+endMonth+"-"+endYear);
 }
 
->>>>>>> 12/05/19
 function sortArrayByDate(oldArray) {
 	
 	var newArray = [];
@@ -507,8 +500,6 @@ $(document).ready(function() {
 		$("#tabtenanti").removeClass("active")
 	}
 	
-<<<<<<< HEAD
-=======
 	//filter start date
 	$('#filterStartDatePicker').datepicker({
 		format: "d-M-yy",
@@ -525,7 +516,6 @@ $(document).ready(function() {
 	});
 	
 	
->>>>>>> 12/05/19
 	//expense add button listener
 	$("#expenseButton").on('click', function() {
 		$("#modalExpense").modal();
@@ -595,60 +585,6 @@ $(document).ready(function() {
 				.clear()
 				.draw();
 			var Ref = parseInt($("#buildNo").val());
-<<<<<<< HEAD
-			//define table to work with jquery datatables
-			if (Ref == 1){
-				// change address and total room
-				$("#propaddr_s").html("Jl. Skipper No. 15 RT 12 RW 23, Nigga, What");
-				$("#buildNo").html($("#buildNo").val())
-				//input data from database to table
-				table3.row.add(["01","<a id='1010101' href='javaScript:void(0);' onclick='editRoom(1010101)'>01</a>",3000000,"","","","","",0,0,0]);
-				table3.row.add(["01","<a id='1010102' href='javaScript:void(0);' onclick='editRoom(1010102)'>02</a>",3000000,"","","","","",0,0,0]);
-				table3.row.add(["01","<a id='1010103' href='javaScript:void(0);' onclick='editRoom(1010103)'>03</a>",3000000,"<a id='t_5 ' href='tenant_details.html?id=t_5#ledger'>Aleksandra Hyde</a>","1-May-08","31-Oct-08","101 010 500","monthly",275000,0,"(Rp. 275.000,-)"]);
-				table3.row.add(["02","<a id='1010201' href='javaScript:void(0);' onclick='editRoom(1010201)'>01</a>",3000000,"<a id='t_6 ' href='tenant_details.html?id=t_6#ledger'>Amari O'Reilly</a>","1-Apr-08","30-Sep-08","101 020 100","monthly",225000,0,"(Rp. 225.000,-)"]);
-				table3.row.add(["02","<a id='1010202' href='javaScript:void(0);' onclick='editRoom(1010202)'>02</a>",3000000,"<a id='t_7 ' href='tenant_details.html?id=t_7#ledger'>Jan Garrison</a>","1-May-08","30-Oct-08","101 020 200","monthly",215000,215000,0]);
-				table3.row.add(["02","<a id='1010203' href='javaScript:void(0);' onclick='editRoom(1010203)'>03</a>",2700000,"<a id='t_3 ' href='tenant_details.html?id=t_3#ledger'>Briana Holloway</a>","1-May-08","<p>30-Oct-08</p>","101 020 300","monthly",150000,275000,125000]);
-				table3.row.add(["03","<a id='1010301' href='javaScript:void(0);' onclick='editRoom(1010301)'>01</a>",2700000,"<a id='t_4 ' href='tenant_details.html?id=t_4#ledger'>Zakary Neville</a>","27-May-08","<p>26-Oct-08</p>","101 030 100","monthly",225000,275000,50000]);
-				table3.row.add(["03","<a id='1010302' href='javaScript:void(0);' onclick='editRoom(1010302)'>02</a>",2700000,"<a id='t_2 ' href='tenant_details.html?id=t_2#ledger'>Kevin Owen</a>","8-May-08","<p>7-Nov-08</p>","101 030 200","six month",225000,225000,0]);
-				table3.row.add(["03","<a id='1010303' href='javaScript:void(0);' onclick='editRoom(1010303)'>03</a>",3000000,"<a id='t_8 ' href='tenant_details.html?id=t_8#ledger'>Pamela Daugherty</a>","1-May-08","<p>31-Oct-08</p>","101 030 300","six month",215000,300000,85000]);
-				table3.draw(false);
-			}
-			if (Ref == 3){
-				// change address and total room
-				$("#propaddr_s").html("GG. H. SIROD NO 16, CIHAMPELAS")
-				$("#buildNo").html($("#buildNo").val())
-				//input data from database to table
-				table3.row.add(["01","<a id='1030101' href='javaScript:void(0);' onclick='editRoom(1030101)'>01</a>",3000000,"","","","","",0,0,0]);
-				table3.row.add(["01","<a id='1030102' href='javaScript:void(0);' onclick='editRoom(1030102)'>02</a>",3000000,"","","","","",0,0,0]);
-				table3.row.add(["01","<a id='1030103' href='javaScript:void(0);' onclick='editRoom(1030103)'>03</a>",3000000,"<a id='t_5' href='javaScript:void(0);'>M.Gaha Wendy</a>","1-May-08","31-Oct-08","101 010 300","monthly",275000,0,"Rp (275.000,-)"]);
-				table3.row.add(["01","<a id='1030104' href='javaScript:void(0);' onclick='editRoom(1030104)'>04</a>",3000000,"<a id='t_6' href='javaScript:void(0);'>Christian FT</a>","1-Apr-08","30-Sep-08","101 010 400","monthly",225000,0,"Rp (225.000,-)"]);
-				table3.row.add(["01","<a id='1030105' href='javaScript:void(0);' onclick='editRoom(1030105)'>05</a>",3000000,"","","","","",0,0,0]);
-				table3.row.add(["01","<a id='1030106' href='javaScript:void(0);' onclick='editRoom(1030106)'>06</a>",3000000,"","","","","",0,0,0]);
-				table3.row.add(["01","<a id='1030107' href='javaScript:void(0);' onclick='editRoom(1030107)'>07</a>",3000000,"<a id='t_7' href='javaScript:void(0);'>Inu Wisnu</a>","1-May-08","30-Oct-08","101 010 700","monthly",215000,215000,0]);
-				table3.row.add(["02","<a id='1030201' href='javaScript:void(0);' onclick='editRoom(1030201)'>01</a>",2700000,"","","","","",0,0,0]);
-				table3.row.add(["02","<a id='1030202' href='javaScript:void(0);' onclick='editRoom(1030202)'>02</a>",2700000,"<a id='t_3' href='javaScript:void(0);'>Lidha Lismanawati</a>","1-May-08","<p>30-Oct-08</p>","101 020 200","monthly",150000,125000,"Rp (25.000,-)"]);
-				table3.row.add(["02","<a id='1030203' href='javaScript:void(0);' onclick='editRoom(1030203)'>03</a>",2700000,"<a id='t_4' href='javaScript:void(0);'>Ai Tuti Sulastri</a>","27-May-08","<p>26-Oct-08</p>","101 020 300","monthly",225000,275000,50000]);
-				table3.row.add(["02","<a id='1030204' href='javaScript:void(0);' onclick='editRoom(1030204)'>04</a>",2700000,"<a id='t_2' href='javaScript:void(0);'>Rahmawati Shaumah</a>","8-May-08","<p>7-Nov-08</p>","101 020 400","6 month",225000,225000,0]);
-				table3.row.add(["02","<a id='1030205' href='javaScript:void(0);' onclick='editRoom(1030205)'>05</a>",3000000,"<a id='t_8' href='javaScript:void(0);'>Fanny Astriani</a>","1-May-08","<p>31-Oct-08</p>","101 020 500","six month",215000,300000,85000]);
-				table3.row.add(["02","<a id='1030206' href='javaScript:void(0);' onclick='editRoom(1030206)'>06</a>",2700000,"<a id='t_9' href='javaScript:void(0);'>Nina Tanuatmadja</a>","1-May-08","<p>31-Oct-08</p>","101 020 600","six month",200000,200000,0]);
-				table3.row.add(["02","<a id='1030207' href='javaScript:void(0);' onclick='editRoom(1030207)'>07</a>",3500000,"<a id='t_10' href='javaScript:void(0);'>Yulmedianti K</a>","1-May-08","<p>31-Oct-08</p>","101 020 700","six month",350000,350000,0]);
-				table3.draw(false);
-			}
-			if (Ref == 7){
-				// change address and total room
-				$("#propaddr_s").html("Jl. Private No. 2 RT 3 RW 4, Yes, No")
-				$("#buildNo").html($("#buildNo").val())
-			}
-			// else
-			if (Ref != 1 && Ref != 3 && Ref != 7){
-				$("#propaddr_s").html("NOT FOUND")
-				$("#buildNo").html($("#buildNo").val())
-			}
-			
-			countTotalDue();
-			countTotalReceived();
-			countTotalBalance();
-=======
 			
 			
 			//membaca data untuk tab summary
@@ -715,7 +651,6 @@ $(document).ready(function() {
 				});
 			});
 			
->>>>>>> 12/05/19
 			
 			// end tab tenant
 			

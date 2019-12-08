@@ -33,32 +33,6 @@ function reformatDate(inputDate) {
 	
 }
 
-<<<<<<< HEAD
-function addNotifButton(){
-	//validasi jika Message tidak kosong
-	if ($("#notifMessage").val()!="" && $("#notifTitleMessage").val()!=""){
-		
-		//notifikasi ref
-		var notifRef = firebase.database().ref().child("presence");
-		
-		//push notif ke smua admin
-		notifRef.on('child_added', function(snapshot) {
-			if (snapshot.key!="userCount"){
-				//push notif
-				notifRef.child(snapshot.key+"/notification").push({
-					"title" : $("#notifTitleMessage").val(),
-					"message" : $('#notifMessage').val(),
-					"date" : reformatDate(getToday())
-				})
-			}
-		});
-
-		//close
-		$("#notifTitleMessage").val('')
-		$('#notifMessage').val('');
-		$('#notifModal').modal('hide');
-	}
-=======
 function reformatDate3(inputDate) {
 	
 	months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -125,7 +99,6 @@ function addNotifButton(){
 			$('#notifModal').modal('hide');
 		}
 	});
->>>>>>> 12/05/19
 }
 
 function delNotif(uid,id){
@@ -135,11 +108,6 @@ function delNotif(uid,id){
 		"title" : null
 	})
 }
-<<<<<<< HEAD
-// END NOTIFIKASI FUNCTION
-
-
-=======
 
 function onPin(uid,id,title,message){
 	var notifRef = firebase.database().ref().child("presence");
@@ -195,7 +163,6 @@ function offPin(uid,id,title,message){
 	delPinNotif(uid,id);
 }
 // END NOTIFIKASI FUNCTION
->>>>>>> 12/05/19
 
 
 firebase.auth().onAuthStateChanged(function(user) {
@@ -213,19 +180,6 @@ firebase.auth().onAuthStateChanged(function(user) {
 		var notifRef = firebase.database().ref().child("presence/"+userID+"/notification");
 		// LIST NOTIFIKASI
 		notifRef.on('child_added', function(snapshot) {
-<<<<<<< HEAD
-			m =`<div id="`+snapshot.key+`" class="alert alert-warning">
-				<a href="#" class="close closeNotif" onClick="delNotif('`+userID+`','`+snapshot.key+`')" aria-label="close" >&times;</a>
-					<strong style="font-size:60%">`+snapshot.child("date").val()+`</strong>
-					</br>
-					<strong>`+snapshot.child("title").val()+` </strong> : <span>`+snapshot.child("message").val()+`</span>
-				</div>`
-			$("#notifList").hide().delay(500).show('slow');
-			$("#notifList").prepend(m);
-		
-			numNotif=numNotif+1
-			$("#numNotif").html(numNotif);
-=======
 			if (date_diff_indays(reformatDate3(snapshot.child("date").val()),getToday())>=1){
 				notifRef.child(snapshot.key).set({
 					"title":null
@@ -243,7 +197,6 @@ firebase.auth().onAuthStateChanged(function(user) {
 				numNotif=numNotif+1
 				$("#numNotif").html(numNotif);
 			}
->>>>>>> 12/05/19
 		});
 
 		notifRef.on('child_removed', function(snapshot) {
@@ -252,8 +205,6 @@ firebase.auth().onAuthStateChanged(function(user) {
 			numNotif=numNotif-1
 			$("#numNotif").html(numNotif);
 		});
-<<<<<<< HEAD
-=======
 		
 		var notifPinRef = firebase.database().ref().child("pin-notif");
 		notifPinRef.on('child_added', function(snapshot) {
@@ -291,7 +242,6 @@ firebase.auth().onAuthStateChanged(function(user) {
 			numNotif=numNotif-1
 			$("#numNotif").html(numNotif);
 		});
->>>>>>> 12/05/19
 		// END LIST NOTIFIKASI
 		
 		

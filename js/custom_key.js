@@ -98,18 +98,11 @@ $(document).ready(function() {
 	
 	//BOOKING LIST
 	//select table to work with jquery datatables
-<<<<<<< HEAD
-	var table1 = $('#data-table').DataTable({
-		"aLengthMenu": [[5, 10, -1], [5, 10, "All"]],
-		"iDisplayLength": 5,
-		"paging":false,
-=======
 	var table1 = $('#keyCollectTable').DataTable({
 		"aLengthMenu": [[5, 10, -1], [5, 10, "All"]],
 		"iDisplayLength": 5,
 		"paging":false,
 		"fixedHeader": true,
->>>>>>> 12/05/19
 		"order": [[2,"desc"]],
 		"columnDefs": [
 			{

@@ -959,6 +959,13 @@ function editKeyCollectDateModal(keyDate,tenantID,tenantRef,notes) {
 
 	$("#editKeyDateModal").modal();
 	$("#keyDate").val(keyDate);
+	var year = keyDate.split("/")[2]
+	var month = keyDate.split("/")[0]
+	var day = keyDate.split("/")[1]
+	
+	var ddd = new Date(year,month,day);
+	$('#keyDatePicker').datepicker('setStartDate', ddd);
+	$('#keyDatePicker').datepicker('setDate', ddd);
 	$("#notes").val(notes);
 	$("#keyTenantID").val(tenantID);
 	$("#keyTenantRef").val(tenantRef);
@@ -1485,7 +1492,6 @@ $(document).ready(function() {
 	var contractRef = firebase.database().ref().child("contract");
 	var paymentRef =firebase.database().ref().child("payment");
 	var overdueRef = firebase.database().ref().child("overdue");
-
 	var getToday = Date.today().toString("MM/dd/yyyy");
 	contractRef.on('child_added', function(snapshot){
 		var id = snapshot.key
@@ -1575,7 +1581,6 @@ $(document).ready(function() {
 	var table1 = $('#booking-list').DataTable({
 		"aLengthMenu": [[3, 6, -1], [3, 6, "All"]],
 		"iDisplayLength": 3,
-		"order": [[2,"desc"]],
 		"order": [],
 		"columnDefs": [
 		{
@@ -1617,9 +1622,6 @@ $(document).ready(function() {
 		"columnDefs": [
 		{
 			targets: 0,
-			width: "30%"
-		},
-		{
 			width: "20%"
 		},
 		{
@@ -1719,41 +1721,6 @@ $(document).ready(function() {
 				for (i in tenant){
 					paymentRef.child(i).once('value', function(snapshot) {
 						if (snapshot.val() != null) {  // Have payments
-							// jika status = approved
-							if (tenant[i].stat_occupy=="approved"){
-								refNumFormat=tenant[i].ref_number
-								refN=refNumFormat.split(" ")
-								refNumber=refN[0]+refN[1]+refN[2]
-								tenantName=shortenString(tenantdata[i].full_name,8)
-								statingDate=tenant[i].start_date
-								propAddr=shortenString(tenant[i].prop_addr,10)
-								
-								// untuk sort , datanya dimasukan ke list
-								newObj = {
-									"statOccupy":"approved",
-									"refNum":refNumber,
-									"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' style='background-color:#c8bca6' disabled><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' style='background-color:#c8bca6' disabled><i class='fa fa-times'></i></button>"],
-									"tenant_id":i
-								}
-								listApproveT.push(newObj);
-							}
-							//jika status = booking
-							if(tenant[i].stat_occupy=="booking") {
-								// untuk sort , datanya dimasukan ke list
-								refNumFormat=tenant[i].ref_number
-								refN=refNumFormat.split(" ")
-								refNumber=refN[0]+refN[1]+refN[2]
-								tenantName=shortenString(tenantdata[i].full_name,8);
-								statingDate=tenant[i].start_date
-								propAddr=shortenString(tenant[i].prop_addr,10)
-								newObj = {
-									"statOccupy":"booking",
-									"refNum":refNumber,
-									"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' style='background-color:#c8bca6' disabled><i class='fa fa-times'></i></button>"],
-									"tenant_id":i
-								}
-								listApproveT.push(newObj);
-							}
 							// // jika status = approved
 							// if (tenant[i].stat_occupy=="approved"){
 							// 	refNumFormat=tenant[i].ref_number
@@ -1803,8 +1770,6 @@ $(document).ready(function() {
 								newObj = {
 									"statOccupy":"approved",
 									"refNum":refNumber,
-									"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' style='background-color:#c8bca6' disabled><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"','"+i+"')><i class='fa fa-times'></i></button>"],
-									"tenant_id":i,
 									"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",reformatDate(statingDate),propAddr,"<i class='fa fa-check'  style='color:#83E53A'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"','"+i+"')><i class='fa fa-times'></i></button>"],
 									"tenant_id":i,
 									"start_date":statingDate
@@ -1823,8 +1788,6 @@ $(document).ready(function() {
 								newObj = {
 									"statOccupy":"booking",
 									"refNum":refNumber,
-									"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"','"+i+"')><i class='fa fa-times'></i></button>"],
-									"tenant_id":i,
 									"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",reformatDate(statingDate),propAddr,"<i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"','"+i+"')><i class='fa fa-times'></i></button>"],
 									"tenant_id":i,
 									"start_date":statingDate
@@ -1851,41 +1814,6 @@ $(document).ready(function() {
 					for (i in tenant){
 						paymentRef.child(i).once('value', function(snapshot) {
 							if (snapshot.val() != null) {  // Have payments
-								// jika status = approved
-								if (tenant[i].stat_occupy=="approved"){
-									refNumFormat=tenant[i].ref_number
-									refN=refNumFormat.split(" ")
-									refNumber=refN[0]+refN[1]+refN[2]
-									tenantName=shortenString(tenantdata[i].full_name,8)
-									statingDate=tenant[i].start_date
-									propAddr=shortenString(tenant[i].prop_addr,10)
-									
-									// untuk sort , datanya dimasukan ke list
-									newObj = {
-										"statOccupy":"approved",
-										"refNum":refNumber,
-										"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' style='background-color:#c8bca6' disabled><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' style='background-color:#c8bca6' disabled><i class='fa fa-times'></i></button>"],
-										"tenant_id":i
-									}
-									listApproveT.push(newObj);
-								}
-								//jika status = booking
-								if(tenant[i].stat_occupy=="booking") {
-									// untuk sort , datanya dimasukan ke list
-									refNumFormat=tenant[i].ref_number
-									refN=refNumFormat.split(" ")
-									refNumber=refN[0]+refN[1]+refN[2]
-									tenantName=shortenString(tenantdata[i].full_name,8);
-									statingDate=tenant[i].start_date
-									propAddr=shortenString(tenant[i].prop_addr,10)
-									newObj = {
-										"statOccupy":"booking",
-										"refNum":refNumber,
-										"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' style='background-color:#c8bca6' disabled><i class='fa fa-times'></i></button>"],
-										"tenant_id":i
-									}
-									listApproveT.push(newObj);
-								}
 								// // jika status = approved
 								// if (tenant[i].stat_occupy=="approved"){
 								// 	refNumFormat=tenant[i].ref_number
@@ -1935,7 +1863,6 @@ $(document).ready(function() {
 									newObj = {
 										"statOccupy":"approved",
 										"refNum":refNumber,
-										"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' style='background-color:#c8bca6' disabled><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('"+i+"')><i class='fa fa-times'></i></button>"],
 										"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",reformatDate(statingDate),propAddr,"<i class='fa fa-check' style='color:#83E53A'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('"+i+"')><i class='fa fa-times'></i></button>"],
 										"tenant_id":i
 									}
@@ -1953,7 +1880,6 @@ $(document).ready(function() {
 									newObj = {
 										"statOccupy":"booking",
 										"refNum":refNumber,
-										"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",statingDate,propAddr,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('"+i+"')><i class='fa fa-times'></i></button>"],
 										"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",reformatDate(statingDate),propAddr,"<i class='fa fa-check' style='color:#83E53A'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('"+i+"')><i class='fa fa-times'></i></button>"],
 										"tenant_id":i
 									}
@@ -1978,7 +1904,6 @@ $(document).ready(function() {
 		setTimeout(() => {
 			table2.clear()
 			if (tenant!={} && tenantdata!={} && overdue!={}){
-				
 				for (i in paymentBal){
 					var balance = overdue[i].balance;
 					//validasi jika balance balance !=0
@@ -1991,7 +1916,6 @@ $(document).ready(function() {
 							console.log("in table overdue")
 							// overdueRef2=firebase.database().ref().child("tenant/"+tenantID);
 							var name = shortenString(tenantdata[i].full_name,10) 
-							table2.row.add(["<a href='tenant_details.html?id="+i+"'>"+name+"</a>",refN,reformatDate(overdueDate)]).node().id = 'over'+i;
 							table2.row.add(["<a href='tenant_details.html?id="+i+"' class='pull-left'>"+name+"</a>",refN,reformatDate(overdueDate)]).node().id = 'over'+i;
 							
 						}
@@ -2025,7 +1949,6 @@ $(document).ready(function() {
 									console.log("in table overdue")
 									// overdueRef2=firebase.database().ref().child("tenant/"+tenantID);
 									var name = shortenString(tenantdata[i].full_name,10) 
-									table2.row.add(["<a href='tenant_details.html?id="+i+"'>"+name+"</a>",refN,reformatDate(overdueDate)]).node().id = 'over'+i;
 									table2.row.add(["<a href='tenant_details.html?id="+i+"' class='pull-left'>"+name+"</a>",refN,reformatDate(overdueDate)]).node().id = 'over'+i;
 									
 								}
@@ -2044,50 +1967,34 @@ $(document).ready(function() {
 			if (contractdata!={} && tenant!={} && tenantdata!={}){
 				for (j in contractdata){
 					var endDate = contractdata[j].end_date
-					if ((endDate != "Ongoing") && (date_diff_indays(todayDate,endDate) >= 0) ) {
-						console.log("in table expired")
-						refNumFormat = tenant[j].ref_number
-						tenantName = tenantdata[j].full_name
-						name = shortenString(tenantName,15);
-						table3.row.add(["<a href='tenant_details.html?id="+j+"' class='pull-left'>"+name+"</a>",refNumFormat,reformatDate(endDate)]).node().id = j;			
-						
 					if ((endDate != "Ongoing") && (date_diff_indays(getToday,endDate) >= 0) && (date_diff_indays(getToday,endDate) <= 31) ) {
 						console.log("in table expired")
 						refNumFormat = tenant[j].ref_number
 						tenantName = tenantdata[j].full_name
 						name = shortenString(tenantName,10);
-						table3.row.add(["<a href='tenant_details.html?id="+j+"' class='pull-left'>"+name+"</a>",refNumFormat,reformatDate(endDate),"<button class='btn btn-xs btn-primary' title='Send Email' ><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-success' title='Extend' onclick=window.location='tenant_details.html?id="+j+"#extend'><i class='fa fa-plus'></i></button> <button class='btn btn-xs btn-danger' title='End Contract' onclick=window.location='tenant_details.html?id="+j+"#end'><i class='fa fa-times'></i></button> <button class='btn btn-xs btn-warning' title='Non Active' onclick=window.location='tenant_details.html?id="+j+"#non-active'><i class='fa fa-minus'></i></button>"]).node().id = j;							
+						table3.row.add(["<a href='tenant_details.html?id="+j+"' class='pull-left'>"+name+"</a>",refNumFormat,reformatDate(endDate),name]).node().id = j;							
 					}
 				}
 				table3.draw();
 				$("#cover-spin").fadeOut(250, function() {
 					$(this).hide();
 				})
-			}
-		}else{
+			}else{
 				setTimeout(() => {
 					for (j in contractdata){
-						var endDate = contractdata[j].end_date
-						if ((endDate != "Ongoing") && (date_diff_indays(todayDate,endDate) >= 0) ) {
-							console.log("in table expired")
-							refNumFormat = tenant[j].ref_number
-							tenantName = tenantdata[j].full_name
-							name = shortenString(tenantName,15);
-							table3.row.add(["<a href='tenant_details.html?id="+j+"' class='pull-left'>"+name+"</a>",refNumFormat,reformatDate(endDate)]).node().id = j;			
 						if ((endDate != "Ongoing") && (date_diff_indays(getToday,endDate) >= 0) && (date_diff_indays(getToday,endDate) <= 31) ) {
 							console.log("in table expired")
 							refNumFormat = tenant[j].ref_number
 							tenantName = tenantdata[j].full_name
 							name = shortenString(tenantName,10);
-							table3.row.add(["<a href='tenant_details.html?id="+j+"' class='pull-left'>"+name+"</a>",refNumFormat,reformatDate(endDate),"<button class='btn btn-xs btn-primary' title='Send Email' ><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-success' title='Extend' onclick=window.location='tenant_details.html?id="+j+"#extend'><i class='fa fa-plus'></i></button> <button class='btn btn-xs btn-danger' title='End Contract' onclick=window.location='tenant_details.html?id="+j+"#end'><i class='fa fa-times'></i></button> <button class='btn btn-xs btn-warning' title='Non Active' onclick=window.location='tenant_details.html?id="+j+"#non-active'><i class='fa fa-minus'></i></button>"]).node().id = j;			
+							table3.row.add(["<a href='tenant_details.html?id="+j+"' class='pull-left'>"+name+"</a>",refNumFormat,reformatDate(endDate),name]).node().id = j;			
 							
 						}
 					}
 					table3.draw();
 					$("#cover-spin").fadeOut(250, function() {
 						$(this).hide();
-					});
-				}
+					})
 				}, 2000);
 			}
 		}, 4000);
@@ -2281,9 +2188,6 @@ $(document).ready(function() {
 	
 	}
 	
-	table4.row.add(["<a href='javaScript:void(0)'>Aleksandra Hyde</a>","101 010 500","Photo ID"]).node().id = 'incomplete1';
-	table4.row.add(["<a href='javaScript:void(0)'>Bea Curran</a>","101 010 100","Photo KK"]).node().id = 'incmplete2';
-	table4.draw();
 	
 	//start invoice tenant autocomplete
 	$("#invoiceTenantName").autocomplete({
@@ -2313,6 +2217,12 @@ $(document).ready(function() {
 			return false;
 		}
 	});
+
+	//start key datepicker
+	$('#keyDatePicker').datepicker({
+		autoclose: true,
+		minDate: 0,
+	})
 
 	//start invoice datepicker
 	$('#invoiceDatePicker').datepicker({
@@ -2371,7 +2281,6 @@ $(document).ready(function() {
 		
 		var tenantRef = firebase.database().ref("tenant");
 		var trRef = firebase.database().ref("tenant-room");
-		
 		var contractRef = firebase.database().ref("contract");
 		contractRef.child(tenantID).remove(
 		).then(function onSuccess(res) {
@@ -2555,4 +2464,6 @@ $(document).ready(function() {
 			editKeyCollectDate();
 		}
 	})
+	
+	
 })

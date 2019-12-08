@@ -1,3 +1,11 @@
+function printContent(el) {
+	var restorepage = document.body.innerHTML;
+	var printcontent = document.getElementById(el).innerHTML;
+	document.body.innerHTML = printcontent;
+	window.print();
+	location.reload();
+}
+
 function tableLoadOn() {
 	
 	$("#tableLoad").show();
@@ -39,10 +47,6 @@ function get_moneydot(money) {
 	
 }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 12/05/19
 function date_diff_indays(d1, d2) {
 	
 	var diff = Date.parse(d2) - Date.parse(d1);
@@ -110,33 +114,22 @@ $(document).ready(function() {
 			},
 			{
 				targets: 1,
-<<<<<<< HEAD
-=======
 				visible: false
 			},
 			{
 				targets: 2,
->>>>>>> 12/05/19
 				render: function ( data, type, row ) {
 					return data.substr(0,70)+"...";
 				}
 			},
 			{
-<<<<<<< HEAD
-				targets: [2,3],
-=======
 				targets: [3,4],
->>>>>>> 12/05/19
 				className: 'dt-body-center',
 				width: "10%",
 				orderable: false
 			},
 			{
-<<<<<<< HEAD
-				targets: [4,5,6,7,8],
-=======
 				targets: [5,6,7,8,9],
->>>>>>> 12/05/19
 				className: 'dt-body-right',
 				width: "10%",
 				orderable: false
@@ -163,12 +156,9 @@ $(document).ready(function() {
 	var reportRef = firebase.database().ref("reportAccount");
 	var tenantList = [];
 	
-<<<<<<< HEAD
-=======
 	/* tenantRef.on('value', function(snapshot) {
 		alert(snapshot.numChildren());
 	}); */
->>>>>>> 12/05/19
 	/* reportRef.on('child_added', function(snapshot) {
 		reportRef.child(snapshot.key).on('child_added', function(snapshot2) {
 			reportRef.child(snapshot.key+"/"+snapshot2.key).update({
@@ -239,10 +229,7 @@ $(document).ready(function() {
 							
 							var buildObject = new Object();
 							buildObject.no = snapshot.key.split(":")[1];
-<<<<<<< HEAD
-=======
 							buildObject.alias = snapshot.child("alias").val();
->>>>>>> 12/05/19
 							buildObject.address = snapshot.child("address_street").val();
 							buildObject.roomCount = snapshot.child("total_room").val();
 							buildObject.tenantCount = countTenantinBuilding(buildObject.no,tenantList);
@@ -251,21 +238,12 @@ $(document).ready(function() {
 							buildObject.due = 0;
 							buildObject.receive = 0;
 							buildObject.expense = 0;
-<<<<<<< HEAD
-							table.row.add([buildObject.no,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
-=======
 							table.row.add([buildObject.no,buildObject.alias,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
->>>>>>> 12/05/19
 							
 							// Pull report data
 							reportRef.child(buildObject.no).on('child_added', function(snapshot) {
 								tableLoadOn();
 								
-<<<<<<< HEAD
-								table.row('#build'+buildObject.no).remove();
-								
-=======
->>>>>>> 12/05/19
 								var inputDate = snapshot.child("inputDate").val();
 								var reportDate = snapshot.child("date").val();
 								if ($("#dbLastUpdated").val() == "") {
@@ -311,13 +289,6 @@ $(document).ready(function() {
 								$("#totalAllOverdue").html(get_moneydot($("#totalOverdueInt").val()));
 								$("#totalReceivedInt").val(parseInt($("#totalReceivedInt").val()) + reportReceive);
 								$("#totalAllReceived").html(get_moneydot($("#totalReceivedInt").val()));
-<<<<<<< HEAD
-								$("#totalBalanceInt").val(parseInt($("#totalBalanceInt").val()) + (reportReceive - buildObject.expense));
-								$("#totalBalance").html(get_moneydot($("#totalBalanceInt").val()));
-								
-								table.row.add([buildObject.no,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
-								table.draw();
-=======
 								$("#totalExpenseInt").val(parseInt($("#totalExpenseInt").val()) + buildObject.expense);
 								$("#totalAllExpense").html(get_moneydot($("#totalExpenseInt").val()));
 								$("#totalBalanceInt").val(parseInt($("#totalBalanceInt").val()) + (reportReceive - buildObject.expense));
@@ -332,22 +303,10 @@ $(document).ready(function() {
 								table.cell('#build'+buildObject.no,7).data(get_moneydot(buildObject.receive));
 								table.cell('#build'+buildObject.no,8).data(get_moneydot(buildObject.expense));
 								table.cell('#build'+buildObject.no,9).data(get_moneydot(buildObject.receive - buildObject.expense));
->>>>>>> 12/05/19
 								
 								tableLoadOff();
 							});
 							
-<<<<<<< HEAD
-							$("#totalAllRoom").html(parseInt($("#totalAllRoom").html()) + parseInt(buildObject.roomCount));
-							$("#totalAllVacant").html(parseInt($("#totalAllVacant").html()) + buildVacantCount);
-							
-							tableLoadOff();
-						});
-						
-						$("#cover-spin").fadeOut(250, function() {
-							$(this).hide();
-						});
-=======
 							table.draw();
 							
 							$("#totalAllRoom").html(parseInt($("#totalAllRoom").html()) + parseInt(buildObject.roomCount));
@@ -363,7 +322,6 @@ $(document).ready(function() {
 							});
 						}, 20000);
 						
->>>>>>> 12/05/19
 					}, 250);
 					
 				});
@@ -392,10 +350,7 @@ $(document).ready(function() {
 							
 							var buildObject = new Object();
 							buildObject.no = snapshot.key.split(":")[1];
-<<<<<<< HEAD
-=======
 							buildObject.alias = snapshot.child("alias").val();
->>>>>>> 12/05/19
 							buildObject.address = snapshot.child("address_street").val();
 							buildObject.roomCount = snapshot.child("total_room").val();
 							buildObject.tenantCount = countTenantinBuilding(buildObject.no,tenantList);
@@ -404,21 +359,12 @@ $(document).ready(function() {
 							buildObject.due = 0;
 							buildObject.receive = 0;
 							buildObject.expense = 0;
-<<<<<<< HEAD
-							table.row.add([buildObject.no,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
-=======
 							table.row.add([buildObject.no,buildObject.alias,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
->>>>>>> 12/05/19
 							
 							// Pull report data
 							reportRef.child(buildObject.no).on('child_added', function(snapshot) {
 								tableLoadOn();
 								
-<<<<<<< HEAD
-								table.row('#build'+buildObject.no).remove();
-								
-=======
->>>>>>> 12/05/19
 								var d = new Date();
 
 								var thisMonth = d.getMonth() + 1;
@@ -481,14 +427,6 @@ $(document).ready(function() {
 									$("#totalAllOverdue").html(get_moneydot($("#totalOverdueInt").val()));
 									$("#totalReceivedInt").val(parseInt($("#totalReceivedInt").val()) + reportReceive);
 									$("#totalAllReceived").html(get_moneydot($("#totalReceivedInt").val()));
-<<<<<<< HEAD
-									$("#totalBalanceInt").val(parseInt($("#totalBalanceInt").val()) + (reportReceive - buildObject.expense));
-									$("#totalBalance").html(get_moneydot($("#totalBalanceInt").val()));
-								}
-								
-								table.row.add([buildObject.no,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
-								table.draw();
-=======
 									$("#totalExpenseInt").val(parseInt($("#totalExpenseInt").val()) + buildObject.expense);
 									$("#totalAllExpense").html(get_moneydot($("#totalExpenseInt").val()));
 									$("#totalBalanceInt").val(parseInt($("#totalBalanceInt").val()) + (reportReceive - buildObject.expense));
@@ -504,37 +442,25 @@ $(document).ready(function() {
 								table.cell('#build'+buildObject.no,7).data(get_moneydot(buildObject.receive));
 								table.cell('#build'+buildObject.no,8).data(get_moneydot(buildObject.expense));
 								table.cell('#build'+buildObject.no,9).data(get_moneydot(buildObject.receive - buildObject.expense));
->>>>>>> 12/05/19
 								
 								tableLoadOff();
 							});
 							
-<<<<<<< HEAD
-							$("#totalAllRoom").html(parseInt($("#totalAllRoom").html()) + parseInt(buildObject.roomCount));
-							$("#totalAllVacant").html(parseInt($("#totalAllVacant").html()) + buildVacantCount);
-=======
 							table.draw();
 							
 							$("#totalAllRoom").html(parseInt($("#totalAllRoom").html()) + parseInt(buildObject.roomCount));
 							$("#totalAllVacant").html(parseInt($("#totalAllVacant").html()) + buildVacantCount);
 							$("#summary-vacant").html(((parseInt($("#totalAllVacant").html()) / parseInt($("#totalAllRoom").html()))*100).toFixed(2)+"%");
 							$("#summary-empty").html($("#totalAllVacant").html());
->>>>>>> 12/05/19
 							
 							tableLoadOff();
 						});
 						
-<<<<<<< HEAD
-						$("#cover-spin").fadeOut(250, function() {
-							$(this).hide();
-						});
-=======
 						setTimeout(() => {
 							$("#cover-spin").fadeOut(250, function() {
 								$(this).hide();
 							});
 						}, 20000);
->>>>>>> 12/05/19
 					}, 250);
 					
 				});
@@ -563,10 +489,7 @@ $(document).ready(function() {
 							
 							var buildObject = new Object();
 							buildObject.no = snapshot.key.split(":")[1];
-<<<<<<< HEAD
-=======
 							buildObject.alias = snapshot.child("alias").val();
->>>>>>> 12/05/19
 							buildObject.address = snapshot.child("address_street").val();
 							buildObject.roomCount = snapshot.child("total_room").val();
 							buildObject.tenantCount = countTenantinBuilding(buildObject.no,tenantList);
@@ -575,21 +498,12 @@ $(document).ready(function() {
 							buildObject.due = 0;
 							buildObject.receive = 0;
 							buildObject.expense = 0;
-<<<<<<< HEAD
-							table.row.add([buildObject.no,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
-=======
 							table.row.add([buildObject.no,buildObject.alias,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
->>>>>>> 12/05/19
 							
 							// Pull report data
 							reportRef.child(buildObject.no).on('child_added', function(snapshot) {
 								tableLoadOn();
 								
-<<<<<<< HEAD
-								table.row('#build'+buildObject.no).remove();
-								
-=======
->>>>>>> 12/05/19
 								var d = new Date();
 
 								var thisMonth = d.getMonth() + 1;
@@ -644,14 +558,6 @@ $(document).ready(function() {
 									$("#totalAllOverdue").html(get_moneydot($("#totalOverdueInt").val()));
 									$("#totalReceivedInt").val(parseInt($("#totalReceivedInt").val()) + reportReceive);
 									$("#totalAllReceived").html(get_moneydot($("#totalReceivedInt").val()));
-<<<<<<< HEAD
-									$("#totalBalanceInt").val(parseInt($("#totalBalanceInt").val()) + (reportReceive - buildObject.expense));
-									$("#totalBalance").html(get_moneydot($("#totalBalanceInt").val()));
-								}
-								
-								table.row.add([buildObject.no,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
-								table.draw();
-=======
 									$("#totalExpenseInt").val(parseInt($("#totalExpenseInt").val()) + buildObject.expense);
 									$("#totalAllExpense").html(get_moneydot($("#totalExpenseInt").val()));
 									$("#totalBalanceInt").val(parseInt($("#totalBalanceInt").val()) + (reportReceive - buildObject.expense));
@@ -667,37 +573,25 @@ $(document).ready(function() {
 								table.cell('#build'+buildObject.no,7).data(get_moneydot(buildObject.receive));
 								table.cell('#build'+buildObject.no,8).data(get_moneydot(buildObject.expense));
 								table.cell('#build'+buildObject.no,9).data(get_moneydot(buildObject.receive - buildObject.expense));
->>>>>>> 12/05/19
 								
 								tableLoadOff();
 							});
 							
-<<<<<<< HEAD
-							$("#totalAllRoom").html(parseInt($("#totalAllRoom").html()) + parseInt(buildObject.roomCount));
-							$("#totalAllVacant").html(parseInt($("#totalAllVacant").html()) + buildVacantCount);
-=======
 							table.draw();
 							
 							$("#totalAllRoom").html(parseInt($("#totalAllRoom").html()) + parseInt(buildObject.roomCount));
 							$("#totalAllVacant").html(parseInt($("#totalAllVacant").html()) + buildVacantCount);
 							$("#summary-vacant").html(((parseInt($("#totalAllVacant").html()) / parseInt($("#totalAllRoom").html()))*100).toFixed(2)+"%");
 							$("#summary-empty").html($("#totalAllVacant").html());
->>>>>>> 12/05/19
 							
 							tableLoadOff();
 						});
 						
-<<<<<<< HEAD
-						$("#cover-spin").fadeOut(250, function() {
-							$(this).hide();
-						});
-=======
 						setTimeout(() => {
 							$("#cover-spin").fadeOut(250, function() {
 								$(this).hide();
 							});
 						}, 20000);
->>>>>>> 12/05/19
 					}, 250);
 					
 				});
@@ -739,10 +633,7 @@ $(document).ready(function() {
 								
 								var buildObject = new Object();
 								buildObject.no = snapshot.key.split(":")[1];
-<<<<<<< HEAD
-=======
 								buildObject.alias = snapshot.child("alias").val();
->>>>>>> 12/05/19
 								buildObject.address = snapshot.child("address_street").val();
 								buildObject.roomCount = snapshot.child("total_room").val();
 								buildObject.tenantCount = countTenantinBuilding(buildObject.no,tenantList);
@@ -751,21 +642,12 @@ $(document).ready(function() {
 								buildObject.due = 0;
 								buildObject.receive = 0;
 								buildObject.expense = 0;
-<<<<<<< HEAD
-								table.row.add([buildObject.no,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
-=======
 								table.row.add([buildObject.no,buildObject.alias,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
->>>>>>> 12/05/19
 								
 								// Pull report data
 								reportRef.child(buildObject.no).on('child_added', function(snapshot) {
 									tableLoadOn();
 									
-<<<<<<< HEAD
-									table.row('#build'+buildObject.no).remove();
-									
-=======
->>>>>>> 12/05/19
 									var filterStartDate = reformatDate($("#filterStartDate").val(),"US");
 									var filterEndDate = reformatDate($("#filterEndDate").val(),"US");
 									var reportDate = snapshot.child("date").val();
@@ -815,14 +697,6 @@ $(document).ready(function() {
 										$("#totalAllOverdue").html(get_moneydot($("#totalOverdueInt").val()));
 										$("#totalReceivedInt").val(parseInt($("#totalReceivedInt").val()) + reportReceive);
 										$("#totalAllReceived").html(get_moneydot($("#totalReceivedInt").val()));
-<<<<<<< HEAD
-										$("#totalBalanceInt").val(parseInt($("#totalBalanceInt").val()) + (reportReceive - buildObject.expense));
-										$("#totalBalance").html(get_moneydot($("#totalBalanceInt").val()));
-									}
-									
-									table.row.add([buildObject.no,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
-									table.draw();
-=======
 										$("#totalExpenseInt").val(parseInt($("#totalExpenseInt").val()) + buildObject.expense);
 										$("#totalAllExpense").html(get_moneydot($("#totalExpenseInt").val()));
 										$("#totalBalanceInt").val(parseInt($("#totalBalanceInt").val()) + (reportReceive - buildObject.expense));
@@ -838,22 +712,10 @@ $(document).ready(function() {
 									table.cell('#build'+buildObject.no,7).data(get_moneydot(buildObject.receive));
 									table.cell('#build'+buildObject.no,8).data(get_moneydot(buildObject.expense));
 									table.cell('#build'+buildObject.no,9).data(get_moneydot(buildObject.receive - buildObject.expense));
->>>>>>> 12/05/19
 									
 									tableLoadOff();
 								});
 								
-<<<<<<< HEAD
-								$("#totalAllRoom").html(parseInt($("#totalAllRoom").html()) + parseInt(buildObject.roomCount));
-								$("#totalAllVacant").html(parseInt($("#totalAllVacant").html()) + buildVacantCount);
-								
-								tableLoadOff();
-							});
-							
-							$("#cover-spin").fadeOut(250, function() {
-								$(this).hide();
-							});
-=======
 								table.draw();
 								
 								$("#totalAllRoom").html(parseInt($("#totalAllRoom").html()) + parseInt(buildObject.roomCount));
@@ -868,7 +730,6 @@ $(document).ready(function() {
 									$(this).hide();
 								});
 							}, 20000);
->>>>>>> 12/05/19
 						}, 250);
 					},
 					rules: {

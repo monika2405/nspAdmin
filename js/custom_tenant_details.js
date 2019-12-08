@@ -2,10 +2,7 @@
 var table = $('#bledger').DataTable({
 	"aLengthMenu": [[10, 20, -1], [10, 20, "All"]],
 	"iDisplayLength": -1,
-<<<<<<< HEAD
-=======
 	"fixedHeader": true,
->>>>>>> 12/05/19
 	"paging": false,
 	"ordering": false,
 	"columnDefs": [
@@ -15,21 +12,13 @@ var table = $('#bledger').DataTable({
 	},
 	{
 		targets: [2,3,4],
-<<<<<<< HEAD
-		width: "22%",
-		render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ',',-' )
-=======
 		width: "22%"
->>>>>>> 12/05/19
 	}]
 });
 var table1 = $('#sledger').DataTable({
 	"aLengthMenu": [[10, 20, -1], [10, 20, "All"]],
 	"iDisplayLength": -1,
-<<<<<<< HEAD
-=======
 	"fixedHeader": true,
->>>>>>> 12/05/19
 	"paging": false,
 	"ordering": false,
 	"columnDefs": [
@@ -39,12 +28,7 @@ var table1 = $('#sledger').DataTable({
 	},
 	{
 		targets: [2,3,4],
-<<<<<<< HEAD
-		width: "22%",
-		render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ',',-' )
-=======
 		width: "22%"
->>>>>>> 12/05/19
 	}]
 });
 
@@ -64,17 +48,6 @@ function removeOptions(selectbox) {
 
 function get_fmoney(money) {
 	
-<<<<<<< HEAD
-	var rev     = parseInt(money, 10).toString().split('').reverse().join('');
-	var rev2    = '';
-	for(var i = 0; i < rev.length; i++){
-		rev2  += rev[i];
-		if((i + 1) % 3 === 0 && i !== (rev.length - 1)){
-			rev2 += '.';
-		}
-	}
-	return ("Rp. "+rev2.split('').reverse().join('') + ',-')
-=======
 	if (money != null) {
 		if (parseInt(money) < 0) {
 			var rev     = Math.abs(parseInt(money, 10)).toString().split('').reverse().join('');
@@ -100,15 +73,11 @@ function get_fmoney(money) {
 	} else {
 		return null;
 	}
->>>>>>> 12/05/19
 	
 }
 
 function rem_fmoney(money) {
 	
-<<<<<<< HEAD
-	return parseInt(money.substring(4,money.length-2).split(".").join(""))
-=======
 	if (money != null) {
 		if (money.substring(0,1) == "(") {
 			return parseInt(money.substring(5,money.length-3).split(".").join(""))*-1;
@@ -118,7 +87,6 @@ function rem_fmoney(money) {
 	} else {
 		return null;
 	}
->>>>>>> 12/05/19
 	
 }
 
@@ -175,6 +143,43 @@ function reformatDate2(inputDate) {
 	}
 	outputYear = "20"+inputYear;
 	return (outputMonth+"/"+outputDay+"/"+outputYear);
+	
+}
+
+function reformatDate3(inputDate) {
+	
+	months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+	months2=["01","02","03","04","05","06","07","08","09","10","11","12"];
+	inputBroke=inputDate.split("-");
+	inputDay=inputBroke[0];
+	inputMonth=inputBroke[1];
+	inputYear=inputBroke[2];
+	if (parseInt(inputDay) < 10) {
+		outputDay = inputDay;
+	} else {
+		outputDay = inputDay;
+	}
+	for (var i=0;i<months.length;i++) {
+		if (inputMonth == months[i]) {
+			outputMonth = months2[i];
+			break
+		}
+	}
+	outputYear = inputYear;
+	return (outputMonth+"/"+outputDay+"/"+outputYear);
+	
+}
+
+function reformatDate4(inputDate) {
+	
+	months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+	inputBroke=inputDate.split("/");
+	inputDay=parseInt(inputBroke[1]);
+	inputMonth=parseInt(inputBroke[0]);
+	inputYear=inputBroke[2];
+	outputDay=inputDay;
+	outputMonth=months[inputMonth-1];
+	return (outputDay+"-"+outputMonth+"-"+inputYear);
 	
 }
 
@@ -257,11 +262,7 @@ function countTotalBondDue() {
 	
 	var totalBondDue = 0;
 	for (i=0;i<table.rows().count();i++) {
-<<<<<<< HEAD
-		var bondDue = table.row(i).data()[2];
-=======
 		var bondDue = rem_fmoney(table.row(i).data()[2]);
->>>>>>> 12/05/19
 		if (bondDue != null) {
 			totalBondDue = totalBondDue+bondDue;
 		}
@@ -274,11 +275,7 @@ function countTotalBondReceived() {
 	
 	var totalBondReceived = 0;
 	for (i=0;i<table.rows().count();i++) {
-<<<<<<< HEAD
-		var bondReceived = table.row(i).data()[3];
-=======
 		var bondReceived = rem_fmoney(table.row(i).data()[3]);
->>>>>>> 12/05/19
 		if (bondReceived != null) {
 			totalBondReceived = totalBondReceived+bondReceived;
 		}
@@ -300,20 +297,6 @@ function countBondBalance() {
 	
 	var balance = 0;
 	for (i=0;i<table.rows().count();i++) {
-<<<<<<< HEAD
-		var bondDue = table.row(i).data()[2];
-		if (bondDue != null) {
-			balance = balance - bondDue;
-		} else {
-			var bondReceived = table.row(i).data()[3];
-			balance = balance + bondReceived;
-		}
-		if (balance < 0) {
-			table.cell(i,4).data("("+get_fmoney(Math.abs(balance))+")");
-		} else {
-			table.cell(i,4).data(get_fmoney(balance));
-		}
-=======
 		var bondDue = rem_fmoney(table.row(i).data()[2]);
 		if (bondDue != null) {
 			balance = balance - bondDue;
@@ -322,7 +305,6 @@ function countBondBalance() {
 			balance = balance + bondReceived;
 		}
 		table.cell(i,4).data(get_fmoney(balance));
->>>>>>> 12/05/19
 	}
 	
 }
@@ -332,15 +314,7 @@ function countTotalBondBalance() {
 	var totalBondDue = rem_fmoney($("#bDueTot").html());
 	var totalBondReceived = rem_fmoney($("#bReceivedTot").html());
 	var totalBondBalance = totalBondReceived - totalBondDue;
-<<<<<<< HEAD
-	if (totalBondBalance < 0) {
-		$("#bBalanceTot").html("("+get_fmoney(Math.abs(totalBondBalance))+")");
-	} else {
-		$("#bBalanceTot").html(get_fmoney(totalBondBalance));
-	}
-=======
 	$("#bBalanceTot").html(get_fmoney(totalBondBalance));
->>>>>>> 12/05/19
 	
 }
 
@@ -348,11 +322,7 @@ function countTotalDue() {
 	
 	var totalDue = 0;
 	for (i=0;i<table1.rows().count();i++) {
-<<<<<<< HEAD
-		var ledgerDue = table1.row(i).data()[2];
-=======
 		var ledgerDue = rem_fmoney(table1.row(i).data()[2]);
->>>>>>> 12/05/19
 		if (ledgerDue != null) {
 			totalDue = totalDue+ledgerDue;
 		}
@@ -365,11 +335,7 @@ function countTotalReceived() {
 	
 	var totalReceived = 0;
 	for (i=0;i<table1.rows().count();i++) {
-<<<<<<< HEAD
-		var ledgerReceived = table1.row(i).data()[3];
-=======
 		var ledgerReceived = rem_fmoney(table1.row(i).data()[3]);
->>>>>>> 12/05/19
 		if (ledgerReceived != null) {
 			totalReceived = totalReceived+ledgerReceived;
 		}
@@ -382,20 +348,6 @@ function countBalance() {
 	
 	var balance = 0;
 	for (i=0;i<table1.rows().count();i++) {
-<<<<<<< HEAD
-		var ledgerDue = table1.row(i).data()[2];
-		if (ledgerDue != null) {
-			balance = balance - ledgerDue;
-		} else {
-			var ledgerReceived = table1.row(i).data()[3];
-			balance = balance + ledgerReceived;
-		}
-		if (balance < 0) {
-			table1.cell(i,4).data("("+get_fmoney(Math.abs(balance))+")");
-		} else {
-			table1.cell(i,4).data(get_fmoney(balance));
-		}
-=======
 		var ledgerDue = rem_fmoney(table1.row(i).data()[2]);
 		if (ledgerDue != null) {
 			balance = balance - ledgerDue;
@@ -404,7 +356,6 @@ function countBalance() {
 			balance = balance + ledgerReceived;
 		}
 		table1.cell(i,4).data(get_fmoney(balance));
->>>>>>> 12/05/19
 	}
 	
 }
@@ -517,10 +468,7 @@ function nonActive(){
 		firebase.database().ref().child("contract/"+id).remove();
 		firebase.database().ref().child("tenant/"+id).remove();
 		firebase.database().ref().child("tenant-room/"+id).remove();
-<<<<<<< HEAD
-=======
 		firebase.database().ref().child("overdue/"+id).remove();
->>>>>>> 12/05/19
 		//stop loading icon
 		$("#cover-spin").fadeOut(250, function() {
 			$(this).hide();
@@ -898,42 +846,28 @@ function addPayment() {
 		//reset payment form
 		$('#addPaymentForm').trigger("reset");
 		$("#paymentDetailsOtherBlock").hide();
-<<<<<<< HEAD
-=======
 		$("#paymentDetailsAdjustBlock").hide();
->>>>>>> 12/05/19
 		removeOptions(document.getElementById("paymentDetails"));
 		var optionElement1 = document.createElement("option");
 		var optionElement2 = document.createElement("option");
 		var optionElement3 = document.createElement("option");
 		var optionElement4 = document.createElement("option");
-<<<<<<< HEAD
-=======
 		var optionElement5 = document.createElement("option");
->>>>>>> 12/05/19
 		optionElement1.value = "rentpay";
 		optionElement1.innerHTML = "Rental Payment";
 		optionElement2.value = "finepay";
 		optionElement2.innerHTML = "Fine Payment";
 		optionElement3.value = "bondpay";
 		optionElement3.innerHTML = "Bond Money Payment";
-<<<<<<< HEAD
-		optionElement4.value = "otherpay";
-		optionElement4.innerHTML = "Other Payment";
-=======
 		optionElement4.value = "adjustpay";
 		optionElement4.innerHTML = "Adjustment";
 		optionElement5.value = "otherpay";
 		optionElement5.innerHTML = "Other Payment";
->>>>>>> 12/05/19
 		document.getElementById("paymentDetails").appendChild(optionElement1);
 		document.getElementById("paymentDetails").appendChild(optionElement2);
 		document.getElementById("paymentDetails").appendChild(optionElement3);
 		document.getElementById("paymentDetails").appendChild(optionElement4);
-<<<<<<< HEAD
-=======
 		document.getElementById("paymentDetails").appendChild(optionElement5);
->>>>>>> 12/05/19
 	}
 	
 	// ref number
@@ -951,17 +885,12 @@ function addPayment() {
 	var paymentDate = reformatDate2($("#paymentDate").val());
 	var payDate = $("#paymentDate").val();
 	var paymentAmount = parseInt(rem_moneydot($("#paymentAmount").val()));
-<<<<<<< HEAD
-	var paymentDetails = $("#paymentDetails").val();
-	var paymentDetailsOther = $("#paymentDetailsOther").val();
-=======
 	if ($("#paymentAmountCond").val() == "neg") {
 		paymentAmount = paymentAmount*-1;
 	}
 	var paymentDetails = $("#paymentDetails").val();
 	var paymentDetailsOther = $("#paymentDetailsOther").val();
 	var paymentDetailsAdjust = $("#paymentDetailsAdjust").val();
->>>>>>> 12/05/19
 	if (paymentDetails == "rentpay") {
 		var paymentDetailsFull = "Rental Payment";
 	} else if (paymentDetails == "finepay") {
@@ -972,11 +901,8 @@ function addPayment() {
 		var paymentDetailsFull = "Bond Money Transfer";
 	} else if (paymentDetails == "refund") {
 		var paymentDetailsFull = "Bond Money Refund";
-<<<<<<< HEAD
-=======
 	} else if (paymentDetails == "adjustpay") {
 		var paymentDetailsFull = "Adjustment - "+paymentDetailsAdjust;
->>>>>>> 12/05/19
 	} else {
 		var paymentDetailsFull = "Other Payment - "+paymentDetailsOther;
 	}
@@ -2408,9 +2334,6 @@ function extendTenant() {
 }
 
 
-<<<<<<< HEAD
-
-=======
 //re-format phone number
 function reformatList(listData,x){
 	var hasil="";
@@ -2432,7 +2355,267 @@ function reformatList(listData,x){
 	hasil = hasil+"-"+hasil1+"-"+listData.join("");
 	return hasil
 }
->>>>>>> 12/05/19
+
+
+function startEdit(){
+	$("#cover-spin").fadeIn(250, function() {
+		$(this).show();
+	})
+	$("#historyTenant").hide();
+	$("#historyTenantEdt").show();
+	//fill name and refnumber from database
+	var tenantRef = firebase.database().ref().child("tenant/"+id);
+	tenantRef.once('value', function(snapshot) {
+		// get name,dll from database
+		var full_name=snapshot.child("full_name").val();
+		var birth_date=snapshot.child("birth_date").val();
+		var cont_home=snapshot.child("cont_home").val();
+		var cont_mobile=snapshot.child("cont_mobile").val();
+		var email=snapshot.child("email").val();
+		var id_number1=snapshot.child("id_number1").val();
+		var id_number2=snapshot.child("id_number2").val();
+		var id_photo1=snapshot.child("id_photo1").val();
+		var id_photo2=snapshot.child("id_photo2").val();
+		var id_type1=snapshot.child("id_type1").val();
+		var id_type2=snapshot.child("id_type2").val();
+		var kk_photo=snapshot.child("kk_photo").val();
+		var los_prev=snapshot.child("los_prev").val();
+		var occupation=snapshot.child("occupation").val();
+		var perm_addr=snapshot.child("perm_addr").val();
+		var prev_addr=snapshot.child("prev_addr").val();
+		var rfl_prev=snapshot.child("rfl_prev").val();
+		// get data ref 1
+		reftenantRef1=tenantRef.child("references/reference_1");
+		reftenantRef1.once('value', function(snapshot) {
+			var addressR1=snapshot.child("address").val();
+			var contactR1=snapshot.child("contact").val();
+			var full_nameR1=snapshot.child("full_name").val();
+			var relationR1=snapshot.child("relation").val();
+			
+			// get data ref 2
+			reftenantRef2=tenantRef.child("references/reference_2");
+			reftenantRef2.once('value', function(snapshot) {
+				var addressR2=snapshot.child("address").val();
+				var contactR2=snapshot.child("contact").val();
+				var full_nameR2=snapshot.child("full_name").val();
+				var relationR2=snapshot.child("relation").val();
+				
+				
+				$("#afname_edt").val(full_name);
+				$("#email_edt").val(email);
+				//jika data bukan dummy maka ini data dari firebase
+				if (full_name!=null){
+					$("#aphome_edt").val(cont_home);
+					$("#apmobile_edt").val(cont_mobile);
+					$("#aadstreet_edt").val(perm_addr.split(", ")[0]);
+					$("#aadcity_edt").val(perm_addr.split(", ")[1]);
+					$("#aadprov_edt").val(perm_addr.split(", ")[2].split(" ")[0]);
+					$("#aadzip_edt").val(perm_addr.split(", ")[2].split(" ")[1]);
+					$("#bdate_edt").val(reformatDate4(birth_date));
+					$("#occupy_edt").val(occupation);
+					//reference 1
+					$("#r1fname_edt").val(full_nameR1);
+					$("#r1rel_edt").val(relationR1);
+					$("#r1adstreet_edt").val(addressR1);
+					$("#r1p_edt").val(contactR1);
+					//reference 2
+					$("#r2fname_edt").val(full_nameR2);
+					$("#r2rel_edt").val(relationR2);
+					$("#r2adstreet_edt").val(addressR2);
+					$("#r2p_edt").val(contactR2);
+					//stop loading icon
+					$("#cover-spin").fadeOut(250, function() {
+						$(this).hide();
+					});
+				}
+			});
+		});
+	});
+}
+
+function isEmail(email) {
+  var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+  return regex.test(email);
+}
+
+function doneEdit(){
+	$("#cover-spin").fadeIn(250, function() {
+		$(this).show();
+	})
+	$("#historyTenant").show();
+	$("#historyTenantEdt").hide();
+	
+	//validasi email
+	if (isEmail($("#email_edt").val())){
+		var tenantRef = firebase.database().ref().child("tenant/"+id);
+		tenantRef.update({
+			full_name : $("#afname_edt").val(),
+			birth_date : reformatDate3($("#bdate_edt").val()),
+			occupation : $("#occupy_edt").val(),
+			perm_addr : $("#aadstreet_edt").val()+", "+$("#aadcity_edt").val()+", "+$("#aadprov_edt").val()+" "+$("#aadzip_edt").val(),
+			email : $("#email_edt").val(),
+			cont_home : $("#aphome_edt").val(),
+			cont_mobile : $("#apmobile_edt").val(),
+			references : {
+				reference_1 : {
+					full_name : $("#r1fname_edt").val(),
+					relation : $("#r1rel_edt").val(),
+					address : $("#r1adstreet_edt").val(),
+					contact : $("#r1p_edt").val()
+				},
+				reference_2 : {
+					full_name : $("#r2fname_edt").val(),
+					relation : $("#r2rel_edt").val(),
+					address : $("#r2adstreet_edt").val(),
+					contact : $("#r2p_edt").val()
+				}
+			}
+		}).then(function onSuccess(res) {
+			//error notification
+			$.gritter.add({
+				title: 'Success Update Data Tenant',
+				text: "Berhasil Update Tenant "+id,
+				image: './img/bell.png',
+				sticky: false,
+				time: 3500,
+				class_name: 'gritter-custom'
+			});
+			$("#cover-spin").fadeOut(250, function() {
+				$(this).hide();
+			});
+			setTimeout(function(){
+				window.location='tenant_details.html?id='+id;
+			}, 1000);
+			
+		}).catch(function onError(err) {
+			//error notification
+			$.gritter.add({
+				title: 'Error Update Data Tenant',
+				text: err.code+" : "+err.message,
+				image: './img/bell.png',
+				sticky: false,
+				time: 3500,
+				class_name: 'gritter-custom'
+			});
+			//stop loading icon
+			$("#cover-spin").fadeOut(250, function() {
+				$(this).hide();
+			});
+		});
+	} else {
+		//error notification
+		$.gritter.add({
+			title: 'Masukan Email yang Valid',
+			image: './img/bell.png',
+			sticky: false,
+			time: 3500,
+			class_name: 'gritter-custom'
+		});
+		//stop loading icon
+		$("#cover-spin").fadeOut(250, function() {
+			$(this).hide();
+		});
+	}
+	
+}
+
+var tenantNames = [];
+function fillTenantData(){
+	//fill name and refnumber from database
+	var tenantRef = firebase.database().ref().child("tenant/"+id);
+	tenantRef.once('value', function(snapshot) {
+		// get name,dll from database
+		var full_name=snapshot.child("full_name").val();
+		var birth_date=snapshot.child("birth_date").val();
+		var cont_home=snapshot.child("cont_home").val();
+		var cont_mobile=snapshot.child("cont_mobile").val();
+		var email=snapshot.child("email").val();
+		var id_number1=snapshot.child("id_number1").val();
+		var id_number2=snapshot.child("id_number2").val();
+		var id_photo1=snapshot.child("id_photo1").val();
+		var id_photo2=snapshot.child("id_photo2").val();
+		var id_type1=snapshot.child("id_type1").val();
+		var id_type2=snapshot.child("id_type2").val();
+		var kk_photo=snapshot.child("kk_photo").val();
+		var los_prev=snapshot.child("los_prev").val();
+		var occupation=snapshot.child("occupation").val();
+		var perm_addr=snapshot.child("perm_addr").val();
+		var prev_addr=snapshot.child("prev_addr").val();
+		var rfl_prev=snapshot.child("rfl_prev").val();
+		// get data ref 1
+		reftenantRef1=tenantRef.child("references/reference_1");
+		reftenantRef1.once('value', function(snapshot) {
+			var addressR1=snapshot.child("address").val();
+			var contactR1=snapshot.child("contact").val();
+			var full_nameR1=snapshot.child("full_name").val();
+			var relationR1=snapshot.child("relation").val();
+			// get data ref 2
+			reftenantRef2=tenantRef.child("references/reference_2");
+			reftenantRef2.once('value', function(snapshot) {
+				var addressR2=snapshot.child("address").val();
+				var contactR2=snapshot.child("contact").val();
+				var full_nameR2=snapshot.child("full_name").val();
+				var relationR2=snapshot.child("relation").val();
+				
+				// check data pada list tenantname
+				for (i=0;i<(tenantNames.length);++i){
+					if (tenantNames[i].tenantid == id){
+						label = tenantNames[i].label;
+						var refnumber = tenantNames[i].refnumber;
+					}
+					//redirect from accounting building
+					if ((tenantNames[i].tenantid)+"#ledger" == id2) {
+						$("#ledger").addClass("in active")
+						$("#tenant").removeClass("in active")
+						$("#tabtenant").removeClass("active")
+						$("#tabledger").addClass("active")
+						label = tenantNames[i].label;
+						var refnumber = tenantNames[i].refnumber;
+					}
+				}
+				//check tenant exist
+				if (label== null) {	
+					window.alert("Tenant doesn't exist");
+					window.location="tenant_main.html";
+				}
+				
+				
+				// fill data from firebase to html
+				refnumber = refnumber.split("")
+				$("#tenant_name").html(label);
+				$("#tenant_id").html(refnumber[0]+refnumber[1]+refnumber[2]+" "+refnumber[3]+refnumber[4]+refnumber[5]+" "+refnumber[6]+refnumber[7]+refnumber[8]);
+				$("#afname").html(label);
+				$("#email").html(email);
+				$("#extendBuildNo").html(refnumber[1]+refnumber[2]);
+				$("#extendFloorNo").html(refnumber[3]+refnumber[4]);
+				$("#extendRoomNo").html(refnumber[5]+refnumber[6]);
+				//jika data bukan dummy maka ini data dari firebase
+				if (full_name!=null){
+					$("#aphome").html(cont_home);
+					$("#apmobile").html(cont_mobile);
+					$("#aadstreet").html(perm_addr.split(", ")[0]);
+					$("#aadcity").html(perm_addr.split(", ")[1]);
+					$("#aadprov").html(perm_addr.split(", ")[2].split(" ")[0]);
+					$("#aadzip").html(perm_addr.split(", ")[2].split(" ")[1]);
+					$("#bdate").html(reformatDate(birth_date));
+					$("#idtype1").html(id_type1+" #"+id_number1);
+					$("#idtype2").html(id_type2+" #"+id_number2);
+					$("#occupy").html(occupation);
+					//reference 1
+					$("#r1fname").html(full_nameR1);
+					$("#r1rel").html(relationR1);
+					$("#r1adstreet").html(addressR1);
+					$("#r1p").html(contactR1);
+					//reference 2
+					$("#r2fname").html(full_nameR2);
+					$("#r2rel").html(relationR2);
+					$("#r2adstreet").html(addressR2);
+					$("#r2p").html(contactR2);
+				}
+			});
+		});
+	});
+}
 
 $(window).scroll(function(){
 	if ($(this).scrollTop() > 350) {
@@ -2461,12 +2644,9 @@ $(document).ready(function() {
 	//start
 	id2 = window.location.href.split('=')[1];
 	id = id2.split("#")[0];
-<<<<<<< HEAD
-=======
 	
 	
 	
->>>>>>> 12/05/19
 	refNumberHtml = $("#tenant_id").html();
 	var building_id = refNumberHtml.substring(1,3);
 	var tenantNames = [];
@@ -2479,35 +2659,6 @@ $(document).ready(function() {
 	overdueRef = firebase.database().ref().child("overdue/"+id);
 	reportRef = firebase.database().ref().child("reportAccount");
 	setTimeout(() => {
-<<<<<<< HEAD
-		var due = $("#lDueTot").text()
-		var receive = $("#lReceivedTot").text()
-		var balance = $("#lBalanceTot").text()
-		due = due.split("Rp. ")
-		due = due[1].split(".").join("")
-		due = due.split(",-")
-		due = parseInt(due[0])
-		receive = receive.split("Rp. ")
-		receive = receive[1].split(".").join("")
-		receive = receive.split(",-")
-		receive = parseInt(receive[0])
-		balance = balance.split("Rp. ")
-		balance = balance[1].split(".").join("")
-		balance = balance.split(",-")
-		if (balance[1]==")"){
-			balance = "-"+balance[0]
-		}else{
-			balance = balance[0]
-		}
-		
-		paymentRef.once('value', function(snapshot){
-			paymentRef.update({
-				"balance": balance,
-				"receive": receive,
-				"due": due
-			})	
-		})
-=======
 		var due = rem_fmoney($("#lDueTot").html());
 		var receive = rem_fmoney($("#lReceivedTot").html());
 		var balance = rem_fmoney($("#lBalanceTot").html());
@@ -2517,7 +2668,6 @@ $(document).ready(function() {
 			"receive": receive,
 			"due": due
 		});
->>>>>>> 12/05/19
 	}, 3000);
 	contract.on("child_added", function(snapshot){
 		room_id=snapshot.key
@@ -2573,11 +2723,7 @@ $(document).ready(function() {
 			<label for="bond" class="control-label col-lg-3">Bond</label>
 			<div class="col-lg-9">
 				<div class="checkbox">
-<<<<<<< HEAD
-					<span id="bond`+historyperiod+`" name="bond" >`+bondPrice+`to be paid at the beginning of contract</span>
-=======
 					<span id="bond`+historyperiod+`" name="bond" >`+bondPrice+`to be paid at the first contract</span>
->>>>>>> 12/05/19
 				</div>
 			</div>
 		</div>
@@ -2597,8 +2743,6 @@ $("#tenanthistory").append(data)
 --historyperiod
 	})
 	
-<<<<<<< HEAD
-=======
 	
 	//membuka modal extend / end contract / non active
 	openModal = id2.split("#")[1];
@@ -2613,7 +2757,6 @@ $("#tenanthistory").append(data)
 		}_
 	}
 	
->>>>>>> 12/05/19
 })
 
 setTimeout(() => {
@@ -2693,15 +2836,6 @@ setTimeout(() => {
 			
 			//untuk mengisi default payment
 			//default bond
-<<<<<<< HEAD
-			bondList.push({
-				"date":statingDate,
-				"desc":"Bond Money Due",
-				"invoice":bondPrice,
-				"payment":null
-			});
-=======
->>>>>>> 12/05/19
 		
 			ledgerList.push({
 				"date":statingDate,
@@ -2720,20 +2854,12 @@ setTimeout(() => {
 			//sort bond
 			bondList = sortArrayByDate(bondList);
 			for (x in bondList) {
-<<<<<<< HEAD
-				table.row.add([reformatDate(bondList[x].date),bondList[x].desc,bondList[x].invoice,bondList[x].payment,null]);	
-=======
 				table.row.add([reformatDate(bondList[x].date),bondList[x].desc,get_fmoney(bondList[x].invoice),get_fmoney(bondList[x].payment),null]);	
->>>>>>> 12/05/19
 			}
 			//sort ledger
 			ledgerList = sortArrayByDate(ledgerList);
 			for (x in ledgerList) {
-<<<<<<< HEAD
-				table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,ledgerList[x].invoice,ledgerList[x].payment,null]);	
-=======
 				table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,get_fmoney(ledgerList[x].invoice),get_fmoney(ledgerList[x].payment),null]);	
->>>>>>> 12/05/19
 			}
 			table.draw();
 			table1.draw();
@@ -2774,7 +2900,7 @@ setTimeout(() => {
 		var birth_date=snapshot.child("birth_date").val();
 		var cont_home=snapshot.child("cont_home").val();
 		var cont_mobile=snapshot.child("cont_mobile").val();
-		var email=snapshot.child("full_name").val();
+		var email=snapshot.child("email").val();
 		var id_number1=snapshot.child("id_number1").val();
 		var id_number2=snapshot.child("id_number2").val();
 		var id_photo1=snapshot.child("id_photo1").val();
@@ -2836,23 +2962,15 @@ setTimeout(() => {
 				//jika data bukan dummy maka ini data dari firebase
 				if (full_name!=null){
 					$("#aphome").html(cont_home);
-<<<<<<< HEAD
-					$("#apmobile").html(cont_mobile);
-=======
 					
 					$("#apmobile").html(reformatList(cont_mobile,4));
 					
->>>>>>> 12/05/19
 					$("#aadstreet").html(perm_addr.split(", ")[0]);
 					$("#aadcity").html(perm_addr.split(", ")[1]);
 					$("#aadprov").html(perm_addr.split(", ")[2]);
 					$("#aadzip").html(perm_addr.split(", ")[2].split(" ")[1]);
 					$("#bdate").html(birth_date);
-<<<<<<< HEAD
-					$("#idtype1").html(id_type1+" #"+id_number1);
-					$("#idtype2").html(id_type2+" #"+id_number2);
-=======
-					
+					$("#email").html(email);
 					if (id_type1=="sim" && id_number1.length>9) {
 						$("#idtype1").html(id_type1+" #"+reformatList(id_number1,4));
 					} else if(id_type1=="ktp" && id_number1.length>13){
@@ -2869,18 +2987,17 @@ setTimeout(() => {
 						$("#idtype2").html(id_type2+" #"+id_number2);
 					}
 					
->>>>>>> 12/05/19
 					$("#occupy").html(occupation);
 					//reference 1
 					$("#r1fname").html(full_nameR1);
 					$("#r1rel").html(relationR1);
 					$("#r1adstreet").html(addressR1);
-					$("#r1p").html(contactR1);
+					$("#r1p").html(reformatList(contactR1,4));
 					//reference 2
-					$("#r2fname").html(full_nameR1);
-					$("#r2rel").html(relationR1);
-					$("#r2adstreet").html(addressR1);
-					$("#r2p").html(contactR1);
+					$("#r2fname").html(full_nameR2);
+					$("#r2rel").html(relationR2);
+					$("#r2adstreet").html(addressR2);
+					$("#r2p").html(reformatList(contactR2,4));
 				}
 			});
 		});
@@ -2949,12 +3066,9 @@ setTimeout(() => {
 			$("#paymentDetailsOtherBlock").fadeOut(250, function() {
 				$(this).hide();
 			})
-<<<<<<< HEAD
-=======
 			$("#paymentDetailsAdjustBlock").fadeOut(250, function() {
 				$(this).hide();
 			})
->>>>>>> 12/05/19
 			removeOptions(document.getElementById("paymentDetails"));
 			var optionElement1 = document.createElement("option");
 			var optionElement2 = document.createElement("option");
@@ -2972,44 +3086,30 @@ setTimeout(() => {
 			$("#paymentDetailsOtherBlock").fadeOut(250, function() {
 				$(this).hide();
 			})
-<<<<<<< HEAD
-=======
 			$("#paymentDetailsAdjustBlock").fadeOut(250, function() {
 				$(this).hide();
 			})
->>>>>>> 12/05/19
 			removeOptions(document.getElementById("paymentDetails"));
 			var optionElement1 = document.createElement("option");
 			var optionElement2 = document.createElement("option");
 			var optionElement3 = document.createElement("option");
 			var optionElement4 = document.createElement("option");
-<<<<<<< HEAD
-=======
 			var optionElement5 = document.createElement("option");
->>>>>>> 12/05/19
 			optionElement1.value = "rentpay";
 			optionElement1.innerHTML = "Rental Payment";
 			optionElement2.value = "finepay";
 			optionElement2.innerHTML = "Fine Payment";
 			optionElement3.value = "bondpay";
 			optionElement3.innerHTML = "Bond Money Payment";
-<<<<<<< HEAD
-			optionElement4.value = "otherpay";
-			optionElement4.innerHTML = "Other Payment";
-=======
 			optionElement4.value = "adjustpay";
 			optionElement4.innerHTML = "Adjustment";
 			optionElement5.value = "otherpay";
 			optionElement5.innerHTML = "Other Payment";
->>>>>>> 12/05/19
 			document.getElementById("paymentDetails").appendChild(optionElement1);
 			document.getElementById("paymentDetails").appendChild(optionElement2);
 			document.getElementById("paymentDetails").appendChild(optionElement3);
 			document.getElementById("paymentDetails").appendChild(optionElement4);
-<<<<<<< HEAD
-=======
 			document.getElementById("paymentDetails").appendChild(optionElement5);
->>>>>>> 12/05/19
 		}
 	})
 	//payment amount listener
@@ -3019,15 +3119,6 @@ setTimeout(() => {
 	//payment modal details listener
 	$("#paymentDetails").on('change', function() {
 		if ($(this).find("option:selected").attr("value") == "otherpay") {
-<<<<<<< HEAD
-			$("#paymentDetailsOtherBlock").fadeIn(250, function() {
-				$(this).show();
-			})
-		} else {
-			$("#paymentDetailsOtherBlock").fadeOut(250, function() {
-				$(this).hide();
-			})
-=======
 			$("#paymentDetailsAdjustBlock").fadeOut(250, function() {
 				$(this).hide();
 				$("#paymentDetailsOtherBlock").fadeIn(250, function() {
@@ -3045,7 +3136,6 @@ setTimeout(() => {
 			$("#paymentDetailsOtherBlock,#paymentDetailsAdjustBlock").fadeOut(250, function() {
 				$(this).hide();
 			});
->>>>>>> 12/05/19
 		}
 	})
 	//payment modal add listener
@@ -3062,13 +3152,10 @@ setTimeout(() => {
 			addPayment();
 		}
 	})
-<<<<<<< HEAD
-=======
 	//payment modal draggable
 	$("#addPaymentModal").draggable({
 		handle: ".modal-header"
 	});
->>>>>>> 12/05/19
 	//extend button listener
 	$("#extender").on('click', function() {
 		$("#extendModal").modal();
@@ -3279,20 +3366,12 @@ setTimeout(() => {
 			//sort bond
 			bondList = sortArrayByDate(bondList);
 			for (x in bondList) {
-<<<<<<< HEAD
-				table.row.add([reformatDate(bondList[x].date),bondList[x].desc,bondList[x].invoice,bondList[x].payment,null]);	
-=======
 				table.row.add([reformatDate(bondList[x].date),bondList[x].desc,get_fmoney(bondList[x].invoice),get_fmoney(bondList[x].payment),null]);	
->>>>>>> 12/05/19
 			}
 			//sort ledger
 			ledgerList = sortArrayByDate(ledgerList);
 			for (x in ledgerList) {
-<<<<<<< HEAD
-				table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,ledgerList[x].invoice,ledgerList[x].payment,null]);	
-=======
 				table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,get_fmoney(ledgerList[x].invoice),get_fmoney(ledgerList[x].payment),null]);	
->>>>>>> 12/05/19
 			}
 			table.draw();
 			table1.draw();
@@ -3313,22 +3392,14 @@ setTimeout(() => {
 			bondList = sortArrayByDate(bondList);
 			for (x in bondList) {
 				if(bondList[x].invoice==null){
-<<<<<<< HEAD
-					table.row.add([reformatDate(bondList[x].date),bondList[x].desc,bondList[x].invoice,bondList[x].payment,null]);	
-=======
 					table.row.add([reformatDate(bondList[x].date),bondList[x].desc,get_fmoney(bondList[x].invoice),get_fmoney(bondList[x].payment),null]);	
->>>>>>> 12/05/19
 				}
 			}
 			//sort ledger
 			ledgerList = sortArrayByDate(ledgerList);
 			for (x in ledgerList) {
 				if(ledgerList[x].invoice==null){
-<<<<<<< HEAD
-					table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,ledgerList[x].invoice,ledgerList[x].payment,null]);	
-=======
 					table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,get_fmoney(ledgerList[x].invoice),get_fmoney(ledgerList[x].payment),null]);	
->>>>>>> 12/05/19
 				}
 			}
 			table.draw();
@@ -3350,22 +3421,14 @@ setTimeout(() => {
 			bondList = sortArrayByDate(bondList);
 			for (x in bondList) {
 				if(bondList[x].payment==null){
-<<<<<<< HEAD
-					table.row.add([reformatDate(bondList[x].date),bondList[x].desc,bondList[x].invoice,bondList[x].payment,null]);	
-=======
 					table.row.add([reformatDate(bondList[x].date),bondList[x].desc,get_fmoney(bondList[x].invoice),get_fmoney(bondList[x].payment),null]);	
->>>>>>> 12/05/19
 				}
 			}
 			//sort ledger
 			ledgerList = sortArrayByDate(ledgerList);
 			for (x in ledgerList) {
 				if(ledgerList[x].payment==null){
-<<<<<<< HEAD
-					table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,ledgerList[x].invoice,ledgerList[x].payment,null]);	
-=======
 					table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,get_fmoney(ledgerList[x].invoice),get_fmoney(ledgerList[x].payment),null]);	
->>>>>>> 12/05/19
 				}
 			}
 			table.draw();
@@ -3414,20 +3477,12 @@ setTimeout(() => {
 		//sort bond
 		bondList = sortArrayByDate(bondList);
 		for (x in bondList) {
-<<<<<<< HEAD
-			table.row.add([reformatDate(bondList[x].date),bondList[x].desc,bondList[x].invoice,bondList[x].payment,null]);	
-=======
 			table.row.add([reformatDate(bondList[x].date),bondList[x].desc,get_fmoney(bondList[x].invoice),get_fmoney(bondList[x].payment),null]);	
->>>>>>> 12/05/19
 		}
 		//sort ledger
 		ledgerList = sortArrayByDate(ledgerList);
 		for (x in ledgerList) {
-<<<<<<< HEAD
-			table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,ledgerList[x].invoice,ledgerList[x].payment,null]);	
-=======
 			table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,get_fmoney(ledgerList[x].invoice),get_fmoney(ledgerList[x].payment),null]);	
->>>>>>> 12/05/19
 		}
 		table.draw();
 		table1.draw();

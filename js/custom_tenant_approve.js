@@ -94,8 +94,6 @@ function sendEmail(tenantID,roomID,total,propAddr1){
 	});
 	return false;
 }
-<<<<<<< HEAD
-=======
 
 //re-format phone number
 function reformatList(listData,x){
@@ -119,7 +117,6 @@ function reformatList(listData,x){
 	return hasil
 }
 
->>>>>>> 12/05/19
 $(window).scroll(function(){
 	if ($(this).scrollTop() > 200) {
 		$('#approveButt').addClass('fixed');
@@ -210,16 +207,6 @@ $(document).ready(function() {
 						$("#afname").html(snapshot.child("full_name").val());
 						$("#bdate").html(reformatDate(snapshot.child("birth_date").val()));
 						$("#occupy").html(snapshot.child("occupation").val());
-<<<<<<< HEAD
-						$("#idtype1").html(snapshot.child("id_type1").val());
-						$("#idtype2").html(snapshot.child("id_type2").val());
-						$("#idno1").html(snapshot.child("id_number1").val());
-						$("#idno2").html(snapshot.child("id_number2").val());
-						$("#apermadd").html(snapshot.child("perm_addr").val());
-						$("#email").html(snapshot.child("email").val());
-						$("#aphome").html(snapshot.child("cont_home").val());
-						$("#apmobile").html(snapshot.child("cont_mobile").val());
-=======
 						
 						var id_type1 = snapshot.child("id_type1").val();
 						var id_number1 = snapshot.child("id_number1").val();
@@ -249,7 +236,6 @@ $(document).ready(function() {
 						$("#email").html(snapshot.child("email").val());
 						$("#aphome").html(snapshot.child("cont_home").val());
 						$("#apmobile").html(reformatList(snapshot.child("cont_mobile").val(),4));
->>>>>>> 12/05/19
 						$("#r1fname").html(snapshot.child("references/reference_1/full_name").val());
 						$("#r1rel").html(snapshot.child("references/reference_1/relation").val());
 						$("#r1permadd").html(snapshot.child("references/reference_1/address").val());
