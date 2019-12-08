@@ -941,13 +941,15 @@
 		<script src="js/get_data_overdue.js"></script>
 		<script>
 		$('#invoiceDatePicker').datepicker({
-			format: "dd-M-yy",
+			format: "d-M-yy",
 			autoclose: true
 		});
 		$('#paymentDatePicker').datepicker({
-			format: "dd-M-yy",
+			format: "d-M-yy",
 			autoclose: true
-		})
+		});
+		$("#invoiceDate").val(reformatDate(getTodayDate()));
+		$("#paymentDate").val(reformatDate(getTodayDate()));
 		</script>
 		<!-- Javascript for this page -->        
     </body>	

@@ -365,46 +365,68 @@ function uploadDB() {
 		});
 		var d = new Date();
 		//upload to DB (tenant-room)
-		dbRefTenantRoom.child(tenantID+"/"+$("#myRoomID").val()).set({
-			ref_number : $("#roomid").html()+$("#tenantno").html(),
-			build_no : $("#propnumb").html().substring(10,12),
-			prop_addr : $("#propaddr_st").html()+", "+$("#propaddr_ct").html()+" "+$("#propaddr_pv").html()+" "+$("#propaddr_zp").html(),
-			apply_date : (parseInt(d.getMonth())+1)+"/"+d.getDate()+"/"+d.getFullYear(),
-			start_date : reformatDate2($("#edate").val()),
-			key_date : reformatDate2($("#edate").val()),
-			ctrt_opt : $("#ctoption").val(),
-			pay_plan : $("#payplan").val(),
-			adjst_pay : $("#payadjt").val(),
-			adjst_bond : $("#bondadjt").val(),
-			stat_approve : "waiting",
-			stat_process : "continue",
-			key_collection : {
-				pick_est : "date",
-				pick_act : "date",
-				key_rtrn : "date"
-			},
-			stat_occupy : "booking",
-			stat_chrg_f : "0",
-			stat_chrg_n : "0",
-			rent_price	: rem_fmoney($("#fprice").html()),
-			rent_bond	: rem_fmoney($("#fbond").html())
-		}).then(function onSuccess(res) {
-			$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
-			$("#thresholdCounter").trigger("change");
-		}).catch(function onError(err) {
-			//error notification
-			$.gritter.add({
-				title: 'Error Ref Tenant-Room',
-				text: err.code+" : "+err.message,
-				image: './img/bell.png',
-				sticky: false,
-				time: 3500,
-				class_name: 'gritter-custom'
-			});
-			unlockForm();
-			//stop loading icon
-			$("#cover-spin").fadeOut(250, function() {
-				$(this).hide();
+		dbRefTenantRoom.once('value', function(snapshot) {
+			var totalTenant = parseInt(snapshot.child("total_tenant").val()) + 1;
+			dbRefTenantRoom.update({
+				total_tenant : totalTenant
+			}).then(function onSuccess(res) {
+				dbRefTenantRoom.child(tenantID+"/"+$("#myRoomID").val()).set({
+					ref_number : $("#roomid").html()+$("#tenantno").html(),
+					build_no : $("#propnumb").html().substring(10,12),
+					prop_addr : $("#propaddr_st").html()+", "+$("#propaddr_ct").html()+" "+$("#propaddr_pv").html()+" "+$("#propaddr_zp").html(),
+					apply_date : (parseInt(d.getMonth())+1)+"/"+d.getDate()+"/"+d.getFullYear(),
+					start_date : reformatDate2($("#edate").val()),
+					key_date : reformatDate2($("#edate").val()),
+					ctrt_opt : $("#ctoption").val(),
+					pay_plan : $("#payplan").val(),
+					adjst_pay : $("#payadjt").val(),
+					adjst_bond : $("#bondadjt").val(),
+					stat_approve : "waiting",
+					stat_process : "continue",
+					key_collection : {
+						pick_est : "date",
+						pick_act : "date",
+						key_rtrn : "date"
+					},
+					stat_occupy : "booking",
+					stat_chrg_f : "0",
+					stat_chrg_n : "0",
+					rent_price	: rem_fmoney($("#fprice").html()),
+					rent_bond	: rem_fmoney($("#fbond").html())
+				}).then(function onSuccess(res) {
+					$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
+					$("#thresholdCounter").trigger("change");
+				}).catch(function onError(err) {
+					//error notification
+					$.gritter.add({
+						title: 'Error Ref Tenant-Room',
+						text: err.code+" : "+err.message,
+						image: './img/bell.png',
+						sticky: false,
+						time: 3500,
+						class_name: 'gritter-custom'
+					});
+					unlockForm();
+					//stop loading icon
+					$("#cover-spin").fadeOut(250, function() {
+						$(this).hide();
+					});
+				});
+			}).catch(function onError(err) {
+				//error notification
+				$.gritter.add({
+					title: 'Error Ref Tenant-Room',
+					text: err.code+" : "+err.message,
+					image: './img/bell.png',
+					sticky: false,
+					time: 3500,
+					class_name: 'gritter-custom'
+				});
+				unlockForm();
+				//stop loading icon
+				$("#cover-spin").fadeOut(250, function() {
+					$(this).hide();
+				});
 			});
 		});
 		//upload id 1
