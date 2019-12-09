@@ -104,6 +104,10 @@ form label{
 	margin-left: 0px !important;
 }
 
+div.dt-buttons {
+    float: right;
+}
+
 /* Sparkline tooltip */
 
 .jqstooltip {

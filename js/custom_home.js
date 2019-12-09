@@ -1971,7 +1971,7 @@ $(document).ready(function() {
 						console.log("in table expired")
 						refNumFormat = tenant[j].ref_number
 						tenantName = tenantdata[j].full_name
-						name = shortenString(tenantName,10);
+						name = shortenString(tenantName,8);
 						table3.row.add(["<a href='tenant_details.html?id="+j+"' class='pull-left'>"+name+"</a>",refNumFormat,reformatDate(endDate),"<button class='btn btn-xs btn-primary' title='Send Email' ><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-success' title='Extend' onclick=window.location='tenant_details.html?id="+j+"#extend'><i class='fa fa-plus'></i></button> <button class='btn btn-xs btn-danger' title='End Contract' onclick=window.location='tenant_details.html?id="+j+"#end'><i class='fa fa-times'></i></button> <button class='btn btn-xs btn-warning' title='Non Active' onclick=window.location='tenant_details.html?id="+j+"#non-active'><i class='fa fa-minus'></i></button>"]).node().id = j;							
 					}
 				}
@@ -1986,7 +1986,7 @@ $(document).ready(function() {
 							console.log("in table expired")
 							refNumFormat = tenant[j].ref_number
 							tenantName = tenantdata[j].full_name
-							name = shortenString(tenantName,10);
+							name = shortenString(tenantName,8);
 							table3.row.add(["<a href='tenant_details.html?id="+j+"' class='pull-left'>"+name+"</a>",refNumFormat,reformatDate(endDate),"<button class='btn btn-xs btn-primary' title='Send Email' ><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-success' title='Extend' onclick=window.location='tenant_details.html?id="+j+"#extend'><i class='fa fa-plus'></i></button> <button class='btn btn-xs btn-danger' title='End Contract' onclick=window.location='tenant_details.html?id="+j+"#end'><i class='fa fa-times'></i></button> <button class='btn btn-xs btn-warning' title='Non Active' onclick=window.location='tenant_details.html?id="+j+"#non-active'><i class='fa fa-minus'></i></button>"]).node().id = j;			
 							
 						}

@@ -40,6 +40,16 @@ function reformatDate(inputDate) {
 	
 }
 
+
+function shortenString(yourString,maxLength){
+
+	//trim the string to the maximum length
+	var trimmedString = yourString.substr(0, maxLength);
+
+	return trimmedString+"..."
+	
+}
+
 //fungsi untuk Non-Active Tenant
 function nonactiveModal(){
 	var refNumber = $("#tenant_id").html()
@@ -135,6 +145,7 @@ function nonActive(){
 		firebase.database().ref().child("contract/"+id).remove();
 		firebase.database().ref().child("tenant/"+id).remove();
 		firebase.database().ref().child("tenant-room/"+id).remove();
+		firebase.database().ref().child("overdue/"+id).remove();
 		//stop loading icon
 		$("#cover-spin").fadeOut(250, function() {
 			$(this).hide();
@@ -537,7 +548,7 @@ $(document).ready(function() {
 			},
 			{
 				targets: 3,
-				width: "20%",
+				width: "18%",
 				className: 'dt-head-center'
 			},
 			{
@@ -562,7 +573,7 @@ $(document).ready(function() {
 			},
 			{
 				targets: 8,
-				width: "12%",
+				width: "15%",
 				orderable:false,
 				className: 'dt-head-center'
 			}
@@ -586,7 +597,7 @@ $(document).ready(function() {
 				if (snapshot.key != "historyperiod" && snapshot.key != "status") {
 					var endDate = snapshot.child("end_date").val();
 					
-					if ((endDate != "Ongoing") && (date_diff_indays(todayDate,endDate) >= 0)) {
+					if ((endDate != "Ongoing") && (date_diff_indays(todayDate,endDate) >= 0) && (date_diff_indays(todayDate,endDate) <= 31)) {
 						tenantRoomRef.child(tenantID+"/"+roomID).once('value', function(snapshot) {
 							var refNumFormat = snapshot.child("ref_number").val();
 							var propertyAddress = shortenString(snapshot.child("prop_addr").val(),20);
@@ -596,7 +607,7 @@ $(document).ready(function() {
 							var floorNo = refNumber.substring(3,5);
 							var roomNo = refNumber.substring(5,7);
 							tenantRef.child(tenantID).once('value', function(snapshot) {
-								tenantName = snapshot.child("full_name").val();
+								tenantName = shortenString(snapshot.child("full_name").val(),12);
 								tenantPhone = split_ph(snapshot.child("cont_mobile").val());
 								tenantObj = {
 									"tenant_id":tenantID,
