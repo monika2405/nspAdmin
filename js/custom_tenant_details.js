@@ -381,15 +381,6 @@ function nonactiveModal(){
 	$("#nonActiveModal").modal();
 }
 
-$("#submitNonActive").click(function(){
-	$('#nonActiveModal').modal('hide');
-	$("#cover-spin").fadeIn(250, function() {
-		$(this).show();
-	})
-	nonActive();
-
-})
-
 function nonActive(){
 	id2 = window.location.href.split('=')[1];
 	id = id2.split("#")[0];
@@ -499,14 +490,6 @@ function endContractModal(){
 	$("#endModal").modal();
 }
 
-$("#submitEnd").click(function(){
-	$('#endModal').modal('hide');
-	$("#cover-spin").fadeIn(250, function() {
-		$(this).show();
-	})
-	endContract();
-
-})
 
 function endContract(){
 	var refNumber = $("#tenant_id").html()
@@ -697,12 +680,6 @@ function endContract(){
 	
 }
 
-$("#endModal").draggable({
-	handle: ".modal-header"
-});
-$("#nonActiveModal").draggable({
-	handle: ".modal-header"
-});
 
 function addInvoice() {
 	// ref number
@@ -2333,7 +2310,6 @@ function extendTenant() {
 
 }
 
-
 //re-format phone number
 function reformatList(listData,x){
 	var hasil="";
@@ -2624,6 +2600,7 @@ $(window).scroll(function(){
 		$('#btnpayin').removeClass('fixed');
 	}
 });
+
 $(document).ready(function() {
 	
 	// invoice and payment scroll
@@ -2645,8 +2622,6 @@ $(document).ready(function() {
 	id2 = window.location.href.split('=')[1];
 	id = id2.split("#")[0];
 	
-	
-	
 	refNumberHtml = $("#tenant_id").html();
 	var building_id = refNumberHtml.substring(1,3);
 	var tenantNames = [];
@@ -2654,10 +2629,12 @@ $(document).ready(function() {
 	rentp=0
 	var historyperiod = 0
 	var status = ""
+
 	var contract = firebase.database().ref().child("contract/"+id+"");
 	paymentRef = firebase.database().ref().child("payment/"+id);
 	overdueRef = firebase.database().ref().child("overdue/"+id);
 	reportRef = firebase.database().ref().child("reportAccount");
+
 	setTimeout(() => {
 		var due = rem_fmoney($("#lDueTot").html());
 		var receive = rem_fmoney($("#lReceivedTot").html());
@@ -2669,6 +2646,7 @@ $(document).ready(function() {
 			"due": due
 		});
 	}, 3000);
+
 	contract.on("child_added", function(snapshot){
 		room_id=snapshot.key
 		var contract2 = firebase.database().ref().child("contract/"+id+"/"+room_id+"");
@@ -2757,35 +2735,32 @@ $("#tenanthistory").append(data)
 		}_
 	}
 	
-})
+	})
 
-setTimeout(() => {
-	
-	// console.log(status)
-	if (status=="inactive"){
-		$("#contract_details").append(" Contract Ended")
-		$("#end").hide()
-	}
-	startdate=$("#period1").text().split("- ")[1]
-	// console.log(startdate)
-	if (startdate!="Ongoing"){
-		startdate=reformatDate2(startdate)
-		startdate2=new Date(startdate)
-		startdate3=reformatDate(startdate2.addDays(1).toString("MM/dd/yyyy"))
-		// console.log(startdate3)
-		$("#ExtendstartDate").html(startdate3);		
-	}
-	else{
-		startdate3=reformatDate(Date.today().toString("MM/dd/yyyy"))
-		$("#ExtendstartDate").html(startdate3);	
-	}
-
-
-}, 6000);
+	//contract ended information
+	setTimeout(() => {
+		
+		if (status=="inactive"){
+			$("#contract_details").append(" Contract Ended")
+			$("#end").hide()
+		}
+		startdate=$("#period1").text().split("- ")[1]
+		
+		if (startdate!="Ongoing"){
+			startdate=reformatDate2(startdate)
+			startdate2=new Date(startdate)
+			startdate3=reformatDate(startdate2.addDays(1).toString("MM/dd/yyyy"))
+			
+			$("#ExtendstartDate").html(startdate3);		
+		}
+		else{
+			startdate3=reformatDate(Date.today().toString("MM/dd/yyyy"))
+			$("#ExtendstartDate").html(startdate3);	
+		}
 
 
+	}, 6000);
 
-	
 	// mengambil data yang approved atau occupy dari firebase ke dalam list
 	var trRef1 = firebase.database().ref().child("tenant-room/"+id);
 	trRef1.on('child_added', function(snapshot) {
@@ -2817,20 +2792,7 @@ setTimeout(() => {
 			bondp=pembulatan((rentp/12).toFixed(2));
 			
 		}
-		//changes
 		
-		// var startDate = sDate.split("/");
-		// var startMonth = startDate[0];
-		// var startDay = startDate[1];
-		// var startYear = startDate[2];
-		// var endMonth = parseInt(startMonth)+intend;
-		// var endDay = parseInt(startDay);
-		// var endYear = parseInt(startYear);
-		// if (endMonth>12) {
-		// 	var addYear = Math.trunc(endMonth/12);
-		// 	endYear += addYear;
-		// 	endMonth = endMonth%12;
-		// }
 		// mengambil data tenant yang status nya approved atau active
 		if ((statOccupy=="approved") ||(statOccupy=="active")){
 			
@@ -3356,6 +3318,31 @@ setTimeout(() => {
 	})
 	
 	
+	$("#endModal").draggable({
+		handle: ".modal-header"
+	});
+	$("#nonActiveModal").draggable({
+		handle: ".modal-header"
+	});
+	
+	$("#submitNonActive").click(function(){
+		$('#nonActiveModal').modal('hide');
+		$("#cover-spin").fadeIn(250, function() {
+			$(this).show();
+		})
+		nonActive();
+
+	})
+
+	
+	$("#submitEnd").click(function(){
+		$('#endModal').modal('hide');
+		$("#cover-spin").fadeIn(250, function() {
+			$(this).show();
+		})
+		endContract();
+
+	})
 	
 	// filter onchange
 	$("#filter").change(function () {
