@@ -27,6 +27,8 @@ function rem_fmoney(money) {
 	
 }
 
+
+
 function rem_moneydot(money) {
 	
 	return parseInt(money.split(".").join(""));
@@ -753,10 +755,18 @@ function approveBooking(refNumber){
 
 //delete booking in table
 function deleteBooking(refNumber,tenantID){
-	$('#approveD').html("Are you sure delete "+refNumber+" ?");
+	$('#approveD').html("Are you sure to delete "+refNumber+" ?");
 	$('#approveD').val(refNumber);
 	$('#approveD2').val(tenantID);
 	$("#rApproveModal").modal();
+}
+
+//collect booking in table
+function collectBooking(refNumber,tenantID){
+	$('#collectD').html("Are you sure to collect "+refNumber+" ?");
+	$('#collectD').val(refNumber);
+	$('#collectD2').val(tenantID);
+	$("#cApproveModal").modal();
 }
 
 //sort list by status approve or booking
@@ -1483,6 +1493,7 @@ $(document).ready(function() {
 	paymentRec={}
 	contractdata={}
 	overdue={}
+	booking={}
 	tenantChange = false
 	changeContract = false
 	paymentChange = false
@@ -1492,6 +1503,7 @@ $(document).ready(function() {
 	var contractRef = firebase.database().ref().child("contract");
 	var paymentRef =firebase.database().ref().child("payment");
 	var overdueRef = firebase.database().ref().child("overdue");
+	var bookingRef = firebase.database().ref().child("booking-tenant");
 	var getToday = Date.today().toString("MM/dd/yyyy");
 	contractRef.on('child_added', function(snapshot){
 		var id = snapshot.key
@@ -1547,6 +1559,29 @@ $(document).ready(function() {
 		}
 		})
 	})
+	bookingRef.on('child_added', function(snapshot) {
+		var tenantID = snapshot.key;	
+		bookingRef.child(tenantID).once('child_added', function(snapshot) {
+			//get starting date , building address , status occupy , ref id
+			if (tenantID!="total_tenant"){
+				booking[tenantID]=snapshot.val()
+			}
+		});
+		bookingRef.child(tenantID).on('child_changed', function(snapshot) {
+			tenantChange = true
+			booking[tenantID]=snapshot.val()
+			var row = table6.row('#key'+tenantID);
+			row.remove();
+		});
+		bookingRef.child(tenantID).on('child_removed', function(snapshot) {
+			//get ref ID
+			var refN=snapshot.child("ref_number").val().split(" ");
+			var refNumber=refN[0]+refN[1]+refN[2];
+			// remove row changed
+			var row = table1.row('#booking'+refNumber);
+			row.remove();
+		});
+	});
 	trRef.on('child_added', function(snapshot) {
 		var tenantID = snapshot.key;	
 		trRef.child(tenantID).once('child_added', function(snapshot) {
@@ -2004,8 +2039,9 @@ $(document).ready(function() {
 		setTimeout(() => {
 			table6.clear()
 			if (tenant!={} && tenantdata!={}){
-				for (i in paymentBal){
+				for (i in booking){
 					var statingDate = tenant[i].start_date
+					console.log(i)
 					var keyDate = tenant[i].key_date
 					var statOccupy = tenant[i].stat_occupy
 					var refN = tenant[i].ref_number
@@ -2026,7 +2062,7 @@ $(document).ready(function() {
 						console.log("in table key")
 						var name = tenantdata[i].full_name
 						name = shortenString(name,8);
-						table6.row.add(["<a href='tenant_details.html?id="+i+"' class='pull-left'>"+name+"</a>",refN,statingDate,"<a href='#' ondblclick='editKeyCollectDateModal(\""+keyDate+"\",\""+i+"\",\""+refNumber+"\",\""+note1+"\")'>"+keyDate+" "+noteIcon+"</a>","<button class='btn btn-xs btn-success' title='Mail Tenant' onclick=mailTenantKey('"+i+"','"+refNumber+"')><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-primary' title='Collected' onclick=collectedKey('"+i+"','"+refNumber+"')><i class='fa fa-check'></i></button>"]).node().id = "key"+i;
+						table6.row.add(["<a href='tenant_details.html?id="+i+"' class='pull-left'>"+name+"</a>",refN,statingDate,"<a href='#' ondblclick='editKeyCollectDateModal(\""+keyDate+"\",\""+i+"\",\""+refNumber+"\",\""+note1+"\")'>"+keyDate+" "+noteIcon+"</a>","<button class='btn btn-xs btn-success' title='Mail Tenant' onclick=mailTenantKey('"+i+"','"+refNumber+"')><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-primary' title='Collected' onclick=collectBooking('"+refNumber+"','"+i+"')><i class='fa fa-check'></i></button>"]).node().id = "key"+i;
 						
 						$(".tip").tip();
 					}
@@ -2034,7 +2070,7 @@ $(document).ready(function() {
 				table6.draw();
 			}else{
 				setTimeout(() => {
-					for (i in paymentBal){
+					for (i in booking){
 						var statingDate = tenant[i].start_date
 						var keyDate = tenant[i].key_date
 						var statOccupy = tenant[i].stat_occupy
@@ -2056,7 +2092,7 @@ $(document).ready(function() {
 							console.log("in table key")
 							var name = tenantdata[i].full_name
 							name = shortenString(name,8);
-							table6.row.add(["<a href='tenant_details.html?id="+i+"' class='pull-left'>"+name+"</a>",refN,statingDate,"<a href='#' ondblclick='editKeyCollectDateModal(\""+keyDate+"\",\""+i+"\",\""+refNumber+"\",\""+note1+"\")'>"+keyDate+" "+noteIcon+"</a>","<button class='btn btn-xs btn-success' title='Mail Tenant' onclick=mailTenantKey('"+i+"','"+refNumber+"')><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-primary' title='Collected' onclick=collectedKey('"+i+"','"+refNumber+"')><i class='fa fa-check'></i></button>"]).node().id = "key"+i;
+							table6.row.add(["<a href='tenant_details.html?id="+i+"' class='pull-left'>"+name+"</a>",refN,statingDate,"<a href='#' ondblclick='editKeyCollectDateModal(\""+keyDate+"\",\""+i+"\",\""+refNumber+"\",\""+note1+"\")'>"+keyDate+" "+noteIcon+"</a>","<button class='btn btn-xs btn-success' title='Mail Tenant' onclick=mailTenantKey('"+i+"','"+refNumber+"')><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-primary' title='Collected' onclick=collectBooking('"+refNumber+"','"+i+"')><i class='fa fa-check'></i></button>"]).node().id = "key"+i;
 							
 							$(".tip").tip();
 						}
@@ -2272,7 +2308,29 @@ $(document).ready(function() {
 		$("#approve_booking"+refNumber).prop("style","background-color:#c8bca6")
 		$("#approve_booking"+refNumber).prop("disabled",true)
 	})
-	
+
+	$("#collectApprove").click(function() {
+		startPageLoad();
+		var refNumber = $("#collectD").val();
+		var tenantID = $("#collectD2").val();
+		
+		var bookingRef = firebase.database().ref().child("booking-tenant");
+
+		bookingRef.child(tenantID).remove(
+		).then(function onSuccess(res) {
+			var row = table6.row("key"+tenantID);
+			row.remove();
+			table6.draw(false);
+			addNotification("Key Collected","Key successfully collected.");
+			stopPageLoad();
+			setTimeout(() => {
+				window.location='home.html';
+			}, 1000);
+			}).catch(function onError(err) {
+				addNotification("Error Remove Booking",err.code+" : "+err.message);
+				});
+	});
+				
 	//remove approve modal add listener
 	$("#removeApprove").click(function() {
 		startPageLoad();
