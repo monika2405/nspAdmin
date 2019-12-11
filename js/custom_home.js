@@ -262,7 +262,9 @@ function addInvoice() {
 			"due":invoiceAmount,
 			"receive": 0,
 			"date":invoiceDate,
-			"inputDate": thisDate
+			"inputDate": thisDate,
+			"refNumb": refNumberHtml,
+			"tenant_id": id
 		})
 		
 		
@@ -314,6 +316,35 @@ var bondWaitDue = 0;
 var historyperiod = 1;
 
 function addPayment() {
+
+	function resetPaymentForm() {
+		//reset payment form
+		$('#addPaymentForm').trigger("reset");
+		$("#paymentDetailsOtherBlock").hide();
+		$("#paymentDetailsAdjustBlock").hide();
+		removeOptions(document.getElementById("paymentDetails"));
+		var optionElement1 = document.createElement("option");
+		var optionElement2 = document.createElement("option");
+		var optionElement3 = document.createElement("option");
+		var optionElement4 = document.createElement("option");
+		var optionElement5 = document.createElement("option");
+		optionElement1.value = "rentpay";
+		optionElement1.innerHTML = "Rental Payment";
+		optionElement2.value = "finepay";
+		optionElement2.innerHTML = "Fine Payment";
+		optionElement3.value = "bondpay";
+		optionElement3.innerHTML = "Bond Money Payment";
+		optionElement4.value = "adjustpay";
+		optionElement4.innerHTML = "Adjustment";
+		optionElement5.value = "otherpay";
+		optionElement5.innerHTML = "Other Payment";
+		document.getElementById("paymentDetails").appendChild(optionElement1);
+		document.getElementById("paymentDetails").appendChild(optionElement2);
+		document.getElementById("paymentDetails").appendChild(optionElement3);
+		document.getElementById("paymentDetails").appendChild(optionElement4);
+		document.getElementById("paymentDetails").appendChild(optionElement5);
+	}
+	
 	// get id , refnum
 	var refNumberHtml = $("#paymentTenantRef").val();
 	var id = $("#paymentTenantID").val();
@@ -327,6 +358,7 @@ function addPayment() {
 	var paymentAmount = parseInt($("#paymentAmountCond").val()+rem_moneydot($("#paymentAmount").val()));
 	var paymentDetails = $("#paymentDetails").val();
 	var paymentDetailsOther = $("#paymentDetailsOther").val();
+	var paymentDetailsAdjust = $("#paymentDetailsAdjust").val();
 	if (paymentDetails == "rentpay") {
 		var paymentDetailsFull = "Rental Payment";
 	} else if (paymentDetails == "finepay") {
@@ -337,9 +369,13 @@ function addPayment() {
 		var paymentDetailsFull = "Bond Money Transfer";
 	} else if (paymentDetails == "refund") {
 		var paymentDetailsFull = "Bond Money Refund";
-	} else {
+	}  else if (paymentDetails == "adjustpay") {
+		var paymentDetailsFull = "Adjustment - "+paymentDetailsAdjust;
+	}else {
 		var paymentDetailsFull = "Other Payment - "+paymentDetailsOther;
 	}
+
+	
 
 	if (id!=" " && refNumberHtml!=" "){
 		overdueRef.once('value', function(snapshot){
@@ -408,7 +444,9 @@ function addPayment() {
 			"receive":paymentAmount,
 			"due": 0,
 			"date": paymentDate,
-			"inputDate": thisDate
+			"inputDate": thisDate,
+			"refNumb": refNumberHtml,
+			"tenant_id": id
 		})
 	
 
@@ -2251,6 +2289,9 @@ $(document).ready(function() {
 			$("#paymentDetailsOtherBlock").fadeOut(250, function() {
 				$(this).hide();
 			})
+			$("#paymentDetailsAdjustBlock").fadeOut(250, function() {
+				$(this).hide();
+			})
 			removeOptions(document.getElementById("paymentDetails"));
 			var optionElement1 = document.createElement("option");
 			var optionElement2 = document.createElement("option");
@@ -2268,6 +2309,9 @@ $(document).ready(function() {
 			$("#paymentDetailsOtherBlock").fadeOut(250, function() {
 				$(this).hide();
 			})
+			$("#paymentDetailsAdjustBlock").fadeOut(250, function() {
+				$(this).hide();
+			})
 			removeOptions(document.getElementById("paymentDetails"));
 			var optionElement1 = document.createElement("option");
 			var optionElement2 = document.createElement("option");
@@ -2281,10 +2325,13 @@ $(document).ready(function() {
 			optionElement3.innerHTML = "Bond Money Payment";
 			optionElement4.value = "otherpay";
 			optionElement4.innerHTML = "Other Payment";
+			optionElement5.value = "adjustpay";
+			optionElement5.innerHTML = "Adjustment";
 			document.getElementById("paymentDetails").appendChild(optionElement1);
 			document.getElementById("paymentDetails").appendChild(optionElement2);
 			document.getElementById("paymentDetails").appendChild(optionElement3);
 			document.getElementById("paymentDetails").appendChild(optionElement4);
+			document.getElementById("paymentDetails").appendChild(optionElement5);
 		}
 	})
 	//payment amount listener
@@ -2294,13 +2341,23 @@ $(document).ready(function() {
 	//payment modal details listener
 	$("#paymentDetails").on('change', function() {
 		if ($(this).find("option:selected").attr("value") == "otherpay") {
-			$("#paymentDetailsOtherBlock").fadeIn(250, function() {
-				$(this).show();
-			})
-		} else {
+			$("#paymentDetailsAdjustBlock").fadeOut(250, function() {
+				$(this).hide();
+				$("#paymentDetailsOtherBlock").fadeIn(250, function() {
+					$(this).show();
+				});
+			});
+		}  else if ($(this).find("option:selected").attr("value") == "adjustpay") {
 			$("#paymentDetailsOtherBlock").fadeOut(250, function() {
 				$(this).hide();
-			})
+				$("#paymentDetailsAdjustBlock").fadeIn(250, function() {
+					$(this).show();
+				});
+			});
+		}else {
+			$("#paymentDetailsOtherBlock,#paymentDetailsAdjustBlock").fadeOut(250, function() {
+				$(this).hide();
+			});
 		}
 	})
 

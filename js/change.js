@@ -1,4 +1,32 @@
-// var trRef = firebase.database().ref("tenant-room");
+// var fpay = firebase.database().ref("first-payment");
+// var payment = firebase.database().ref("payment");
+
+// payment.on('child_added', function(snapshot){
+//     var tenant_id=snapshot.key
+//     fpay.child(tenant_id).set({
+//         "payment":1,
+//         "bond-balance": 0
+//     })
+// })
+// reportback = firebase.database().ref("reportBackup").remove()
+// var reportRef = firebase.database().ref("reportAccount");
+// var reportback = firebase.database().ref("reportBackup");
+// i=0;
+// reportRef.on('child_added', function(snapshot){
+//     var build_id = snapshot.key
+//     reportRef.child(build_id).on('child_added', function(snapshot){
+//         reportback.child(build_id+"/"+i).set({
+//             "date":snapshot.child("date").val(),
+//             "due": snapshot.child("due").val(),
+//             "inputDate":snapshot.child("inputDate").val(),
+//             "receive":snapshot.child("receive").val(),
+//             "refNumb":snapshot.child("refNumb").val(),
+//             "tenant_id":snapshot.child("tenant_id").val()
+//         })
+//         ++i
+//     })
+   
+// })
 
 
 // for (let index = 727; index <= 736; index++) {

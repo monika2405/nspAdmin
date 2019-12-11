@@ -779,7 +779,9 @@ function addInvoice() {
 		"due":invoiceAmount,
 		"receive": 0,
 		"date":invoiceDate,
-		"inputDate": thisDate
+		"inputDate": thisDate,
+		"refNumb": refNumberHtml,
+		"tenant_id": id
 	})
 
 	setTimeout(function(){
@@ -861,10 +863,7 @@ function addPayment() {
 	//collect data from payment form
 	var paymentDate = reformatDate2($("#paymentDate").val());
 	var payDate = $("#paymentDate").val();
-	var paymentAmount = parseInt(rem_moneydot($("#paymentAmount").val()));
-	if ($("#paymentAmountCond").val() == "neg") {
-		paymentAmount = paymentAmount*-1;
-	}
+	var paymentAmount = parseInt($("#paymentAmountCond").val()+rem_moneydot($("#paymentAmount").val()));
 	var paymentDetails = $("#paymentDetails").val();
 	var paymentDetailsOther = $("#paymentDetailsOther").val();
 	var paymentDetailsAdjust = $("#paymentDetailsAdjust").val();
@@ -1012,7 +1011,9 @@ function addPayment() {
 			"receive":paymentAmount,
 			"due": 0,
 			"date": paymentDate,
-			"inputDate": thisDate
+			"inputDate": thisDate,
+			"refNumb": refNumberHtml,
+			"tenant_id": id
 		}).then(function onSuccess(res) {
 			stage4();
 		}).catch(function onError(err) {
