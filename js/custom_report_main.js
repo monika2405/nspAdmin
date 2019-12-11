@@ -248,6 +248,7 @@ $(document).ready(function() {
 	}); */
 	
 	tenantRef.once('value', function(snapshot) {
+		
 		tableLoadOn();
 		
 		// Find total tenant
@@ -258,7 +259,9 @@ $(document).ready(function() {
 		
 		// Count tenant from DB
 		$("#dbTenantCounter").change(function() {
+			
 			if (($(this).val() == totalTenant) && (tenantList.length == totalTenant)) {
+			
 				tenantRef.off();
 				
 				// Find latest report update date
@@ -273,7 +276,7 @@ $(document).ready(function() {
 				
 				// Find report end date
 				$("#dbEndDate").change(function() {
-					$("#reportEndDate").html(reformatDate(today,"ID"));
+					$("#reportEndDate").html(reformatDate($("#dbEndDate").val(),"ID"));
 				});
 				
 				// Load All Report Data
@@ -297,7 +300,6 @@ $(document).ready(function() {
 						// Pull all building data
 						buildRef.on('child_added', function(snapshot) {
 							tableLoadOn();
-							
 							var buildObject = new Object();
 							buildObject.no = snapshot.key.split(":")[1];
 							buildObject.alias = snapshot.child("alias").val();
@@ -824,7 +826,6 @@ $(document).ready(function() {
 			
 			if (snapshot.key != "total_tenant") {
 				var tenantObject = snapshot.val();
-				
 				tenantList.push(tenantObject);
 				$("#dbTenantCounter")
 					.val(parseInt($("#dbTenantCounter").val()) + 1)

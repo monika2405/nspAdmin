@@ -386,6 +386,14 @@ function nonActive(){
 	id = id2.split("#")[0];
 	newfirebase=firebase.database().ref().child("tenantendContract/"+id);
 	contract=firebase.database().ref().child("contract/"+id+"/"+room_id);
+	tenantRef = firebase.database().ref().child("tenant-room");
+	tenantRef.once('value', function(snapshot){
+		var tenantCount = parseInt(snapshot.child("total_tenant").val()) - 1;
+		tenantRef.update({
+			total_tenant : tenantCount
+		})
+	})
+	
 	contract.on("child_added", function(snapshot){
 		if (snapshot.key!="historyperiod" && snapshot.key!="status"){
 			var bond = snapshot.child("bond").val();
