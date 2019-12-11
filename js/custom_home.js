@@ -187,7 +187,7 @@ function addInvoice() {
 			var invoiceDetailsFull = "Other Payment - "+invoiceDetailsOther;
 		}
 
-		reportRef = firebase.database().ref().child("reportAccount");
+		reportRef = firebase.database().ref().child("reportAccount2");
 		paymentRef = firebase.database().ref().child("payment/"+id);
 
 		overdueRef.once('value', function(snapshot){
@@ -258,13 +258,12 @@ function addInvoice() {
 		var thisYear = d.getFullYear();
 		var thisDate = thisMonth+"/"+thisDay+"/"+thisYear;
 		
-		reportRef.child(building_id).push({
+		reportRef.child(building_id+"/"+id).push({
 			"due":invoiceAmount,
 			"receive": 0,
 			"date":invoiceDate,
 			"inputDate": thisDate,
-			"refNumb": refNumberHtml,
-			"tenant_id": id
+			"refNumb": refNumberHtml
 		})
 		
 		
@@ -352,7 +351,7 @@ function addPayment() {
 	//init firebase
 	paymentRef = firebase.database().ref().child("payment/"+id);
 	overdueRef = firebase.database().ref().child("overdue/"+id);
-	reportRef = firebase.database().ref().child("reportAccount");
+	reportRef = firebase.database().ref().child("reportAccount2");
 	//collect data from payment form
 	var paymentDate = reformatDate2($("#paymentDate").val());
 	var paymentAmount = parseInt($("#paymentAmountCond").val()+rem_moneydot($("#paymentAmount").val()));
@@ -440,13 +439,12 @@ function addPayment() {
 		var thisYear = d.getFullYear();
 		var thisDate = thisMonth+"/"+thisDay+"/"+thisYear;
 		
-		reportRef.child(building_id).push({
+		reportRef.child(building_id+"/"+id).push({
 			"receive":paymentAmount,
 			"due": 0,
 			"date": paymentDate,
 			"inputDate": thisDate,
-			"refNumb": refNumberHtml,
-			"tenant_id": id
+			"refNumb": refNumberHtml
 		})
 	
 

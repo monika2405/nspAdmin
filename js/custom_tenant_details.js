@@ -701,7 +701,7 @@ function addInvoice() {
 	var invoiceAmount = rem_moneydot($("#invoiceAmount").val());
 	var invoiceDetails = $("#invoiceDetails").val();
 	var invoiceDetailsOther = $("#invoiceDetailsOther").val();
-	reportRef = firebase.database().ref().child("reportAccount");
+	reportRef = firebase.database().ref().child("reportAccount2");
 	paymentRef = firebase.database().ref().child("payment/"+id);
 	if (invoiceDetails == "rentdue") {
 		var invoiceDetailsFull = "Rental Due";
@@ -783,13 +783,12 @@ function addInvoice() {
 	var thisYear = d.getFullYear();
 	var thisDate = thisMonth+"/"+thisDay+"/"+thisYear;
 	
-	reportRef.child(building_id).push({
+	reportRef.child(building_id+"/"+id).push({
 		"due":invoiceAmount,
 		"receive": 0,
 		"date":invoiceDate,
 		"inputDate": thisDate,
-		"refNumb": refNumberHtml,
-		"tenant_id": id
+		"refNumb": refNumberHtml
 	})
 
 	setTimeout(function(){
@@ -866,7 +865,7 @@ function addPayment() {
 	//init firebase
 	var paymentRef = firebase.database().ref().child("payment/"+id);
 	var overdueRef = firebase.database().ref().child("overdue/"+id);
-	var reportRef = firebase.database().ref().child("reportAccount");
+	var reportRef = firebase.database().ref().child("reportAccount2");
 	
 	//collect data from payment form
 	var paymentDate = reformatDate2($("#paymentDate").val());
@@ -1015,13 +1014,12 @@ function addPayment() {
 		var thisYear = d.getFullYear();
 		var thisDate = thisMonth+"/"+thisDay+"/"+thisYear;
 		
-		reportRef.child(building_id).push({
+		reportRef.child(building_id+"/"+id).push({
 			"receive":paymentAmount,
 			"due": 0,
 			"date": paymentDate,
 			"inputDate": thisDate,
 			"refNumb": refNumberHtml,
-			"tenant_id": id
 		}).then(function onSuccess(res) {
 			stage4();
 		}).catch(function onError(err) {

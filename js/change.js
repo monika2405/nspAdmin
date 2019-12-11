@@ -46,3 +46,28 @@
 //     })
     
 // }
+
+// var reportback = firebase.database().ref("reportAccount");
+// var reportRef = firebase.database().ref("reportAccount2");
+
+// reportback.on('child_added', function(snapshot){
+//     var build_id = snapshot.key
+//     reportback.child("01").on('child_added', function(snapshot){
+//         var key = snapshot.key
+//         reportback.child("01"+"/"+key).on('value', function(snapshot){
+//             var tenant_id = snapshot.child("tenant_id").val();
+//             var inputDate = snapshot.child("inputDate").val();
+//             if(inputDate=="12/11/2019"){
+//                 reportRef.child("01/"+tenant_id).push({
+//                     "date":snapshot.child("date").val(),
+//                     "due": snapshot.child("due").val(),
+//                     "inputDate":snapshot.child("inputDate").val(),
+//                     "receive":snapshot.child("receive").val(),
+//                     "refNumb":snapshot.child("refNumb").val()
+//                 })
+//             }
+           
+//         })
+
+//     })
+// })
