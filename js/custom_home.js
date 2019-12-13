@@ -1909,7 +1909,8 @@ $(document).ready(function() {
 		setTimeout(() => {
 			table6.clear()
 			if (tenant!={} && tenantdata!={}){
-				for (i in booking){
+				for (i in tenantdata){
+					console.log(i)
 					var statingDate = tenant[i].start_date
 					var keyDate = tenant[i].key_date
 					var statOccupy = tenant[i].stat_occupy
@@ -1939,7 +1940,7 @@ $(document).ready(function() {
 				table6.draw();
 			}else{
 				setTimeout(() => {
-					for (i in booking){
+					for (i in tenantdata){
 						var statingDate = tenant[i].start_date
 						var keyDate = tenant[i].key_date
 						var statOccupy = tenant[i].stat_occupy
