@@ -1,13 +1,30 @@
 // var fpay = firebase.database().ref("first-payment");
 // var payment = firebase.database().ref("payment");
+// var trRef = firebase.database().ref("tenant-room");
 
-// payment.on('child_added', function(snapshot){
-//     var tenant_id=snapshot.key
-//     fpay.child(tenant_id).set({
-//         "payment":1,
-//         "bond-balance": 0
+// trRef.on('child_added', function(snapshot){
+//     var t_id = snapshot.key
+//     trRef.child(t_id).on('child_added', function(snapshot){
+//         var bondPrice=snapshot.child("rent_bond").val();
+//         var rentPrice=snapshot.child("rent_price").val();
+//         payment.child(t_id).on('value', function(snapshot){
+//             if(snapshot.val()!=null){
+//                 fpay.child(t_id).set({
+//                     "payment":1,
+//                     "bond-balance": 0
+//                 })
+//             }else{
+//                 fpay.child(t_id).set({
+//                     "payment":0,
+//                     "bond-balance": bondPrice+rentPrice
+//                 })
+//             }
+//         })
 //     })
+    
 // })
+
+
 // reportback = firebase.database().ref("reportBackup").remove()
 // var reportRef = firebase.database().ref("reportAccount");
 // var reportback = firebase.database().ref("reportBackup");
@@ -29,7 +46,7 @@
 // })
 
 
-// for (let index = 727; index <= 736; index++) {
+// for (let index = 737; index <= 746; index++) {
     
 //     trRef.child("t_"+index).once('child_added', function(snapshot) {
 //         var bond = snapshot.child("rent_bond").val();
@@ -52,13 +69,13 @@
 
 // reportback.on('child_added', function(snapshot){
 //     var build_id = snapshot.key
-//     reportback.child("01").on('child_added', function(snapshot){
+//     reportback.child("04").on('child_added', function(snapshot){
 //         var key = snapshot.key
-//         reportback.child("01"+"/"+key).on('value', function(snapshot){
+//         reportback.child("04"+"/"+key).on('value', function(snapshot){
 //             var tenant_id = snapshot.child("tenant_id").val();
 //             var inputDate = snapshot.child("inputDate").val();
 //             if(inputDate=="12/11/2019"){
-//                 reportRef.child("01/"+tenant_id).push({
+//                 reportRef.child("04/"+tenant_id).push({
 //                     "date":snapshot.child("date").val(),
 //                     "due": snapshot.child("due").val(),
 //                     "inputDate":snapshot.child("inputDate").val(),
@@ -71,3 +88,26 @@
 
 //     })
 // })
+
+// reportback.on('child_added', function(snapshot){
+//     var build_id = snapshot.key
+//     reportback.child("04").on('child_added', function(snapshot){
+//         var key = snapshot.key
+//         reportback.child("04"+"/"+key).on('value', function(snapshot){
+//             var tenant_id = snapshot.child("tenant_id").val();
+//             var inputDate = snapshot.child("inputDate").val();
+//             // if(inputDate=="12/11/2019" || inputDate=="12/12/2019" || inputDate=="12/13/2019" || inputDate=="12/14/2019"){
+//                 reportRef.child("04/"+tenant_id).push({
+//                     "date":snapshot.child("date").val(),
+//                     "due": snapshot.child("due").val(),
+//                     "inputDate":snapshot.child("inputDate").val(),
+//                     "receive":snapshot.child("receive").val(),
+//                     "refNumb":snapshot.child("refNumb").val()
+//                 })
+//             //}
+           
+//         })
+
+//     })
+// })
+

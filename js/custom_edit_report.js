@@ -277,7 +277,7 @@ $(document).ready(function() {
 		});
 		
 	});
-    reportRef.child("02").on('child_added', function(snapshot){
+    reportRef.child("05").on('child_added', function(snapshot){
         report[snapshot.key]=snapshot.val();
     })
 
@@ -288,9 +288,9 @@ $(document).ready(function() {
 
             for (i in report){
                if(report[i].refNumb==null){
-                   table.row.add(["02"," "," ",reformatDate(report[i].date),get_fmoney(report[i].receive),get_fmoney(report[i].due),"<button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteReport("+i+",'02')><i class='fa fa-times'></i></button><button id='editbutt' class='btn btn-xs btn-success' title='Edit' onclick=editTransModal("+i+",02,"+report[i].receive+","+report[i].due+")><i class='fa fa-pencil'></i></button>"]).node().id = 'report'+i;
+                   table.row.add(["05"," "," ",reformatDate(report[i].date),get_fmoney(report[i].receive),get_fmoney(report[i].due),"<button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteReport("+i+",'05')><i class='fa fa-times'></i></button><button id='editbutt' class='btn btn-xs btn-success' title='Edit' onclick=editTransModal("+i+",05,"+report[i].receive+","+report[i].due+")><i class='fa fa-pencil'></i></button>"]).node().id = 'report'+i;
                }else{
-                table.row.add(["02",report[i].refNumb,tenantdata[report[i].tenant_id].full_name,reformatDate(report[i].date),get_fmoney(report[i].receive),get_fmoney(report[i].due),"<button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteReport("+i+",'02')><i class='fa fa-times'></i></button><button id='editbutt' class='btn btn-xs btn-success' title='Edit' onclick=editTransModal("+i+",02,"+report[i].receive+","+report[i].due+")><i class='fa fa-pencil'></i></button>"]).node().id = 'report'+i;
+                table.row.add(["05",report[i].refNumb,tenantdata[report[i].tenant_id].full_name,reformatDate(report[i].date),get_fmoney(report[i].receive),get_fmoney(report[i].due),"<button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteReport("+i+",'05')><i class='fa fa-times'></i></button><button id='editbutt' class='btn btn-xs btn-success' title='Edit' onclick=editTransModal("+i+",05,"+report[i].receive+","+report[i].due+")><i class='fa fa-pencil'></i></button>"]).node().id = 'report'+i;
                }
                
            }
@@ -299,9 +299,9 @@ $(document).ready(function() {
             setTimeout(() => {
                 for (i in report){
                    if(report[i].refNumb==null){
-                       table.row.add(["02"," "," ",reformatDate(report[i].date),get_fmoney(report[i].receive),get_fmoney(report[i].due),"<button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteReport("+i+",'02')><i class='fa fa-times'></i></button><button id='editbutt' class='btn btn-xs btn-success' title='Edit' onclick=editTransModal("+i+",02,"+report[i].receive+","+report[i].due+")><i class='fa fa-pencil'></i></button>"]).node().id = 'report'+i;
+                       table.row.add(["05"," "," ",reformatDate(report[i].date),get_fmoney(report[i].receive),get_fmoney(report[i].due),"<button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteReport("+i+",'05')><i class='fa fa-times'></i></button><button id='editbutt' class='btn btn-xs btn-success' title='Edit' onclick=editTransModal("+i+",05,"+report[i].receive+","+report[i].due+")><i class='fa fa-pencil'></i></button>"]).node().id = 'report'+i;
                    }else{
-                    table.row.add(["02",report[i].refNumb,tenantdata[report[i].tenant_id].full_name,reformatDate(report[i].date),get_fmoney(report[i].receive),get_fmoney(report[i].due),"<button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteReport("+i+",'02')><i class='fa fa-times'></i></button><button id='editbutt' class='btn btn-xs btn-success' title='Edit' onclick=editTransModal("+i+",02,"+report[i].receive+","+report[i].due+")><i class='fa fa-pencil'></i></button>"]).node().id = 'report'+i;
+                    table.row.add(["05",report[i].refNumb,tenantdata[report[i].tenant_id].full_name,reformatDate(report[i].date),get_fmoney(report[i].receive),get_fmoney(report[i].due),"<button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteReport("+i+",'05')><i class='fa fa-times'></i></button><button id='editbutt' class='btn btn-xs btn-success' title='Edit' onclick=editTransModal("+i+",05,"+report[i].receive+","+report[i].due+")><i class='fa fa-pencil'></i></button>"]).node().id = 'report'+i;
                    }
                    
                }

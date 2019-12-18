@@ -827,6 +827,25 @@ function addInvoice() {
 }
 
 function addPayment() {
+
+	function checkFirstPayment(id,building_id,refNumber,date){
+		var fpayRef = firebase.database().ref().child("first-payment/"+id);
+		var reportRef = firebase.database().ref().child("reportAccount2/"+building_id+"/"+id);
+		fpayRef.on('child_added', function(snapshot){
+			var payment = snapshot.child("payment").val();
+			var balance = snapshot.child("bond-balance").val();
+			if(payment==0){
+					reportRef.push({
+						"date":date,
+						"due": balance,
+						"inputDate":Date.today().toString("MM/dd/yyyy"),
+						"receive":0,
+						"refNumb":refNumber,
+						"tenant_id":id
+					})
+			}
+		})
+	}
 	
 	function resetPaymentForm() {
 		//reset payment form
@@ -866,6 +885,7 @@ function addPayment() {
 	var paymentRef = firebase.database().ref().child("payment/"+id);
 	var overdueRef = firebase.database().ref().child("overdue/"+id);
 	var reportRef = firebase.database().ref().child("reportAccount2");
+	var fpayRef = firebase.database().ref().child("first-payment/"+id);
 	
 	//collect data from payment form
 	var paymentDate = reformatDate2($("#paymentDate").val());
@@ -889,7 +909,20 @@ function addPayment() {
 	} else {
 		var paymentDetailsFull = "Other Payment - "+paymentDetailsOther;
 	}
-	stage1();
+	checkFirstPayment(id,building_id,refNumberHtml,paymentDate)
+	.then(function onSuccess(res){
+		stage1();
+		}).catch(function onError(err){
+			$.gritter.add({
+				title: 'Error Stage 1a',
+				text: err.code+" : "+err.message,
+				image: './img/bell.png',
+				sticky: false,
+				time: 3500,
+				class_name: 'gritter-custom'
+			});
+		})
+	
 	
 	function stage1() {
 		overdueRef.once('value', function(snapshot){
@@ -1066,24 +1099,79 @@ function addPayment() {
 								"payment":bondWaitDue,
 								"refnumber":refNumberHtml,
 								"list":"bondList"
-							}).then(function onSuccess(res) {
-								paymentRef.push({
-									"date":paymentDate,
-									"desc":paymentDetailsFull,
-									"invoice":null,
-									"payment":bondWaitDue,
-									"refnumber":refNumberHtml,
-									"list":"ledgerList"
+							}).then(function onSuccess(res){
+								fpayRef.update({
+									"bond-balance": bondLeft,
+									"payment": 1
 								}).then(function onSuccess(res) {
-									if (bondLeft != 0) {
-										paymentRef.push({
-											"date":paymentDate,
-											"desc":"Rental Payment",
-											"invoice":null,
-											"payment":bondLeft,
-											"refnumber":refNumberHtml,
-											"list":"ledgerList"
-										}).then(function onSuccess(res) {
+									paymentRef.push({
+										"date":paymentDate,
+										"desc":paymentDetailsFull,
+										"invoice":null,
+										"payment":bondWaitDue,
+										"refnumber":refNumberHtml,
+										"list":"ledgerList"
+									}).then(function onSuccess(res) {
+										if (bondLeft != 0) {
+											paymentRef.push({
+												"date":paymentDate,
+												"desc":"Rental Payment",
+												"invoice":null,
+												"payment":bondLeft,
+												"refnumber":refNumberHtml,
+												"list":"ledgerList"
+											}).then(function onSuccess(res) {
+												bondWaitDue = 0;
+												//set bond wait due
+												paymentRef.update({
+													"bondWaitDue" : bondWaitDue
+												}).then(function onSuccess(res) {
+													stage5();
+												}).catch(function onError(err) {
+													//stop loading icon
+													$("#cover-spin").fadeOut(250, function() {
+														$(this).hide();
+													});
+													//error notification
+													$.gritter.add({
+														title: 'Error Stage 4-111d',
+														text: err.code+" : "+err.message,
+														image: './img/bell.png',
+														sticky: false,
+														time: 3500,
+														class_name: 'gritter-custom'
+													});
+												});
+											}).catch(function onError(err) {
+												//stop loading icon
+												$("#cover-spin").fadeOut(250, function() {
+													$(this).hide();
+												});
+												//error notification
+												$.gritter.add({
+													title: 'Error Stage 4-111c',
+													text: err.code+" : "+err.message,
+													image: './img/bell.png',
+													sticky: false,
+													time: 3500,
+													class_name: 'gritter-custom'
+												});
+											}).catch(function onError(err) {
+												//stop loading icon
+												$("#cover-spin").fadeOut(250, function() {
+													$(this).hide();
+												});
+												//error notification
+												$.gritter.add({
+													title: 'Error Stage 4-111c',
+													text: err.code+" : "+err.message,
+													image: './img/bell.png',
+													sticky: false,
+													time: 3500,
+													class_name: 'gritter-custom'
+												});
+											});;
+										} else {									
 											bondWaitDue = 0;
 											//set bond wait due
 											paymentRef.update({
@@ -1105,44 +1193,22 @@ function addPayment() {
 													class_name: 'gritter-custom'
 												});
 											});
-										}).catch(function onError(err) {
-											//stop loading icon
-											$("#cover-spin").fadeOut(250, function() {
-												$(this).hide();
-											});
-											//error notification
-											$.gritter.add({
-												title: 'Error Stage 4-111c',
-												text: err.code+" : "+err.message,
-												image: './img/bell.png',
-												sticky: false,
-												time: 3500,
-												class_name: 'gritter-custom'
-											});
+										}
+									}).catch(function onError(err) {
+										//stop loading icon
+										$("#cover-spin").fadeOut(250, function() {
+											$(this).hide();
 										});
-									} else {									
-										bondWaitDue = 0;
-										//set bond wait due
-										paymentRef.update({
-											"bondWaitDue" : bondWaitDue
-										}).then(function onSuccess(res) {
-											stage5();
-										}).catch(function onError(err) {
-											//stop loading icon
-											$("#cover-spin").fadeOut(250, function() {
-												$(this).hide();
-											});
-											//error notification
-											$.gritter.add({
-												title: 'Error Stage 4-111d',
-												text: err.code+" : "+err.message,
-												image: './img/bell.png',
-												sticky: false,
-												time: 3500,
-												class_name: 'gritter-custom'
-											});
+										//error notification
+										$.gritter.add({
+											title: 'Error Stage 4-111b',
+											text: err.code+" : "+err.message,
+											image: './img/bell.png',
+											sticky: false,
+											time: 3500,
+											class_name: 'gritter-custom'
 										});
-									}
+									});
 								}).catch(function onError(err) {
 									//stop loading icon
 									$("#cover-spin").fadeOut(250, function() {
@@ -1150,14 +1216,14 @@ function addPayment() {
 									});
 									//error notification
 									$.gritter.add({
-										title: 'Error Stage 4-111b',
+										title: 'Error Stage 4-111a',
 										text: err.code+" : "+err.message,
 										image: './img/bell.png',
 										sticky: false,
 										time: 3500,
 										class_name: 'gritter-custom'
 									});
-								});
+								})
 							}).catch(function onError(err) {
 								//stop loading icon
 								$("#cover-spin").fadeOut(250, function() {
@@ -1172,7 +1238,7 @@ function addPayment() {
 									time: 3500,
 									class_name: 'gritter-custom'
 								});
-							});
+							})
 						} else {
 							paymentRef.push({
 								"date":paymentDate,
@@ -1220,8 +1286,27 @@ function addPayment() {
 									"payment":paymentAmount,
 									"refnumber":refNumberHtml,
 									"list":"ledgerList"
-								}).then(function onSuccess(res) {
+								}).then(function onSuccess(res){
+									fpayRef.update({
+										"bond-balance": 0,
+										"payment": 1
+									}).then(function onSuccess(res) {
 									stage5();
+									}).catch(function onError(err) {
+										//stop loading icon
+										$("#cover-spin").fadeOut(250, function() {
+											$(this).hide();
+										});
+										//error notification
+										$.gritter.add({
+											title: 'Error Stage 4-12c',
+											text: err.code+" : "+err.message,
+											image: './img/bell.png',
+											sticky: false,
+											time: 3500,
+											class_name: 'gritter-custom'
+										});
+									});
 								}).catch(function onError(err) {
 									//stop loading icon
 									$("#cover-spin").fadeOut(250, function() {
@@ -1229,7 +1314,7 @@ function addPayment() {
 									});
 									//error notification
 									$.gritter.add({
-										title: 'Error Stage 4-12c',
+										title: 'Error Stage 4-12b',
 										text: err.code+" : "+err.message,
 										image: './img/bell.png',
 										sticky: false,
@@ -1244,7 +1329,7 @@ function addPayment() {
 								});
 								//error notification
 								$.gritter.add({
-									title: 'Error Stage 4-12b',
+									title: 'Error Stage 4-12a',
 									text: err.code+" : "+err.message,
 									image: './img/bell.png',
 									sticky: false,
@@ -1288,22 +1373,41 @@ function addPayment() {
 										"payment":bondWaitDue,
 										"refnumber":refNumberHtml,
 										"list":"ledgerList"
-									}).then(function onSuccess(res) {
-										if (bondLeft != 0) {
-											paymentRef.push({
-												"date":paymentDate,
-												"desc":"Rental Payment",
-												"invoice":null,
-												"payment":bondLeft,
-												"refnumber":refNumberHtml,
-												"list":"ledgerList"
-											}).then(function onSuccess(res) {
-												bondWaitDue = 0;
-												//set bond wait due
-												paymentRef.update({
-													"bondWaitDue" : bondWaitDue
+									}).then(function onSuccess(res){
+										fpayRef.update({
+											"bond-balance": bondLeft,
+											"payment": 1
+										}).then(function onSuccess(res) {
+											if (bondLeft != 0) {
+												paymentRef.push({
+													"date":paymentDate,
+													"desc":"Rental Payment",
+													"invoice":null,
+													"payment":bondLeft,
+													"refnumber":refNumberHtml,
+													"list":"ledgerList"
 												}).then(function onSuccess(res) {
-													stage5();
+													bondWaitDue = 0;
+													//set bond wait due
+													paymentRef.update({
+														"bondWaitDue" : bondWaitDue
+													}).then(function onSuccess(res) {
+														stage5();
+													}).catch(function onError(err) {
+														//stop loading icon
+														$("#cover-spin").fadeOut(250, function() {
+															$(this).hide();
+														});
+														//error notification
+														$.gritter.add({
+															title: 'Error Stage 4-2111d',
+															text: err.code+" : "+err.message,
+															image: './img/bell.png',
+															sticky: false,
+															time: 3500,
+															class_name: 'gritter-custom'
+														});
+													});
 												}).catch(function onError(err) {
 													//stop loading icon
 													$("#cover-spin").fadeOut(250, function() {
@@ -1311,29 +1415,29 @@ function addPayment() {
 													});
 													//error notification
 													$.gritter.add({
-														title: 'Error Stage 4-2111d',
+														title: 'Error Stage 4-2111c',
 														text: err.code+" : "+err.message,
 														image: './img/bell.png',
 														sticky: false,
 														time: 3500,
 														class_name: 'gritter-custom'
 													});
-												});
-											}).catch(function onError(err) {
-												//stop loading icon
-												$("#cover-spin").fadeOut(250, function() {
-													$(this).hide();
-												});
-												//error notification
-												$.gritter.add({
-													title: 'Error Stage 4-2111c',
-													text: err.code+" : "+err.message,
-													image: './img/bell.png',
-													sticky: false,
-													time: 3500,
-													class_name: 'gritter-custom'
-												});
-											});
+												}).catch(function onError(err) {
+													//stop loading icon
+													$("#cover-spin").fadeOut(250, function() {
+														$(this).hide();
+													});
+													//error notification
+													$.gritter.add({
+														title: 'Error Stage 4-2111c',
+														text: err.code+" : "+err.message,
+														image: './img/bell.png',
+														sticky: false,
+														time: 3500,
+														class_name: 'gritter-custom'
+													});
+												})
+											
 										} else {
 											bondWaitDue = 0;
 											//set bond wait due
@@ -1387,6 +1491,7 @@ function addPayment() {
 										class_name: 'gritter-custom'
 									});
 								});
+							})
 							} else {
 								paymentRef.push({
 									"date":paymentDate,
@@ -1434,8 +1539,27 @@ function addPayment() {
 										"payment":paymentAmount,
 										"refnumber":refNumberHtml,
 										"list":"ledgerList"
-									}).then(function onSuccess(res) {
+									}).then(function onSuccess(res){
+										fpayRef.update({
+											"bond-balance": 0,
+											"payment": 1
+										}).then(function onSuccess(res) {
 										stage5();
+										}).catch(function onError(err) {
+											//stop loading icon
+											$("#cover-spin").fadeOut(250, function() {
+												$(this).hide();
+											});
+											//error notification
+											$.gritter.add({
+												title: 'Error Stage 4-212c',
+												text: err.code+" : "+err.message,
+												image: './img/bell.png',
+												sticky: false,
+												time: 3500,
+												class_name: 'gritter-custom'
+											});
+										});
 									}).catch(function onError(err) {
 										//stop loading icon
 										$("#cover-spin").fadeOut(250, function() {
@@ -1443,7 +1567,7 @@ function addPayment() {
 										});
 										//error notification
 										$.gritter.add({
-											title: 'Error Stage 4-212c',
+											title: 'Error Stage 4-212b',
 											text: err.code+" : "+err.message,
 											image: './img/bell.png',
 											sticky: false,
@@ -1458,7 +1582,7 @@ function addPayment() {
 									});
 									//error notification
 									$.gritter.add({
-										title: 'Error Stage 4-212b',
+										title: 'Error Stage 4-212a',
 										text: err.code+" : "+err.message,
 										image: './img/bell.png',
 										sticky: false,
@@ -1551,16 +1675,57 @@ function addPayment() {
 										"payment":bondWaitDue,
 										"refnumber":refNumberHtml,
 										"list":"ledgerList"
-									}).then(function onSuccess(res) {
-										if (bondLeft != 0) {
-											paymentRef.push({
-												"date":paymentDate,
-												"desc":"Rental Payment",
-												"invoice":null,
-												"payment":bondLeft,
-												"refnumber":refNumberHtml,
-												"list":"ledgerList"
-											}).then(function onSuccess(res) {
+									}).then(function onSuccess(res){
+										fpayRef.update({
+											"bond-balance": bondLeft,
+											"payment": 1
+										}).then(function onSuccess(res) {
+											if (bondLeft != 0) {
+												paymentRef.push({
+													"date":paymentDate,
+													"desc":"Rental Payment",
+													"invoice":null,
+													"payment":bondLeft,
+													"refnumber":refNumberHtml,
+													"list":"ledgerList"
+												}).then(function onSuccess(res) {
+													bondWaitDue = 0;
+													//set bond wait due
+													paymentRef.update({
+														"bondWaitDue" : bondWaitDue
+													}).then(function onSuccess(res) {
+														stage5();
+													}).catch(function onError(err) {
+														//stop loading icon
+														$("#cover-spin").fadeOut(250, function() {
+															$(this).hide();
+														});
+														//error notification
+														$.gritter.add({
+															title: 'Error Stage 4-3111d',
+															text: err.code+" : "+err.message,
+															image: './img/bell.png',
+															sticky: false,
+															time: 3500,
+															class_name: 'gritter-custom'
+														});
+													});
+												}).catch(function onError(err) {
+													//stop loading icon
+													$("#cover-spin").fadeOut(250, function() {
+														$(this).hide();
+													});
+													//error notification
+													$.gritter.add({
+														title: 'Error Stage 4-3111c',
+														text: err.code+" : "+err.message,
+														image: './img/bell.png',
+														sticky: false,
+														time: 3500,
+														class_name: 'gritter-custom'
+													});
+												});
+											} else {
 												bondWaitDue = 0;
 												//set bond wait due
 												paymentRef.update({
@@ -1582,44 +1747,22 @@ function addPayment() {
 														class_name: 'gritter-custom'
 													});
 												});
-											}).catch(function onError(err) {
-												//stop loading icon
-												$("#cover-spin").fadeOut(250, function() {
-													$(this).hide();
-												});
-												//error notification
-												$.gritter.add({
-													title: 'Error Stage 4-3111c',
-													text: err.code+" : "+err.message,
-													image: './img/bell.png',
-													sticky: false,
-													time: 3500,
-													class_name: 'gritter-custom'
-												});
+											}
+										}).catch(function onError(err) {
+											//stop loading icon
+											$("#cover-spin").fadeOut(250, function() {
+												$(this).hide();
 											});
-										} else {
-											bondWaitDue = 0;
-											//set bond wait due
-											paymentRef.update({
-												"bondWaitDue" : bondWaitDue
-											}).then(function onSuccess(res) {
-												stage5();
-											}).catch(function onError(err) {
-												//stop loading icon
-												$("#cover-spin").fadeOut(250, function() {
-													$(this).hide();
-												});
-												//error notification
-												$.gritter.add({
-													title: 'Error Stage 4-3111d',
-													text: err.code+" : "+err.message,
-													image: './img/bell.png',
-													sticky: false,
-													time: 3500,
-													class_name: 'gritter-custom'
-												});
+											//error notification
+											$.gritter.add({
+												title: 'Error Stage 4-3111b',
+												text: err.code+" : "+err.message,
+												image: './img/bell.png',
+												sticky: false,
+												time: 3500,
+												class_name: 'gritter-custom'
 											});
-										}
+										});
 									}).catch(function onError(err) {
 										//stop loading icon
 										$("#cover-spin").fadeOut(250, function() {
@@ -1627,29 +1770,29 @@ function addPayment() {
 										});
 										//error notification
 										$.gritter.add({
-											title: 'Error Stage 4-3111b',
+											title: 'Error Stage 4-3111a',
 											text: err.code+" : "+err.message,
 											image: './img/bell.png',
 											sticky: false,
 											time: 3500,
 											class_name: 'gritter-custom'
 										});
-									});
-								}).catch(function onError(err) {
-									//stop loading icon
-									$("#cover-spin").fadeOut(250, function() {
-										$(this).hide();
-									});
-									//error notification
-									$.gritter.add({
-										title: 'Error Stage 4-3111a',
-										text: err.code+" : "+err.message,
-										image: './img/bell.png',
-										sticky: false,
-										time: 3500,
-										class_name: 'gritter-custom'
-									});
-								});
+									}).catch(function onError(err) {
+										//stop loading icon
+										$("#cover-spin").fadeOut(250, function() {
+											$(this).hide();
+										});
+										//error notification
+										$.gritter.add({
+											title: 'Error Stage 4-3111a',
+											text: err.code+" : "+err.message,
+											image: './img/bell.png',
+											sticky: false,
+											time: 3500,
+											class_name: 'gritter-custom'
+										});
+									})
+								})
 							} else {
 								paymentRef.push({
 									"date":paymentDate,
@@ -1697,8 +1840,27 @@ function addPayment() {
 										"payment":paymentAmount,
 										"refnumber":refNumberHtml,
 										"list":"ledgerList"
-									}).then(function onSuccess(res) {
+									}).then(function onSuccess(res){
+										fpayRef.update({
+											"bond-balance": 0,
+											"payment": 1
+										}).then(function onSuccess(res) {
 										stage5();
+										}).catch(function onError(err) {
+											//stop loading icon
+											$("#cover-spin").fadeOut(250, function() {
+												$(this).hide();
+											});
+											//error notification
+											$.gritter.add({
+												title: 'Error Stage 4-312c',
+												text: err.code+" : "+err.message,
+												image: './img/bell.png',
+												sticky: false,
+												time: 3500,
+												class_name: 'gritter-custom'
+											});
+										});
 									}).catch(function onError(err) {
 										//stop loading icon
 										$("#cover-spin").fadeOut(250, function() {
@@ -1706,7 +1868,7 @@ function addPayment() {
 										});
 										//error notification
 										$.gritter.add({
-											title: 'Error Stage 4-312c',
+											title: 'Error Stage 4-312b',
 											text: err.code+" : "+err.message,
 											image: './img/bell.png',
 											sticky: false,
@@ -1721,7 +1883,7 @@ function addPayment() {
 									});
 									//error notification
 									$.gritter.add({
-										title: 'Error Stage 4-312b',
+										title: 'Error Stage 4-312a',
 										text: err.code+" : "+err.message,
 										image: './img/bell.png',
 										sticky: false,
@@ -1837,16 +1999,57 @@ function addPayment() {
 										"payment":bondWaitDue,
 										"refnumber":refNumberHtml,
 										"list":"ledgerList"
-									}).then(function onSuccess(res) {
-										if (bondLeft != 0) {
-											paymentRef.push({
-												"date":paymentDate,
-												"desc":"Rental Payment",
-												"invoice":null,
-												"payment":bondLeft,
-												"refnumber":refNumberHtml,
-												"list":"ledgerList"
-											}).then(function onSuccess(res) {
+									}).then(function onSuccess(res){
+										fpayRef.update({
+											"bond-balance": bondLeft,
+											"payment": 1
+										}).then(function onSuccess(res) {
+											if (bondLeft != 0) {
+												paymentRef.push({
+													"date":paymentDate,
+													"desc":"Rental Payment",
+													"invoice":null,
+													"payment":bondLeft,
+													"refnumber":refNumberHtml,
+													"list":"ledgerList"
+												}).then(function onSuccess(res) {
+													bondWaitDue = 0;
+													//set bond wait due
+													paymentRef.update({
+														"bondWaitDue" : bondWaitDue
+													}).then(function onSuccess(res) {
+														stage5();
+													}).catch(function onError(err) {
+														//stop loading icon
+														$("#cover-spin").fadeOut(250, function() {
+															$(this).hide();
+														});
+														//error notification
+														$.gritter.add({
+															title: 'Error Stage 4-4111d',
+															text: err.code+" : "+err.message,
+															image: './img/bell.png',
+															sticky: false,
+															time: 3500,
+															class_name: 'gritter-custom'
+														});
+													});
+												}).catch(function onError(err) {
+													//stop loading icon
+													$("#cover-spin").fadeOut(250, function() {
+														$(this).hide();
+													});
+													//error notification
+													$.gritter.add({
+														title: 'Error Stage 4-4111c',
+														text: err.code+" : "+err.message,
+														image: './img/bell.png',
+														sticky: false,
+														time: 3500,
+														class_name: 'gritter-custom'
+													});
+												});
+											} else {
 												bondWaitDue = 0;
 												//set bond wait due
 												paymentRef.update({
@@ -1868,44 +2071,22 @@ function addPayment() {
 														class_name: 'gritter-custom'
 													});
 												});
-											}).catch(function onError(err) {
-												//stop loading icon
-												$("#cover-spin").fadeOut(250, function() {
-													$(this).hide();
-												});
-												//error notification
-												$.gritter.add({
-													title: 'Error Stage 4-4111c',
-													text: err.code+" : "+err.message,
-													image: './img/bell.png',
-													sticky: false,
-													time: 3500,
-													class_name: 'gritter-custom'
-												});
+											}
+										}).catch(function onError(err) {
+											//stop loading icon
+											$("#cover-spin").fadeOut(250, function() {
+												$(this).hide();
 											});
-										} else {
-											bondWaitDue = 0;
-											//set bond wait due
-											paymentRef.update({
-												"bondWaitDue" : bondWaitDue
-											}).then(function onSuccess(res) {
-												stage5();
-											}).catch(function onError(err) {
-												//stop loading icon
-												$("#cover-spin").fadeOut(250, function() {
-													$(this).hide();
-												});
-												//error notification
-												$.gritter.add({
-													title: 'Error Stage 4-4111d',
-													text: err.code+" : "+err.message,
-													image: './img/bell.png',
-													sticky: false,
-													time: 3500,
-													class_name: 'gritter-custom'
-												});
+											//error notification
+											$.gritter.add({
+												title: 'Error Stage 4-4111b',
+												text: err.code+" : "+err.message,
+												image: './img/bell.png',
+												sticky: false,
+												time: 3500,
+												class_name: 'gritter-custom'
 											});
-										}
+										});
 									}).catch(function onError(err) {
 										//stop loading icon
 										$("#cover-spin").fadeOut(250, function() {
@@ -1913,29 +2094,29 @@ function addPayment() {
 										});
 										//error notification
 										$.gritter.add({
-											title: 'Error Stage 4-4111b',
+											title: 'Error Stage 4-4111a',
 											text: err.code+" : "+err.message,
 											image: './img/bell.png',
 											sticky: false,
 											time: 3500,
 											class_name: 'gritter-custom'
 										});
-									});
-								}).catch(function onError(err) {
-									//stop loading icon
-									$("#cover-spin").fadeOut(250, function() {
-										$(this).hide();
-									});
-									//error notification
-									$.gritter.add({
-										title: 'Error Stage 4-4111a',
-										text: err.code+" : "+err.message,
-										image: './img/bell.png',
-										sticky: false,
-										time: 3500,
-										class_name: 'gritter-custom'
-									});
-								});
+									}).catch(function onError(err) {
+										//stop loading icon
+										$("#cover-spin").fadeOut(250, function() {
+											$(this).hide();
+										});
+										//error notification
+										$.gritter.add({
+											title: 'Error Stage 4-4111a',
+											text: err.code+" : "+err.message,
+											image: './img/bell.png',
+											sticky: false,
+											time: 3500,
+											class_name: 'gritter-custom'
+										});
+									})
+								})
 							} else {
 								paymentRef.push({
 									"date":paymentDate,
@@ -1983,8 +2164,27 @@ function addPayment() {
 										"payment":paymentAmount,
 										"refnumber":refNumberHtml,
 										"list":"ledgerList"
-									}).then(function onSuccess(res) {
+									}).then(function onSuccess(res){
+										fpayRef.update({
+											"bond-balance": 0,
+											"payment": 1
+										}).then(function onSuccess(res) {
 										stage5();
+										}).catch(function onError(err) {
+											//stop loading icon
+											$("#cover-spin").fadeOut(250, function() {
+												$(this).hide();
+											});
+											//error notification
+											$.gritter.add({
+												title: 'Error Stage 4-412c',
+												text: err.code+" : "+err.message,
+												image: './img/bell.png',
+												sticky: false,
+												time: 3500,
+												class_name: 'gritter-custom'
+											});
+										});
 									}).catch(function onError(err) {
 										//stop loading icon
 										$("#cover-spin").fadeOut(250, function() {
@@ -1992,7 +2192,7 @@ function addPayment() {
 										});
 										//error notification
 										$.gritter.add({
-											title: 'Error Stage 4-412c',
+											title: 'Error Stage 4-412b',
 											text: err.code+" : "+err.message,
 											image: './img/bell.png',
 											sticky: false,
@@ -2007,7 +2207,7 @@ function addPayment() {
 									});
 									//error notification
 									$.gritter.add({
-										title: 'Error Stage 4-412b',
+										title: 'Error Stage 4-412a',
 										text: err.code+" : "+err.message,
 										image: './img/bell.png',
 										sticky: false,
@@ -2029,7 +2229,7 @@ function addPayment() {
 									time: 3500,
 									class_name: 'gritter-custom'
 								});
-							});
+							})
 						}
 					} else {
 						paymentRef.push({
@@ -2631,6 +2831,7 @@ $(document).ready(function() {
 	
 	refNumberHtml = $("#tenant_id").html();
 	var building_id = refNumberHtml.substring(1,3);
+	
 	var tenantNames = [];
 	bondp=0
 	rentp=0
@@ -2754,14 +2955,16 @@ $("#tenanthistory").append(data)
 		startdate=$("#period1").text().split("- ")[1]
 		
 		if (startdate!="Ongoing"){
+			
 			startdate=reformatDate2(startdate)
 			startdate2=new Date(startdate)
 			startdate3=reformatDate(startdate2.addDays(1).toString("MM/dd/yyyy"))
-			
+			$("#sdate_edt").val(reformatDate4(startdate2.addDays(1).toString("MM/dd/yyyy")));
 			$("#ExtendstartDate").html(startdate3);		
 		}
 		else{
 			startdate3=reformatDate(Date.today().toString("MM/dd/yyyy"))
+			$("#sdate_edt").val(reformatDate4(startdate2.addDays(1).toString("MM/dd/yyyy")));
 			$("#ExtendstartDate").html(startdate3);	
 		}
 
@@ -2931,9 +3134,7 @@ $("#tenanthistory").append(data)
 				//jika data bukan dummy maka ini data dari firebase
 				if (full_name!=null){
 					$("#aphome").html(cont_home);
-					
 					$("#apmobile").html(reformatList(cont_mobile,4));
-					
 					$("#aadstreet").html(perm_addr.split(", ")[0]);
 					$("#aadcity").html(perm_addr.split(", ")[1]);
 					$("#aadprov").html(perm_addr.split(", ")[2]);
@@ -3256,6 +3457,10 @@ $("#tenanthistory").append(data)
 			}
 		}
 	});
+
+	$("#sdate_edt").on('change', function(){
+		$("#ExtendstartDate").html(reformatDate4($("#sdate_edt").val()))
+	})
 
 	//extend modal intend listener
 	$("#ExtendIntendAngka").on('change', function() {

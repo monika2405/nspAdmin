@@ -81,7 +81,70 @@ var table3 = $('#data-table3').DataTable({
 	{
 		targets: [2,8,9,10],
 		render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ',',-' )
-	}]
+	}],
+	dom: 'Bfrtip',
+		autoWidth: true,
+        buttons: [
+            {
+				extend: 'pdfHtml5',
+				orientation: 'landscape',
+				pageSize: 'A4',
+				filename:'Laporan Building '+$("#buildNo").val()+'' ,
+				footer: true,
+				exportOptions: {
+                    columns: [ 0, 1, 3, 4, 5, 6, 7, 8, 9, 10 ]
+                },
+                download: 'open',
+				customize: function (doc) {
+					doc.content.splice(0,1);
+					var now = new Date();
+					var jsDate = now.getDate()+'-'+(now.getMonth()+1)+'-'+now.getFullYear();
+					doc.pageMargins = [20,60,20,30];
+					doc.defaultStyle.fontSize = 10;
+					doc.styles.tableHeader.fontSize = 12;
+				
+					doc['header']=(function() {
+						return {
+							columns: [
+								{
+									alignment: 'center',
+									bold : true,
+									text: 'Laporan Building '+$("#buildNo").val()+'' ,
+									fontSize: 20,
+									margin: [10,0]
+								},
+								
+							],
+							
+							margin: 20
+						}
+					});
+					doc['footer']=(function(page, pages) {
+						return {
+							columns: [
+								{
+									alignment: 'left',
+									text: ['Created on: ', { text: jsDate.toString() }]
+								},
+								{
+									alignment: 'right',
+									text: ['page ', { text: page.toString() },	' of ',	{ text: pages.toString() }]
+								}
+							],
+							margin: 20
+						}
+					});
+					var objLayout = {};
+							objLayout['hLineWidth'] = function(i) { return .5; };
+							objLayout['vLineWidth'] = function(i) { return .5; };
+							objLayout['hLineColor'] = function(i) { return '#aaa'; };
+							objLayout['vLineColor'] = function(i) { return '#aaa'; };
+							objLayout['paddingLeft'] = function(i) { return 4; };
+							objLayout['paddingRight'] = function(i) { return 4; };
+							doc.content[0].layout = objLayout;
+				}
+		}
+        ]
 })
 
 //table tab expense

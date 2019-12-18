@@ -285,6 +285,7 @@ function uploadDB() {
 			});
 		}
 		paymentRef = firebase.database().ref().child("payment/"+tenantID);
+		fpayRef = firebase.database().ref().child("first-payment/"+tenantID)
 		var contract = firebase.database().ref().child("contract/"+tenantID+"/"+$("#myRoomID").val()+"");
 		var sd_date = new Date(reformatDate2($("#edate").val()))
 		var ed_date = sd_date.addMonths(parseInt($("#ctoption").val())).toString("M/d/yyyy")
@@ -300,6 +301,10 @@ function uploadDB() {
 		})
 		contract.update({
 			"historyperiod":1
+		})
+		fpayRef.update({
+			"payment":0,
+			"bond-balace":rem_fmoney($("#fprice").html()) + rem_fmoney($("#fbond").html())
 		})
 		//update last ref
 		const updateLastRef = firebase.database().ref("property/residential/building_no:"+$("#propnumb").html().split(" ")[1].split(")")[0]+"/floor:"+$("#floornumb").val()+"/ID:"+$("#myRoomID").val());
