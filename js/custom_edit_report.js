@@ -84,7 +84,7 @@ function get_fmoney(money) {
 					rev2 += '.';
 				}
 			}
-			return ("Rp. "+rev2.split('').reverse().join('') + ',-');
+			return (rev2.split('').reverse().join(''));
 		}
 	} else {
 		return null;
@@ -129,7 +129,7 @@ function reformatDate(inputDate) {
 	
 	months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 	inputBroke=inputDate.split("/");
-	inputDay=parseInt(inputBroke[1]);
+	inputDay=inputBroke[1];
 	inputMonth=parseInt(inputBroke[0]);
 	inputYear=inputBroke[2];
 	outputDay=inputDay;
@@ -139,13 +139,37 @@ function reformatDate(inputDate) {
 	
 }
 
-function deleteReport(key,build_no){
+function reformatDate2(inputDate) {
+	
+	months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+	months2=["01","02","03","04","05","06","07","08","09","10","11","12"];
+	inputBroke=inputDate.split("-");
+	inputDay=inputBroke[0];
+	inputMonth=inputBroke[1];
+	inputYear=inputBroke[2];
+	if (parseInt(inputDay) < 10) {
+		outputDay = inputDay;
+	} else {
+		outputDay = inputDay;
+	}
+	for (var i=0;i<months.length;i++) {
+		if (inputMonth == months[i]) {
+			outputMonth = months2[i];
+			break
+		}
+	}
+	outputYear = "20"+inputYear;
+	return (outputMonth+"/"+outputDay+"/"+outputYear);
+	
+}
+
+function deleteReport(key,build_no,t_id){
     $("#confirmYes").off();
 	$("#modalConfirm").modal();
 	$("#confirmYes").click(function () {
 		startPageLoad();
-        console.log("reportBackup/"+build_no+"/"+key)
-		firebase.database().ref("reportBackup/"+build_no+"/"+key).remove(
+        console.log("reportAccount2/"+build_no+"/"+t_id+"/"+key)
+		firebase.database().ref("reportAccount2/"+build_no+"/"+t_id+"/"+key).remove(
 		).then(function onSuccess(res) {
             var row = table.row('report'+key);
 			row.remove();
@@ -159,16 +183,15 @@ function deleteReport(key,build_no){
 }
 
 
-function editTransModal(key,build_no,recv,due) {
+function editTransModal(key,build_no,ref_id,t_id,recv,due,date) {
 
     $("#modalTransAdj").modal();
     $("#key").val(key);
+    $("#t_id").val(t_id)
     $("#TransReceive").val(recv);
     $("#TransDue").val(due);
-   
-    if(parseInt(build_no)<10){
-        build_no="0"+build_no.toString()
-    }
+    $("#RefNumbTenant").val(ref_id);
+    $("#AdjstDate").val(reformatDate(date));
 	$("#build_no").val(build_no);
 
 }
@@ -176,18 +199,19 @@ function editTransModal(key,build_no,recv,due) {
 function editTrans(){
     var key_tenant=$("#key").val();
     var buildNo = $("#build_no").val();
-    var reportRef= firebase.database().ref("reportBackup/"+buildNo+"/"+key_tenant);
-    
+    var tenant_id = $("#t_id").val();
+    var date = $("#AdjstDate").val()
+    var reportRef= firebase.database().ref("reportAccount2/"+buildNo+"/"+tenant_id+"/"+key_tenant);
+    console.log(reportRef)
     var recv= rem_moneydot($("#TransReceive").val());
     var due= rem_moneydot($("#TransDue").val())
-    var refNum = $("#refN").val();
-    var tenant_id = $("#t_id").val();
+
+    
 
     reportRef.update({
         "receive":recv,
         "due": due,
-        "refNumb":refNum,
-        "tenant_id":tenant_id
+        "date":reformatDate2(date)
     }).then(function onSuccess(res) {
         addNotification("Report Edited","Report successfully edited.");
 		PageLoadOff();
@@ -244,20 +268,27 @@ function autocompleteFunction(){
         });
     }, 4000);
 }
+
+
     
 $(document).ready(function() {
+    
+
     table
 		.clear()
         .draw();
 
     report={}
     tenant={}
-	tenantdata={}
+    tenantdata={}
+    reportdata = {}
+    
     
     //firebase ref
 	var trRef = firebase.database().ref("tenant-room");
 	var tenantRef = firebase.database().ref().child("tenant");
-    var reportRef= firebase.database().ref("reportBackup");
+    var reportRef= firebase.database().ref("reportAccount2");
+    var historyRoom = firebase.database().ref("HistoryRoom")
        
     tenantRef.on('child_added',function(snapshot){
 		var id = snapshot.key
@@ -267,6 +298,7 @@ $(document).ready(function() {
 		}
 		})
     })
+
     trRef.on('child_added', function(snapshot) {
 		var tenantID = snapshot.key;	
 		trRef.child(tenantID).once('child_added', function(snapshot) {
@@ -276,40 +308,57 @@ $(document).ready(function() {
 			}
 		});
 		
-	});
-    reportRef.child("05").on('child_added', function(snapshot){
-        report[snapshot.key]=snapshot.val();
+    });
+
+    historyRoom.on('child_added', function(snapshot){
+        var build_id= snapshot.key
+        historyRoom.child(build_id).on('child_added', function(snapshot){
+            var room_id = snapshot.key
+            historyRoom.child(build_id+"/"+room_id).on('child_added', function(snapshot){
+                var tenant_id = snapshot.key
+                historyRoom.child(build_id+"/"+room_id+"/"+tenant_id+"/tenant").on("value", function(snapshot){
+                    tenantdata[tenant_id]=snapshot.val()
+                })
+                historyRoom.child(build_id+"/"+room_id+"/"+tenant_id+"/tenant-room").on("value", function(snapshot){
+                    tenant[tenant_id]=snapshot.val()
+                })
+            })
+        })
     })
 
-    setTimeout(() => {
-        if(report!={}&&tenantdata!={}){
-            autocompleteFunction();
-            console.log(report)
+    reportRef.on('child_added', function(snapshot){
+        var build_id = snapshot.key
+        reportRef.child(build_id).on('child_added', function(snapshot){
+            var tenant_id = snapshot.key
+            reportRef.child(build_id+"/"+tenant_id).on('child_added', function(snapshot){
+                var key_id = snapshot.key
+                reportRef.child(build_id+"/"+tenant_id+"/"+key_id).on('value', function(snapshot){
+                    reportdata[key_id+"/"+tenant_id]=snapshot.val()
+                    
+                    // 
+                })
+                
+            })
+            //  
+        })
+    })
+   
 
-            for (i in report){
-               if(report[i].refNumb==null){
-                   table.row.add(["05"," "," ",reformatDate(report[i].date),get_fmoney(report[i].receive),get_fmoney(report[i].due),"<button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteReport("+i+",'05')><i class='fa fa-times'></i></button><button id='editbutt' class='btn btn-xs btn-success' title='Edit' onclick=editTransModal("+i+",05,"+report[i].receive+","+report[i].due+")><i class='fa fa-pencil'></i></button>"]).node().id = 'report'+i;
-               }else{
-                table.row.add(["05",report[i].refNumb,tenantdata[report[i].tenant_id].full_name,reformatDate(report[i].date),get_fmoney(report[i].receive),get_fmoney(report[i].due),"<button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteReport("+i+",'05')><i class='fa fa-times'></i></button><button id='editbutt' class='btn btn-xs btn-success' title='Edit' onclick=editTransModal("+i+",05,"+report[i].receive+","+report[i].due+")><i class='fa fa-pencil'></i></button>"]).node().id = 'report'+i;
-               }
-               
-           }
-           table.draw();
-        }else{
-            setTimeout(() => {
-                for (i in report){
-                   if(report[i].refNumb==null){
-                       table.row.add(["05"," "," ",reformatDate(report[i].date),get_fmoney(report[i].receive),get_fmoney(report[i].due),"<button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteReport("+i+",'05')><i class='fa fa-times'></i></button><button id='editbutt' class='btn btn-xs btn-success' title='Edit' onclick=editTransModal("+i+",05,"+report[i].receive+","+report[i].due+")><i class='fa fa-pencil'></i></button>"]).node().id = 'report'+i;
-                   }else{
-                    table.row.add(["05",report[i].refNumb,tenantdata[report[i].tenant_id].full_name,reformatDate(report[i].date),get_fmoney(report[i].receive),get_fmoney(report[i].due),"<button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteReport("+i+",'05')><i class='fa fa-times'></i></button><button id='editbutt' class='btn btn-xs btn-success' title='Edit' onclick=editTransModal("+i+",05,"+report[i].receive+","+report[i].due+")><i class='fa fa-pencil'></i></button>"]).node().id = 'report'+i;
-                   }
-                   
-               }
-               table.draw();
-            }, 5000);
+    setTimeout(() => {
+        table.clear();
+        console.log(reportdata)
+        for (i in reportdata){
+            t_id = (i).split("/")[1]
+            console.log(t_id)
+            key_id = i.split("/")[0]
+            table.row.add([tenant[t_id].build_no,reportdata[i].refNumb,tenantdata[t_id].full_name,reformatDate(reportdata[i].date),reportdata[i].due,reportdata[i].receive,"<button id='editbutt' class='btn btn-xs btn-success' title='Edit' onclick=editTransModal('"+key_id+"','"+tenant[t_id].build_no+"','"+reportdata[i].refNumb+"','"+t_id+"','"+reportdata[i].receive+"','"+reportdata[i].due+"','"+reportdata[i].date+"')><i class='fa fa-pencil'></i></button><button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteReport('"+key_id+"','"+tenant[t_id].build_no+"','"+t_id+"')><i class='fa fa-times'></i></button>"]).node().id = 'report'+key_id;
         }
+            
+        table.draw()
         
     }, 5000);
+
+   
     
     //Trans Adj Modal listener
 	$("#confirmTransAdjt").click(function() {
@@ -331,9 +380,24 @@ $(document).ready(function() {
     })
     $("#TransDue").on('keyup change', function() {
 		$("#TransDue").val(get_moneydot($("#TransDue").val()));
-	})
+    })
+    
+    $('#editReportTable thead tr').clone(true).appendTo( '#editReportTable thead' );
+    $('#editReportTable thead tr:eq(1) th').each( function (i) {
+        var title = $(this).text();
+        $(this).html( '<input type="text" placeholder="Search '+title+'" style="width:100%"/>' );
+ 
+        $( 'input', this ).on( 'keyup change', function () {
+            if ( table.column(i).search() !== this.value ) {
+                table
+                    .column(i)
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    } );
     
     setTimeout(() => {
         PageLoadOff();
-    }, 5000);
+    }, 20000);
 })

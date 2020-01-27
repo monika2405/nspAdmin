@@ -2,27 +2,31 @@
 <html>
 	<head>
 		<!-- Title here -->
-		<title>Edit Report - GOKOST</title>
+		<title>Tagihan Virtual Account - GOKOST</title>
 		<!-- Description, Keywords and Author -->
 		<meta name="description" content="Your description">
 		<meta name="keywords" content="Your,Keywords">
 		<meta name="author" content="ResponsiveWebInc">
 		<script src="js/firebase.js"></script> <!-- version 5.3.1 -->
-		<script src="js/firebase_config.js"></script>
-		<script type="text/javascript" src="js/date.js"></script>
-		<script type="text/javascript" src="js/date-en-US.js"></script>
+        <script src="js/firebase_config.js"></script>
+        <script type="text/javascript" src="js/date.js"></script>
+			<script type="text/javascript" src="js/date-en-US.js"></script>
+		
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		
-        <!-- Styles -->
-        <!-- Bootstrap Date-Time Picker CSS -->
-		<link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">
-		<link href="css/bootstrap-datepicker3.min.css" rel="stylesheet">
+		<!-- Styles -->
 		<!-- Bootstrap CSS -->
 		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<!-- Bootstrap Date-Time Picker CSS -->
+		<link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+		<link href="css/bootstrap-datepicker3.min.css" rel="stylesheet">
+		<!-- jQuery prettyPhoto -->
+		<link href="css/prettyPhoto.css" rel="stylesheet">
 		<!-- jQuery Datatables -->
 		<link href="css/jquery.dataTables.css" rel="stylesheet">
 		<link href="css/fixedHeader.dataTables.min.css" rel="stylesheet">
+		<link href="css/buttons.dataTables.min.css" rel="stylesheet">
 		<!-- jQuery UI -->
 		<link href="css/jquery-ui.css" rel="stylesheet">
 		<!-- Font awesome CSS -->
@@ -42,15 +46,14 @@
 			text-align: left;
 		}
 		</style>
+		
 		<!-- Favicon -->
 		<link rel="shortcut icon" href="img/favicon-96x96.png">
 	</head>
 	
 	<body>
-		
 		<div id="cover-spin" style="background-color:rgba(0,0,0,0.85);"></div>
 		<div class="outer">
-			
 			<!-- Sidebar starts -->
 			<div class="sidebar">
 			
@@ -74,10 +77,10 @@
 							<!-- Sidebar links -->
 							<ul class="list-unstyled">
 								<li><a href="home.html"><i class="fa fa-home"></i> Home</a></li>
-                                <li><a href="building_list.html"><i class="fa fa-building"></i> Building</a></li>
-								<li><a href="tenant_main.html"  ><i class="fa fa-user-circle"></i> Tenant</a></li>
-								<li><a href="report_main.html"><i class="fa fa-clipboard"></i> Report</a></li>
-							</ul>
+								<li><a href="building_list.html"><i class="fa fa-building"></i> Building</a></li>
+								<li><a href="tenant_main.html"><i class="fa fa-user-circle"></i> Tenant</a></li>
+								<li><a href="javaScript:void(0);" class="active"><i class="fa fa-clipboard"></i> Report</a></li>
+                            </ul>
 							<!-- Presence System -->
 							<h4>Users</h4>
 							<ul id="presenceList" class="list-unstyled"></ul>
@@ -183,51 +186,51 @@
 							<!-- Heading -->
 							<div class="single-head">
 								<!-- Heading -->
-								<h3 class="pull-left"><i class="fa fa-users black"></i>Edit Report</h3>
+								<h3 class="pull-left"><i class="fa fa-clipboard black"></i> Tagihan Virtual Account</h3>
 								<!-- Bread crumbs -->
 								<div class="breads pull-right">
-									<strong>Nav</strong> : <a href="home.html">GOKOST</a> / Edit Report
+									<strong>Nav</strong> : <a href="home.html">GOKOST</a> / Tagihan Virtual Account
 								</div>
 								<div class="clearfix"></div>
 							</div>
-							<!-- Table Page -->
-                            
 							
-                            <div class="row">
-								<div class="col-lg-6">
-                                    <h2>Edit Report</h2>
-                                    <br>
+							<div class="page-grid">
+								<div id="content" class="container">
+                                    <div class="row text-center" style="margin-bottom:10px;">
+										<div class="col-lg-12">
+											<button id="showAllReport" class="btn btn-default">All</button>
+											<button id="showLastReport" class="btn btn-default">Last Month</button>
+											<button id="showNowReport" class="btn btn-default">This Month</button>
+											<button id="showCustomReport" class="btn btn-default">Custom Filter</button>
+											<span id="tableLoad" style="float: right; display: none;"><i class="fa fa-exclamation-circle fa-lg green"></i></span>
+										</div>
+									</div>
+									<div class="row" style="margin-bottom:10px;">
+                                        <div class="page-tables">
+                                            <!-- Table -->
+                                            <div class="table-responsive">
+                                                <table cellpadding="0" cellspacing="0" id="tabel-va" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="dt-head-center">#Building</th>
+                                                            <th class="dt-head-center">Kode VA</th>
+                                                            <th class="dt-head-center">Nama</th>
+                                                            <th class="dt-head-center">Tanggal</th>
+                                                            <th class="dt-head-center">Tagihan</th>
+                                                        </tr>
+                                                    </thead>
+                                                    
+                                                    <tbody>
+                                                        
+                                                    </tbody>
+                                                </table>
+                                                <div class="clearfix"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+									<!-- content end -->
 								</div>
-							</div> 
-
-					
-                            <div class="page-tables">
-								<!-- Table -->
-								<div class="table-responsive">
-									<table cellpadding="0" cellspacing="0" class="stripe" id="editReportTable" width="100%">
-										<thead>
-											<tr>
-												<th>BNO</th>
-                                                <th>Ref #</th>
-                                                <th>Name</th>
-												<th>Date</th>
-                                                <th>Receive</th>
-                                                <th>Due</th>
-                                                <th>Control</th>
-												
-											</tr>
-										</thead>
-                                        
-										<tbody>
-											
-										</tbody>
-									</table>
-                                    </a>
-									<div class="clearfix"></div>
-								</div>
-							
-						</div>
-							
+							</div>
 							
 						</div>
 						
@@ -236,77 +239,7 @@
 				
 			</div>
 			<!-- Mainbar ends -->
-			
 			<div class="clearfix"></div>
-        </div>
-        <!--payment adj modal-->
-		<div id="modalTransAdj" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header" style="background-color:#528FE2">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
-						<h4 class="modal-title" style="color:#FFF"><b>Transaction adjustment</b></h4>
-					</div>
-					<div class="modal-body">
-						<form id="adjustmentTransForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
-							<div class="form-group">
-                                <label for="RefNumbTenant" class="control-label col-lg-3">Ref Numb / Name</label>
-                                <div class="col-lg-5">
-                                    <input id="RefNumbTenant" name="RefNumbTenant" class="form-control" type="text" required/>
-                                </div>
-							</div>
-							<div class="form-group">
-								<label for="AdjstDate" class="control-label col-lg-3">Date</label>
-								<div class="col-lg-5">
-									<div id="adjstDatePicker" class="input-group date">
-										<input id="AdjstDate" name="AdjstDate" type="text" class="form-control" placeholder="Pick Date" readonly required>
-										<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
-									</div>
-								</div>
-							</div>
-                            <div class="form-group">
-                                <label for="TransReceive" class="control-label col-lg-3">Receive</label>
-								<div class="col-lg-5">
-									<input id="TransReceive" name="TransReceive" class="form-control" type="text" maxlength="20" required/>
-								</div>
-                            </div>
-                            <div class="form-group">
-                                    <label for="TransDue" class="control-label col-lg-3">Due</label>
-                                    <div class="col-lg-5">
-                                        <input id="TransDue" name="TransDue" class="form-control" type="text" maxlength="20" required/>
-                                    </div>
-                                </div>
-                            <input id="key" name="key" type="hidden" required>
-                            <input id="t_id" name="t_id" type="hidden" required>
-                            <input id="refN" name="refN" type="hidden" required/>
-                           
-							<input id="build_no" name="build_no" type="hidden" required>
-						</form>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
-						<button id="confirmTransAdjt" type="button" class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Adjust</button>
-					</div>
-				</div>
-			</div>
-		</div>
-        <!-- Modal -->
-		<div id="modalConfirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
-						<h4 class="modal-title">Warning</h4>
-					</div>
-					<div class="modal-body">
-						<p>Are you sure you want to remove this report?</p>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
-						<button id="confirmYes" type="button" class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Remove</button>
-					</div>
-				</div>
-			</div>
 		</div>
 		<!-- modal Notif-->
 		<div id="notifModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -339,20 +272,71 @@
 					</div>
 				</div>
 			</div>
-		</div>
+        </div>
+        <!-- modal Filter-->
+        <div id="filterModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form id="filterForm" role="form" method="post" action="" autocomplete="off">
+                            <div class="modal-header" style="background-color:#97427B;">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+                                <h4 class="modal-title" style="color:#FFF"><b>Custom Filter</b></h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        
+                                        <div class="row" style="margin: 0px 20px">
+                                            <div class="col-lg-4 col-md-6">
+                                            <select id="MonthsFilter" name="MonthsFilter" class="form-control" required>
+                                                <option value="">Select Month</option>
+                                                <option value="01">Januari</option>
+                                                <option value="02">Februari</option>
+                                                <option value="03">Maret</option>
+                                                <option value="04">April</option>
+                                                <option value="05">Mei</option>
+                                                <option value="06">Juni</option>
+                                                <option value="07">Juli</option>
+                                                <option value="08">Agustus</option>
+                                                <option value="09">September</option>
+                                                <option value="10">Oktober</option>
+                                                <option value="11">November</option>
+                                                <option value="12">Desember</option>
+                                            </select>
+                                            </div>
+                                            <div class="col-lg-3 col-md-6">
+                                                <select id="YearFilter" name="YearFilter" class="form-control" required>
+                                                    <option value="">Select Year</option>
+                                                    <option value="2018">2018</option>
+                                                    <option value="2019">2019</option>
+                                                    <option value="2020">2020</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                                <button id="showFilteredReport" type="submit" class="btn btn-info btn-sm" aria-hidden="true">Filter</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 		<!-- Javascript files -->
+	
 		<!-- jQuery -->
 		<script src="js/jquery.js"></script>
 		<!-- Bootstrap JS -->
 		<script src="js/bootstrap.min.js"></script>
 		<!-- jQuery UI -->
 		<script src="js/jquery-ui.min.js"></script>
-        <!-- Date Time Picker JS -->
-        <!-- Date Time Picker JS -->
+		<!-- Date Time Picker JS -->
 		<script src="js/bootstrap-datetimepicker.min.js"></script>
 		<script src="js/bootstrap-datetimepicker.id.js"></script>
 		<script src="js/bootstrap-datepicker.min.js"></script>
-		
 		<!-- Bootstrap wysihtml5 JS -->		
 		<script src="js/wysihtml5-0.3.0.js"></script>
 		<script src="js/prettify.js"></script>
@@ -368,16 +352,18 @@
 		<!-- jQuery slim scroll -->
 		<script src="js/jquery.slimscroll.min.js"></script>
 		<!-- Data Tables JS -->
-		<script src="js/jquery.dataTables.min.js"></script>
-		<script src="js/jquery.dataTables.js"></script>
+		<script src="js/jquery.dataTables.min.js"></script>	
+		<script src="js/dataTables.buttons.min.js"></script>
+		<script src="js/buttons.html5.min.js"></script>
+		<script src="js/jszip.min.js"></script>
 		<script src="js/dataTables.fixedHeader.min.js"></script>
 		<!-- Pretty Photo JS -->
 		<script src="js/jquery.prettyPhoto.js"></script>	
 		<!-- Rate It JS -->
 		<script src="js/jquery.rateit.min.js"></script>	
-		<!-- Full calendar -->
-	    <script src="js/moment.min.js"></script>
-	    <script src="js/fullcalendar.min.js"></script>
+		<!-- jQuery full calendar -->
+		<script src="js/moment.min.js"></script>
+		<script src="js/fullcalendar.min.js"></script>
 		<!-- Respond JS for IE8 -->
 		<script src="js/respond.min.js"></script>
 		<!-- HTML5 Support for IE -->
@@ -389,12 +375,7 @@
 		<!-- Custom JS -->
 		<script src="js/custom.js"></script>
 		<script src="js/custom_logincheck.js"></script>
-		<script src="js/custom_edit_report.js"></script>
-		<script>
-		$('#adjstDatePicker').datepicker({
-			format: "d-M-yy",
-			autoclose: true
-		});
-		</script>
-	</body>	
+		<script src="js/custom_virtual_account.js"></script>
+		<!-- Javascript for this page -->        
+    </body>	
 </html>

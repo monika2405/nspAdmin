@@ -19,13 +19,12 @@ function tableLoadOff() {
 }
 
 function countTenantinBuilding(buildNo,tenantList) {
-	
+	console.log(tenantList)
 	var tenantCount = 0;
-	for (i=0;i<tenantList.length;i++) {
-		var tenantRoom = String(Object.keys(tenantList[i]));
-		var tenantBuild = tenantRoom.substring(1,3);
-		if (tenantBuild == buildNo) {
-			tenantCount++;
+	
+	for (i in tenantList) {
+		if (tenantList[i]==buildNo){
+			tenantCount++
 		}
 	}
 	
@@ -223,8 +222,10 @@ $(document).ready(function() {
 	
 	var tenantRef = firebase.database().ref("tenant-room");
 	var buildRef = firebase.database().ref("property/residential");
-	var reportRef = firebase.database().ref("reportAccount");
+	var reportRef = firebase.database().ref("reportAccount2");
+	var dataRoom = firebase.database().ref("dataRoom")
 	var tenantList = [];
+	var countTenantList = {};
 	
 	/* tenantRef.on('value', function(snapshot) {
 		alert(snapshot.numChildren());
@@ -271,7 +272,7 @@ $(document).ready(function() {
 				
 				// Find report start date
 				$("#dbStartDate").change(function() {
-					$("#reportStartDate").html(reformatDate($("#dbStartDate").val(),"ID"));
+					$("#reportStartDate").html(reformatDate($("#dbStartDate").val(),"ID"))
 				});
 				
 				// Find report end date
@@ -305,7 +306,7 @@ $(document).ready(function() {
 							buildObject.alias = snapshot.child("alias").val();
 							buildObject.address = snapshot.child("address_street").val();
 							buildObject.roomCount = snapshot.child("total_room").val();
-							buildObject.tenantCount = countTenantinBuilding(buildObject.no,tenantList);
+							buildObject.tenantCount = countTenantinBuilding(buildObject.no,countTenantList);
 							var buildVacantCount = buildObject.roomCount - buildObject.tenantCount;
 							
 							buildObject.due = 0;
@@ -315,69 +316,72 @@ $(document).ready(function() {
 							
 							// Pull report data
 							reportRef.child(buildObject.no).on('child_added', function(snapshot) {
-								tableLoadOn();
-								
-								var inputDate = snapshot.child("inputDate").val();
-								var reportDate = snapshot.child("date").val();
-								if ($("#dbLastUpdated").val() == "") {
-									$("#dbLastUpdated")
-										.val(inputDate)
-										.change();
-								} else {
-									if (date_diff_indays($("#dbLastUpdated").val(),inputDate) > 0) {
+								var tenant_id = snapshot.key
+								reportRef.child(buildObject.no+"/"+tenant_id).on('child_added', function(snapshot) {
+									tableLoadOn();
+									
+									var inputDate = snapshot.child("inputDate").val();
+									var reportDate = snapshot.child("date").val();
+									if ($("#dbLastUpdated").val() == "") {
 										$("#dbLastUpdated")
 											.val(inputDate)
 											.change();
+									} else {
+										if (date_diff_indays($("#dbLastUpdated").val(),inputDate) > 0) {
+											$("#dbLastUpdated")
+												.val(inputDate)
+												.change();
+										}
 									}
-								}
-								if (($("#dbStartDate").val() == "") || ($("#dbEndDate").val() == "")) {
-									$("#dbStartDate")
-										.val(reportDate)
-										.change();
-									$("#dbEndDate")
-										.val(reportDate)
-										.change();
-								} else {
-									if (date_diff_indays($("#dbStartDate").val(),reportDate) < 0) {
+									if (($("#dbStartDate").val() == "") || ($("#dbEndDate").val() == "")) {
 										$("#dbStartDate")
 											.val(reportDate)
 											.change();
-									}
-									if (date_diff_indays($("#dbEndDate").val(),reportDate) > 0) {
 										$("#dbEndDate")
 											.val(reportDate)
 											.change();
+									} else {
+										if (date_diff_indays($("#dbStartDate").val(),reportDate) < 0) {
+											$("#dbStartDate")
+												.val(reportDate)
+												.change();
+										}
+										if (date_diff_indays($("#dbEndDate").val(),reportDate) > 0) {
+											$("#dbEndDate")
+												.val(reportDate)
+												.change();
+										}
 									}
-								}
-								
-								var reportDue = parseInt(snapshot.child("due").val())
-								var reportReceive = parseInt(snapshot.child("receive").val())
-								
-								buildObject.due += reportDue;
-								buildObject.receive += reportReceive;
-								
-								$("#totalDueInt").val(parseInt($("#totalDueInt").val()) + reportDue);
-								$("#totalAllDue").html(get_moneydot($("#totalDueInt").val()));
-								$("#totalOverdueInt").val(parseInt($("#totalOverdueInt").val()) + (reportReceive - reportDue));
-								$("#totalAllOverdue").html(get_moneydot($("#totalOverdueInt").val()));
-								$("#totalReceivedInt").val(parseInt($("#totalReceivedInt").val()) + reportReceive);
-								$("#totalAllReceived").html(get_moneydot($("#totalReceivedInt").val()));
-								$("#totalExpenseInt").val(parseInt($("#totalExpenseInt").val()) + buildObject.expense);
-								$("#totalAllExpense").html(get_moneydot($("#totalExpenseInt").val()));
-								$("#totalBalanceInt").val(parseInt($("#totalBalanceInt").val()) + (reportReceive - buildObject.expense));
-								$("#totalBalance").html(get_moneydot($("#totalBalanceInt").val()));
-								$("#summary-due").html($("#totalAllDue").html());
-								$("#summary-overdue").html($("#totalAllOverdue").html());
-								$("#summary-expense").html($("#totalAllExpense").html());
-								$("#summary-balance").html($("#totalBalance").html());
-								
-								table.cell('#build'+buildObject.no,6).data(get_moneydot(buildObject.due));
-								table.cell('#build'+buildObject.no,7).data(get_moneydot(buildObject.receive - buildObject.due));
-								table.cell('#build'+buildObject.no,8).data(get_moneydot(buildObject.receive));
-								table.cell('#build'+buildObject.no,9).data(get_moneydot(buildObject.expense));
-								table.cell('#build'+buildObject.no,10).data(get_moneydot(buildObject.receive - buildObject.expense));
-								
-								tableLoadOff();
+									
+									var reportDue = parseInt(snapshot.child("due").val())
+									var reportReceive = parseInt(snapshot.child("receive").val())
+									
+									buildObject.due += reportDue;
+									buildObject.receive += reportReceive;
+									
+									$("#totalDueInt").val(parseInt($("#totalDueInt").val()) + reportDue);
+									$("#totalAllDue").html(get_moneydot($("#totalDueInt").val()));
+									$("#totalOverdueInt").val(parseInt($("#totalOverdueInt").val()) + (reportReceive - reportDue));
+									$("#totalAllOverdue").html(get_moneydot($("#totalOverdueInt").val()));
+									$("#totalReceivedInt").val(parseInt($("#totalReceivedInt").val()) + reportReceive);
+									$("#totalAllReceived").html(get_moneydot($("#totalReceivedInt").val()));
+									$("#totalExpenseInt").val(parseInt($("#totalExpenseInt").val()) + buildObject.expense);
+									$("#totalAllExpense").html(get_moneydot($("#totalExpenseInt").val()));
+									$("#totalBalanceInt").val(parseInt($("#totalBalanceInt").val()) + (reportReceive - buildObject.expense));
+									$("#totalBalance").html(get_moneydot($("#totalBalanceInt").val()));
+									$("#summary-due").html($("#totalAllDue").html());
+									$("#summary-overdue").html($("#totalAllOverdue").html());
+									$("#summary-expense").html($("#totalAllExpense").html());
+									$("#summary-balance").html($("#totalBalance").html());
+									
+									table.cell('#build'+buildObject.no,6).data(get_moneydot(buildObject.due));
+									table.cell('#build'+buildObject.no,7).data(get_moneydot(buildObject.receive - buildObject.due));
+									table.cell('#build'+buildObject.no,8).data(get_moneydot(buildObject.receive));
+									table.cell('#build'+buildObject.no,9).data(get_moneydot(buildObject.expense));
+									table.cell('#build'+buildObject.no,10).data(get_moneydot(buildObject.receive - buildObject.expense));
+									
+									tableLoadOff();
+								})
 							});
 							
 							table.draw();
@@ -426,7 +430,7 @@ $(document).ready(function() {
 							buildObject.alias = snapshot.child("alias").val();
 							buildObject.address = snapshot.child("address_street").val();
 							buildObject.roomCount = snapshot.child("total_room").val();
-							buildObject.tenantCount = countTenantinBuilding(buildObject.no,tenantList);
+							buildObject.tenantCount = countTenantinBuilding(buildObject.no,countTenantList);
 							var buildVacantCount = buildObject.roomCount - buildObject.tenantCount;
 							
 							buildObject.due = 0;
@@ -436,296 +440,28 @@ $(document).ready(function() {
 							
 							// Pull report data
 							reportRef.child(buildObject.no).on('child_added', function(snapshot) {
-								tableLoadOn();
-								
-								var d = new Date();
-
-								var thisMonth = d.getMonth() + 1;
-								var lastMonth = thisMonth - 1; 
-								if (thisMonth == 1) {
-									lastMonth = 12;
-								}
-
-								var thisYear = d.getFullYear();
-								if (thisMonth == 1) {
-									thisYear -= 1;
-								}
-								
-								var reportDate = snapshot.child("date").val();
-								var reportMonth = parseInt(reportDate.split("/")[0]);
-								var reportYear = parseInt(reportDate.split("/")[2]);
-								
-								if ((reportMonth == lastMonth) && (reportYear == thisYear)) {
-									var inputDate = snapshot.child("inputDate").val();
-									if ($("#dbLastUpdated").val() == "") {
-										$("#dbLastUpdated")
-											.val(inputDate)
-											.change();
-									} else {
-										if (date_diff_indays($("#dbLastUpdated").val(),inputDate) > 0) {
-											$("#dbLastUpdated")
-												.val(inputDate)
-												.change();
-										}
-									}
-									if (($("#dbStartDate").val() == "") || ($("#dbEndDate").val() == "")) {
-										$("#dbStartDate")
-											.val(reportDate)
-											.change();
-										$("#dbEndDate")
-											.val(reportDate)
-											.change();
-									} else {
-										if (date_diff_indays($("#dbStartDate").val(),reportDate) < 0) {
-											$("#dbStartDate")
-												.val(reportDate)
-												.change();
-										}
-										if (date_diff_indays($("#dbEndDate").val(),reportDate) > 0) {
-											$("#dbEndDate")
-												.val(reportDate)
-												.change();
-										}
-									}
-									
-									var reportDue = parseInt(snapshot.child("due").val());
-									var reportReceive = parseInt(snapshot.child("receive").val());
-									
-									buildObject.due += reportDue;
-									buildObject.receive += reportReceive;
-									
-									$("#totalDueInt").val(parseInt($("#totalDueInt").val()) + reportDue);
-									$("#totalAllDue").html(get_moneydot($("#totalDueInt").val()));
-									$("#totalOverdueInt").val(parseInt($("#totalOverdueInt").val()) + (reportReceive - reportDue));
-									$("#totalAllOverdue").html(get_moneydot($("#totalOverdueInt").val()));
-									$("#totalReceivedInt").val(parseInt($("#totalReceivedInt").val()) + reportReceive);
-									$("#totalAllReceived").html(get_moneydot($("#totalReceivedInt").val()));
-									$("#totalExpenseInt").val(parseInt($("#totalExpenseInt").val()) + buildObject.expense);
-									$("#totalAllExpense").html(get_moneydot($("#totalExpenseInt").val()));
-									$("#totalBalanceInt").val(parseInt($("#totalBalanceInt").val()) + (reportReceive - buildObject.expense));
-									$("#totalBalance").html(get_moneydot($("#totalBalanceInt").val()));
-									$("#summary-due").html($("#totalAllDue").html());
-									$("#summary-overdue").html($("#totalAllOverdue").html());
-									$("#summary-expense").html($("#totalAllExpense").html());
-									$("#summary-balance").html($("#totalBalance").html());
-								}
-								
-								table.cell('#build'+buildObject.no,6).data(get_moneydot(buildObject.due));
-								table.cell('#build'+buildObject.no,7).data(get_moneydot(buildObject.receive - buildObject.due));
-								table.cell('#build'+buildObject.no,8).data(get_moneydot(buildObject.receive));
-								table.cell('#build'+buildObject.no,9).data(get_moneydot(buildObject.expense));
-								table.cell('#build'+buildObject.no,10).data(get_moneydot(buildObject.receive - buildObject.expense));
-								
-								tableLoadOff();
-							});
-							
-							table.draw();
-							
-							$("#totalAllRoom").html(parseInt($("#totalAllRoom").html()) + parseInt(buildObject.roomCount));
-							$("#totalAllVacant").html(parseInt($("#totalAllVacant").html()) + buildVacantCount);
-							$("#summary-vacant").html(((parseInt($("#totalAllVacant").html()) / parseInt($("#totalAllRoom").html()))*100).toFixed(2)+"%");
-							$("#summary-empty").html($("#totalAllVacant").html());
-							
-							tableLoadOff();
-						});
-						
-						setTimeout(() => {
-							$("#cover-spin").fadeOut(250, function() {
-								$(this).hide();
-							});
-						}, 20000);
-					}, 250);
-					
-				});
-				
-				// Load This Month Report Data
-				$("#showNowReport").click(function() {
-					$("#cover-spin").fadeIn(250, function() {
-						$(this).show();
-					});
-					
-					setTimeout(function() {
-						// Reset table
-						$("#showNowReport").prop("disabled",true);
-						$("#showLastReport,#showAllReport").prop("disabled",false);
-						$("#reportLastUpdated,#reportStartDate,#reportEndDate").html("...");
-						$("#dbLastUpdated,#dbStartDate,#dbEndDate").val("");
-						table
-							.clear()
-							.draw();
-						$("#totalAllRoom,#totalAllVacant,#totalAllDue,#totalAllOverdue,#totalAllReceived,#totalAllExpense,#totalBalance").html("0");
-						$("#totalDueInt,#totalOverdueInt,#totalReceivedInt,#totalExpenseInt,#totalBalanceInt").val("0");
-						
-						// Pull all building data
-						buildRef.on('child_added', function(snapshot) {
-							tableLoadOn();
-							
-							var buildObject = new Object();
-							buildObject.no = snapshot.key.split(":")[1];
-							buildObject.alias = snapshot.child("alias").val();
-							buildObject.address = snapshot.child("address_street").val();
-							buildObject.roomCount = snapshot.child("total_room").val();
-							buildObject.tenantCount = countTenantinBuilding(buildObject.no,tenantList);
-							var buildVacantCount = buildObject.roomCount - buildObject.tenantCount;
-							
-							buildObject.due = 0;
-							buildObject.receive = 0;
-							buildObject.expense = 0;
-							table.row.add([buildObject.no,buildObject.alias,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.address,buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
-							
-							// Pull report data
-							reportRef.child(buildObject.no).on('child_added', function(snapshot) {
-								tableLoadOn();
-								
-								var d = new Date();
-
-								var thisMonth = d.getMonth() + 1;
-								var thisYear = d.getFullYear();
-								
-								var reportDate = snapshot.child("date").val();
-								var reportMonth = parseInt(reportDate.split("/")[0]);
-								var reportYear = parseInt(reportDate.split("/")[2]);
-								
-								if ((reportMonth == thisMonth) && (reportYear == thisYear)) {
-									var inputDate = snapshot.child("inputDate").val();
-									if ($("#dbLastUpdated").val() == "") {
-										$("#dbLastUpdated")
-											.val(inputDate)
-											.change();
-									} else {
-										if (date_diff_indays($("#dbLastUpdated").val(),inputDate) > 0) {
-											$("#dbLastUpdated")
-												.val(inputDate)
-												.change();
-										}
-									}
-									if (($("#dbStartDate").val() == "") || ($("#dbEndDate").val() == "")) {
-										$("#dbStartDate")
-											.val(reportDate)
-											.change();
-										$("#dbEndDate")
-											.val(reportDate)
-											.change();
-									} else {
-										if (date_diff_indays($("#dbStartDate").val(),reportDate) < 0) {
-											$("#dbStartDate")
-												.val(reportDate)
-												.change();
-										}
-										if (date_diff_indays($("#dbEndDate").val(),reportDate) > 0) {
-											$("#dbEndDate")
-												.val(reportDate)
-												.change();
-										}
-									}
-									
-									var reportDue = parseInt(snapshot.child("due").val());
-									var reportReceive = parseInt(snapshot.child("receive").val());
-									
-									buildObject.due += reportDue;
-									buildObject.receive += reportReceive;
-									
-									$("#totalDueInt").val(parseInt($("#totalDueInt").val()) + reportDue);
-									$("#totalAllDue").html(get_moneydot($("#totalDueInt").val()));
-									$("#totalOverdueInt").val(parseInt($("#totalOverdueInt").val()) + (reportReceive - reportDue));
-									$("#totalAllOverdue").html(get_moneydot($("#totalOverdueInt").val()));
-									$("#totalReceivedInt").val(parseInt($("#totalReceivedInt").val()) + reportReceive);
-									$("#totalAllReceived").html(get_moneydot($("#totalReceivedInt").val()));
-									$("#totalExpenseInt").val(parseInt($("#totalExpenseInt").val()) + buildObject.expense);
-									$("#totalAllExpense").html(get_moneydot($("#totalExpenseInt").val()));
-									$("#totalBalanceInt").val(parseInt($("#totalBalanceInt").val()) + (reportReceive - buildObject.expense));
-									$("#totalBalance").html(get_moneydot($("#totalBalanceInt").val()));
-									$("#summary-due").html($("#totalAllDue").html());
-									$("#summary-overdue").html($("#totalAllOverdue").html());
-									$("#summary-expense").html($("#totalAllExpense").html());
-									$("#summary-balance").html($("#totalBalance").html());
-								}
-								
-								table.cell('#build'+buildObject.no,6).data(get_moneydot(buildObject.due));
-								table.cell('#build'+buildObject.no,7).data(get_moneydot(buildObject.receive - buildObject.due));
-								table.cell('#build'+buildObject.no,8).data(get_moneydot(buildObject.receive));
-								table.cell('#build'+buildObject.no,9).data(get_moneydot(buildObject.expense));
-								table.cell('#build'+buildObject.no,10).data(get_moneydot(buildObject.receive - buildObject.expense));
-								
-								tableLoadOff();
-							});
-							
-							table.draw();
-							
-							$("#totalAllRoom").html(parseInt($("#totalAllRoom").html()) + parseInt(buildObject.roomCount));
-							$("#totalAllVacant").html(parseInt($("#totalAllVacant").html()) + buildVacantCount);
-							$("#summary-vacant").html(((parseInt($("#totalAllVacant").html()) / parseInt($("#totalAllRoom").html()))*100).toFixed(2)+"%");
-							$("#summary-empty").html($("#totalAllVacant").html());
-							
-							tableLoadOff();
-						});
-						
-						setTimeout(() => {
-							$("#cover-spin").fadeOut(250, function() {
-								$(this).hide();
-							});
-						}, 20000);
-					}, 250);
-					
-				});
-				
-				jQuery.validator.addMethod("isAfterStartDate", function(value, element) {
-					var startDate = reformatDate($('#filterStartDate').val(),"US");
-					var endDate = reformatDate(value,"US");
-
-					if (date_diff_indays(startDate,endDate) >= 0) {
-						return true;
-					} else  {
-						return false;
-					}
-				}, "End date should be after start date");
-				
-				// Load Custom Filter Report Data
-				$("#filterForm").validate({
-					submitHandler: function() {
-						$('#filterModal').modal('toggle');
-						
-						$("#cover-spin").fadeIn(250, function() {
-							$(this).show();
-						});
-						
-						setTimeout(function() {
-							// Reset table
-							$("#showAllReport,#showLastReport,#showNowReport").prop("disabled",false);
-							$("#reportLastUpdated,#reportStartDate,#reportEndDate").html("...");
-							$("#dbLastUpdated,#dbStartDate,#dbEndDate").val("");
-							table
-								.clear()
-								.draw();
-							$("#totalAllRoom,#totalAllVacant,#totalAllDue,#totalAllOverdue,#totalAllReceived,#totalAllExpense,#totalBalance").html("0");
-							$("#totalDueInt,#totalOverdueInt,#totalReceivedInt,#totalExpenseInt,#totalBalanceInt").val("0");
-							
-							// Pull all building data
-							buildRef.on('child_added', function(snapshot) {
-								tableLoadOn();
-								
-								var buildObject = new Object();
-								buildObject.no = snapshot.key.split(":")[1];
-								buildObject.alias = snapshot.child("alias").val();
-								buildObject.address = snapshot.child("address_street").val();
-								buildObject.roomCount = snapshot.child("total_room").val();
-								buildObject.tenantCount = countTenantinBuilding(buildObject.no,tenantList);
-								var buildVacantCount = buildObject.roomCount - buildObject.tenantCount;
-								
-								buildObject.due = 0;
-								buildObject.receive = 0;
-								buildObject.expense = 0;
-								table.row.add([buildObject.no,buildObject.alias,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.address,buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
-								
-								// Pull report data
-								reportRef.child(buildObject.no).on('child_added', function(snapshot) {
+								var tenant_id = snapshot.key
+								reportRef.child(buildObject.no+"/"+tenant_id).on('child_added', function(snapshot) {
 									tableLoadOn();
 									
-									var filterStartDate = reformatDate($("#filterStartDate").val(),"US");
-									var filterEndDate = reformatDate($("#filterEndDate").val(),"US");
-									var reportDate = snapshot.child("date").val();
+									var d = new Date();
+
+									var thisMonth = d.getMonth() + 1;
+									var lastMonth = thisMonth - 1; 
+									if (thisMonth == 1) {
+										lastMonth = 12;
+									}
+
+									var thisYear = d.getFullYear();
+									if (thisMonth == 1) {
+										thisYear -= 1;
+									}
 									
-									if ((date_diff_indays(filterStartDate,reportDate) >= 0) && (date_diff_indays(filterEndDate,reportDate) <= 0)) {
+									var reportDate = snapshot.child("date").val();
+									var reportMonth = parseInt(reportDate.split("/")[0]);
+									var reportYear = parseInt(reportDate.split("/")[2]);
+									
+									if ((reportMonth == lastMonth) && (reportYear == thisYear)) {
 										var inputDate = snapshot.child("inputDate").val();
 										if ($("#dbLastUpdated").val() == "") {
 											$("#dbLastUpdated")
@@ -787,6 +523,284 @@ $(document).ready(function() {
 									table.cell('#build'+buildObject.no,10).data(get_moneydot(buildObject.receive - buildObject.expense));
 									
 									tableLoadOff();
+								})
+							});
+							
+							table.draw();
+							
+							$("#totalAllRoom").html(parseInt($("#totalAllRoom").html()) + parseInt(buildObject.roomCount));
+							$("#totalAllVacant").html(parseInt($("#totalAllVacant").html()) + buildVacantCount);
+							$("#summary-vacant").html(((parseInt($("#totalAllVacant").html()) / parseInt($("#totalAllRoom").html()))*100).toFixed(2)+"%");
+							$("#summary-empty").html($("#totalAllVacant").html());
+							
+							tableLoadOff();
+						});
+						
+						setTimeout(() => {
+							$("#cover-spin").fadeOut(250, function() {
+								$(this).hide();
+							});
+						}, 20000);
+					}, 250);
+					
+				});
+				
+				// Load This Month Report Data
+				$("#showNowReport").click(function() {
+					$("#cover-spin").fadeIn(250, function() {
+						$(this).show();
+					});
+					
+					setTimeout(function() {
+						// Reset table
+						$("#showNowReport").prop("disabled",true);
+						$("#showLastReport,#showAllReport").prop("disabled",false);
+						$("#reportLastUpdated,#reportStartDate,#reportEndDate").html("...");
+						$("#dbLastUpdated,#dbStartDate,#dbEndDate").val("");
+						table
+							.clear()
+							.draw();
+						$("#totalAllRoom,#totalAllVacant,#totalAllDue,#totalAllOverdue,#totalAllReceived,#totalAllExpense,#totalBalance").html("0");
+						$("#totalDueInt,#totalOverdueInt,#totalReceivedInt,#totalExpenseInt,#totalBalanceInt").val("0");
+						
+						// Pull all building data
+						buildRef.on('child_added', function(snapshot) {
+							tableLoadOn();
+							
+							var buildObject = new Object();
+							buildObject.no = snapshot.key.split(":")[1];
+							buildObject.alias = snapshot.child("alias").val();
+							buildObject.address = snapshot.child("address_street").val();
+							buildObject.roomCount = snapshot.child("total_room").val();
+							buildObject.tenantCount = countTenantinBuilding(buildObject.no,countTenantList);
+							var buildVacantCount = buildObject.roomCount - buildObject.tenantCount;
+							
+							buildObject.due = 0;
+							buildObject.receive = 0;
+							buildObject.expense = 0;
+							table.row.add([buildObject.no,buildObject.alias,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.address,buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
+							
+							// Pull report data
+							reportRef.child(buildObject.no).on('child_added', function(snapshot) {
+								var tenant_id = snapshot.key
+								reportRef.child(buildObject.no+"/"+tenant_id).on('child_added', function(snapshot) {
+									tableLoadOn();
+									
+									var d = new Date();
+
+									var thisMonth = d.getMonth() + 1;
+									var thisYear = d.getFullYear();
+									
+									var reportDate = snapshot.child("date").val();
+									console.log(buildObject.no,tenant_id,reportDate)
+									var reportMonth = parseInt(reportDate.split("/")[0]);
+									var reportYear = parseInt(reportDate.split("/")[2]);
+									
+									if ((reportMonth == thisMonth) && (reportYear == thisYear)) {
+										var inputDate = snapshot.child("inputDate").val();
+										if ($("#dbLastUpdated").val() == "") {
+											$("#dbLastUpdated")
+												.val(inputDate)
+												.change();
+										} else {
+											if (date_diff_indays($("#dbLastUpdated").val(),inputDate) > 0) {
+												$("#dbLastUpdated")
+													.val(inputDate)
+													.change();
+											}
+										}
+										if (($("#dbStartDate").val() == "") || ($("#dbEndDate").val() == "")) {
+											$("#dbStartDate")
+												.val(reportDate)
+												.change();
+											$("#dbEndDate")
+												.val(reportDate)
+												.change();
+										} else {
+											if (date_diff_indays($("#dbStartDate").val(),reportDate) < 0) {
+												$("#dbStartDate")
+													.val(reportDate)
+													.change();
+											}
+											if (date_diff_indays($("#dbEndDate").val(),reportDate) > 0) {
+												$("#dbEndDate")
+													.val(reportDate)
+													.change();
+											}
+										}
+										
+										var reportDue = parseInt(snapshot.child("due").val());
+										var reportReceive = parseInt(snapshot.child("receive").val());
+										
+										buildObject.due += reportDue;
+										buildObject.receive += reportReceive;
+										
+										$("#totalDueInt").val(parseInt($("#totalDueInt").val()) + reportDue);
+										$("#totalAllDue").html(get_moneydot($("#totalDueInt").val()));
+										$("#totalOverdueInt").val(parseInt($("#totalOverdueInt").val()) + (reportReceive - reportDue));
+										$("#totalAllOverdue").html(get_moneydot($("#totalOverdueInt").val()));
+										$("#totalReceivedInt").val(parseInt($("#totalReceivedInt").val()) + reportReceive);
+										$("#totalAllReceived").html(get_moneydot($("#totalReceivedInt").val()));
+										$("#totalExpenseInt").val(parseInt($("#totalExpenseInt").val()) + buildObject.expense);
+										$("#totalAllExpense").html(get_moneydot($("#totalExpenseInt").val()));
+										$("#totalBalanceInt").val(parseInt($("#totalBalanceInt").val()) + (reportReceive - buildObject.expense));
+										$("#totalBalance").html(get_moneydot($("#totalBalanceInt").val()));
+										$("#summary-due").html($("#totalAllDue").html());
+										$("#summary-overdue").html($("#totalAllOverdue").html());
+										$("#summary-expense").html($("#totalAllExpense").html());
+										$("#summary-balance").html($("#totalBalance").html());
+									}
+									
+									table.cell('#build'+buildObject.no,6).data(get_moneydot(buildObject.due));
+									table.cell('#build'+buildObject.no,7).data(get_moneydot(buildObject.receive - buildObject.due));
+									table.cell('#build'+buildObject.no,8).data(get_moneydot(buildObject.receive));
+									table.cell('#build'+buildObject.no,9).data(get_moneydot(buildObject.expense));
+									table.cell('#build'+buildObject.no,10).data(get_moneydot(buildObject.receive - buildObject.expense));
+									
+									tableLoadOff();
+								})
+							});
+							
+							table.draw();
+							
+							$("#totalAllRoom").html(parseInt($("#totalAllRoom").html()) + parseInt(buildObject.roomCount));
+							$("#totalAllVacant").html(parseInt($("#totalAllVacant").html()) + buildVacantCount);
+							$("#summary-vacant").html(((parseInt($("#totalAllVacant").html()) / parseInt($("#totalAllRoom").html()))*100).toFixed(2)+"%");
+							$("#summary-empty").html($("#totalAllVacant").html());
+							
+							tableLoadOff();
+						});
+						
+						setTimeout(() => {
+							$("#cover-spin").fadeOut(250, function() {
+								$(this).hide();
+							});
+						}, 20000);
+					}, 250);
+					
+				});
+				
+				jQuery.validator.addMethod("isAfterStartDate", function(value, element) {
+					var startDate = reformatDate($('#filterStartDate').val(),"US");
+					var endDate = reformatDate(value,"US");
+
+					if (date_diff_indays(startDate,endDate) >= 0) {
+						return true;
+					} else  {
+						return false;
+					}
+				}, "End date should be after start date");
+				
+				// Load Custom Filter Report Data
+				$("#filterForm").validate({
+					submitHandler: function() {
+						$('#filterModal').modal('toggle');
+						
+						$("#cover-spin").fadeIn(250, function() {
+							$(this).show();
+						});
+						
+						setTimeout(function() {
+							// Reset table
+							$("#showAllReport,#showLastReport,#showNowReport").prop("disabled",false);
+							$("#reportLastUpdated,#reportStartDate,#reportEndDate").html("...");
+							$("#dbLastUpdated,#dbStartDate,#dbEndDate").val("");
+							table
+								.clear()
+								.draw();
+							$("#totalAllRoom,#totalAllVacant,#totalAllDue,#totalAllOverdue,#totalAllReceived,#totalAllExpense,#totalBalance").html("0");
+							$("#totalDueInt,#totalOverdueInt,#totalReceivedInt,#totalExpenseInt,#totalBalanceInt").val("0");
+							
+							// Pull all building data
+							buildRef.on('child_added', function(snapshot) {
+								tableLoadOn();
+								
+								var buildObject = new Object();
+								buildObject.no = snapshot.key.split(":")[1];
+								buildObject.alias = snapshot.child("alias").val();
+								buildObject.address = snapshot.child("address_street").val();
+								buildObject.roomCount = snapshot.child("total_room").val();
+								buildObject.tenantCount = countTenantinBuilding(buildObject.no,countTenantList);
+								var buildVacantCount = buildObject.roomCount - buildObject.tenantCount;
+								
+								buildObject.due = 0;
+								buildObject.receive = 0;
+								buildObject.expense = 0;
+								table.row.add([buildObject.no,buildObject.alias,"<a href='room_list.html?id="+buildObject.no+"#tenanti'>"+buildObject.address+"</a>",buildObject.address,buildObject.roomCount,buildVacantCount,get_moneydot(buildObject.due),get_moneydot(buildObject.receive - buildObject.due),get_moneydot(buildObject.receive),get_moneydot(buildObject.expense),get_moneydot(buildObject.receive - buildObject.expense)]).node().id = 'build'+buildObject.no;
+								
+								// Pull report data
+								reportRef.child(buildObject.no).on('child_added', function(snapshot) {
+									var tenant_id = snapshot.key
+									reportRef.child(buildObject.no+"/"+tenant_id).on('child_added', function(snapshot) {
+										tableLoadOn();
+										
+										var filterStartDate = reformatDate($("#filterStartDate").val(),"US");
+										var filterEndDate = reformatDate($("#filterEndDate").val(),"US");
+										var reportDate = snapshot.child("date").val();
+										
+										if ((date_diff_indays(filterStartDate,reportDate) >= 0) && (date_diff_indays(filterEndDate,reportDate) <= 0)) {
+											var inputDate = snapshot.child("inputDate").val();
+											if ($("#dbLastUpdated").val() == "") {
+												$("#dbLastUpdated")
+													.val(inputDate)
+													.change();
+											} else {
+												if (date_diff_indays($("#dbLastUpdated").val(),inputDate) > 0) {
+													$("#dbLastUpdated")
+														.val(inputDate)
+														.change();
+												}
+											}
+											if (($("#dbStartDate").val() == "") || ($("#dbEndDate").val() == "")) {
+												$("#dbStartDate")
+													.val(reportDate)
+													.change();
+												$("#dbEndDate")
+													.val(reportDate)
+													.change();
+											} else {
+												if (date_diff_indays($("#dbStartDate").val(),reportDate) < 0) {
+													$("#dbStartDate")
+														.val(reportDate)
+														.change();
+												}
+												if (date_diff_indays($("#dbEndDate").val(),reportDate) > 0) {
+													$("#dbEndDate")
+														.val(reportDate)
+														.change();
+												}
+											}
+											
+											var reportDue = parseInt(snapshot.child("due").val());
+											var reportReceive = parseInt(snapshot.child("receive").val());
+											
+											buildObject.due += reportDue;
+											buildObject.receive += reportReceive;
+											
+											$("#totalDueInt").val(parseInt($("#totalDueInt").val()) + reportDue);
+											$("#totalAllDue").html(get_moneydot($("#totalDueInt").val()));
+											$("#totalOverdueInt").val(parseInt($("#totalOverdueInt").val()) + (reportReceive - reportDue));
+											$("#totalAllOverdue").html(get_moneydot($("#totalOverdueInt").val()));
+											$("#totalReceivedInt").val(parseInt($("#totalReceivedInt").val()) + reportReceive);
+											$("#totalAllReceived").html(get_moneydot($("#totalReceivedInt").val()));
+											$("#totalExpenseInt").val(parseInt($("#totalExpenseInt").val()) + buildObject.expense);
+											$("#totalAllExpense").html(get_moneydot($("#totalExpenseInt").val()));
+											$("#totalBalanceInt").val(parseInt($("#totalBalanceInt").val()) + (reportReceive - buildObject.expense));
+											$("#totalBalance").html(get_moneydot($("#totalBalanceInt").val()));
+											$("#summary-due").html($("#totalAllDue").html());
+											$("#summary-overdue").html($("#totalAllOverdue").html());
+											$("#summary-expense").html($("#totalAllExpense").html());
+											$("#summary-balance").html($("#totalBalance").html());
+										}
+										
+										table.cell('#build'+buildObject.no,6).data(get_moneydot(buildObject.due));
+										table.cell('#build'+buildObject.no,7).data(get_moneydot(buildObject.receive - buildObject.due));
+										table.cell('#build'+buildObject.no,8).data(get_moneydot(buildObject.receive));
+										table.cell('#build'+buildObject.no,9).data(get_moneydot(buildObject.expense));
+										table.cell('#build'+buildObject.no,10).data(get_moneydot(buildObject.receive - buildObject.expense));
+										
+										tableLoadOff();
+									})
 								});
 								
 								table.draw();
@@ -834,6 +848,14 @@ $(document).ready(function() {
 			
 			tableLoadOff();
 		});
+
+		dataRoom.on('child_added', function(snapshot){
+			var build_id = snapshot.key
+			dataRoom.child(build_id).on('child_added', function(snapshot){
+				countTenantList[snapshot.key]=build_id
+			})
+			
+		})
 		
 	});
 

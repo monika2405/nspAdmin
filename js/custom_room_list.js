@@ -94,8 +94,9 @@ var table3 = $('#data-table3').DataTable({
 				exportOptions: {
                     columns: [ 0, 1, 3, 4, 5, 6, 7, 8, 9, 10 ]
                 },
-                download: 'open',
-				customize: function (doc) {
+				download: 'open',
+				customize: function(doc) {
+					
 					doc.content.splice(0,1);
 					var now = new Date();
 					var jsDate = now.getDate()+'-'+(now.getMonth()+1)+'-'+now.getFullYear();
@@ -142,9 +143,11 @@ var table3 = $('#data-table3').DataTable({
 							objLayout['paddingLeft'] = function(i) { return 4; };
 							objLayout['paddingRight'] = function(i) { return 4; };
 							doc.content[0].layout = objLayout;
-				}
+
 		}
-        ]
+        
+}
+		]
 })
 
 //table tab expense
@@ -668,13 +671,14 @@ $(document).ready(function() {
 						var end_date = sumMonth(start_date,snapshot.child("ctrt_opt").val())
 						var start_date = reformatDate(start_date)
 						var refNumberFormat = snapshot.child("ref_number").val()
+						var refNumb = refNumberFormat.split(" ").join("")
 						var plan = snapshot.child("pay_plan").val()
 						var rent_price = snapshot.child("rent_price").val()
 						
 						if (plan=="monthly"){
-							plan="1"
-						} else if(plan=="annually") {
 							plan="12"
+						} else if(plan=="annually") {
+							plan="1"
 						} else if(plan=="semiannually"){
 							plan="2"
 						}
@@ -702,7 +706,7 @@ $(document).ready(function() {
 									balance="("+get_fmoney(balance*(-1))+")"
 								}
 								
-								table3.row.add([floorN,"<a id='"+refN0+"' href='javaScript:void(0);' onclick='editRoom("+refN0+")'>"+roomN+"</a>",rent_price,"<a id='"+tenant_Id+"' href='tenant_details.html?id="+tenant_Id+"#ledger'>"+full_name+"</a>",start_date,"<p>"+reformatDate(end_date)+"</p>",refNumberFormat,plan,due,receive,balance]).node().id = 'row'+refN0;
+								table3.row.add([floorN,"<a id='"+refN0+"' href='javaScript:void(0);' onclick='editRoom("+refN0+")'>"+roomN+"</a>",rent_price,"<a id='"+tenant_Id+"' href='tenant_details.html?"+tenant_Id+"?"+refNumb+"#ledger'>"+full_name+"</a>",start_date,"<p>"+reformatDate(end_date)+"</p>",refNumberFormat,plan,due,receive,balance]).node().id = 'row'+refN0;
 								table3.draw(false);
 								$("#row"+refN0).hide().delay(500).show('slow');
 								countTotalDue();

@@ -179,6 +179,7 @@ function uploadDB() {
 	});
 	lockForm();
 	var tenantID;
+	var build_id = $("#propnumb").html().substring(10,12)
 	//listen value to reach threshold
 	$("#thresholdCounter").change(function() {
 		if ($(this).val() == "6") { //wait until finish uploading
@@ -284,12 +285,14 @@ function uploadDB() {
 				counter : 1
 			});
 		}
-		paymentRef = firebase.database().ref().child("payment/"+tenantID);
+		
 		fpayRef = firebase.database().ref().child("first-payment/"+tenantID)
-		var contract = firebase.database().ref().child("contract/"+tenantID+"/"+$("#myRoomID").val()+"");
+		dataRoom = firebase.database().ref().child("dataRoom/"+build_id+"/"+tenantID)
+		
+		var contract = firebase.database().ref().child("newContract/"+tenantID+"/"+$("#myRoomID").val()+"");
 		var sd_date = new Date(reformatDate2($("#edate").val()))
 		var ed_date = sd_date.addMonths(parseInt($("#ctoption").val())).toString("M/d/yyyy")
-		contract.push({
+		contract.child("1").set({
 			"ctrt_length": $("#ctoption").val(),
 			"refNumb":$("#roomid").html()+$("#tenantno").html(),
 			"ctrt_type":"Months",
@@ -300,12 +303,15 @@ function uploadDB() {
 			"rent":rem_fmoney($("#fprice").html())
 		})
 		contract.update({
-			"historyperiod":1
+			"historyperiod":1,
+			"status": "active"
 		})
-		fpayRef.update({
+		
+		fpayRef.set({
 			"payment":0,
-			"bond-balace":rem_fmoney($("#fprice").html()) + rem_fmoney($("#fbond").html())
+			"bond-balance":rem_fmoney($("#fprice").html())
 		})
+		dataRoom.set("there")
 		//update last ref
 		const updateLastRef = firebase.database().ref("property/residential/building_no:"+$("#propnumb").html().split(" ")[1].split(")")[0]+"/floor:"+$("#floornumb").val()+"/ID:"+$("#myRoomID").val());
 		updateLastRef.update({
@@ -1007,6 +1013,8 @@ $(document).ready(function() {
 			$("#tenantno").html(inpStart);
 		}
 	})
+	$( "#prorata" ).prop( "checked", true );
+
 	//reset address listener
 	$("#resetaddr").on('click', function() {
 		location.reload();

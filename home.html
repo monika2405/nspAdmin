@@ -179,17 +179,19 @@
 								</div>
 								<div class="clearfix"></div>
 							</div>
+							
 							<div class="page-tables">
 								<!-- button -->
 								<div class="row">
 									<div class="col-md-12">
-										<button id="printerb" class="btn btn-default pull-left" style="margin-bottom:15px; margin-left:5px;"><i class="fa fa-print"></i></button>
+										<button id="tagihanVA" class="btn btn-default pull-left" style="margin-bottom:15px; margin-left:5px;" onClick="window.location = 'virtual_account.html';">Tagihan Virtual Account</button>
 										<button id="invoiceb" class="btn btn-primary pull-right" style="margin-bottom:15px; margin-left:5px;"><i class="fa fa-plus"></i> Invoice</button>
 										<button id="paymentb" class="btn btn-success pull-right" style="margin-bottom:15px; margin-left:5px;"><i class="fa fa-plus"></i> Transaction</button>
 										<button class="btn btn-rose pull-right" onClick="window.location = 'building_add.html';" style="margin-bottom:15px; margin-left:5px;"><i class="fa fa-plus"></i> Building</button>
 										<button id="baddt" class="btn btn-info pull-right" onClick="window.location = 'tenant_add.html';" style="margin-bottom:15px; margin-left:5px;"><i class="fa fa-plus"></i> Booking</button>
 									</div>
 								</div>
+								
 								<div class="row">
 									<!-- Booking Widget -->
 									<div class="col-md-6">
@@ -346,6 +348,7 @@
                                     </div>
 								</div>
 							</div>
+							
 						</div>
 					</div>
 				</div>
@@ -392,13 +395,13 @@
 								<div class="col-lg-5">
 									<select id="invoiceDetails" name="invoiceDetails" class="form-control" required>
 										<option value="">Select Details</option>
-										<option value="finedue">Rental Due</option>
+										
 										<option value="finedue">Fine Due</option>
 										<option value="otherdue">Other Due</option>
 									</select>
 								</div>
 							</div>
-							<div id="invoiceDetailsOtherBlock" class="form-group" style="display:none;">
+							<div id="invoiceDetailsOtherBlock" class="form-group">
 								<label for="invoiceDetailsOther" class="control-label col-lg-3">Other</label>
 								<div class="col-lg-5">
 									<input id="invoiceDetailsOther" name="invoiceDetailsOther" class="form-control" type="text" required/>
@@ -491,10 +494,32 @@
 								</div>
 							</div>
 							<div id="paymentDetailsAdjustBlock" class="form-group" style="display:none;">
-								<label for="paymentDetailsAdjust" class="control-label col-lg-4">Adjustment</label>
-								<div class="col-lg-5">
-									<input id="paymentDetailsAdjust" name="paymentDetailsAdjust" class="form-control" type="text" required/>
+								<div class="row">
+								<label for="paymentDetailsAdjust" class="control-label col-lg-3">Adjustment</label>
+								<div class="col-lg-6">
+									<select id="adjstDetails" name="adjstDetails" class="form-control" required>
+										<option value="">Select Details</option>
+										<option value="Rental Payment">Rental Payment</option>
+										<option value="Fine Payment">Fine Payment</option>
+										<option value="Bond Money Payment">Bond Money Payment</option>
+										<option value="Adjustment">Adjustment</option>
+										<option value="Other Payment">Other Payment</option>
+										<option value="Rental Due">Rental Due</option>
+										<option value="Fine Due">Fine Due</option>
+										<option value="Bond Money Due">Bond Money Due</option>
+										<option value="Other Due">Other Due</option>
+									</select>
 								</div>
+							</div>
+							<div class="row" style="margin-top: 10px">
+								<label for="adjstDate" class="control-label col-lg-3">on</label>
+								<div class="col-lg-6">
+									<div id="adjstDatePicker" class="input-group date">
+										<input id="adjstDate" name="adjstDate" type="text" class="form-control" placeholder="Pick Date" readonly required>
+										<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+									</div>
+								</div>
+							</div>
 							</div>
 						</form>
 					</div>
@@ -557,8 +582,9 @@
 					</div>
 					<div class="modal-body">
 					<!-- body -->
-						<span id="approveD"></span>
+						<span id="approveD" value=""></span>
 						<input type="hidden" id="approveD2" name="approveD2" value="">
+						<input type="hidden" id="approveD3" name="approveD3" value="">
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
@@ -835,6 +861,9 @@
 		<script src="js/jquery.slimscroll.min.js"></script>
 		<!-- Data Tables JS -->
 		<script src="js/jquery.dataTables.min.js"></script>	
+		<script src="js/dataTables.buttons.min.js"></script>
+		<script src="js/buttons.html5.min.js"></script>
+		<script src="js/jszip.min.js"></script>
 		<!-- Pretty Photo JS -->
 		<script src="js/jquery.prettyPhoto.js"></script>	
 		<!-- Rate It JS -->
@@ -856,7 +885,12 @@
 		<script src="js/custom.js"></script>
 		<script src="js/custom_logincheck.js"></script>
 		<script src="js/custom_home.js"></script>
-		
+		<script>
+		$('#adjstDatePicker').datepicker({
+			format: "d-M-yy",
+			autoclose: true
+		});
+		</script>
 		
 		<!-- Javascript for this page -->
 		

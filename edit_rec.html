@@ -195,24 +195,21 @@
 							
                             <div class="row">
 								<div class="col-lg-6">
-                                    <h2>Edit Report</h2>
+                                    <h2>Edit Reccurring</h2>
                                     <br>
 								</div>
 							</div> 
-
-					
                             <div class="page-tables">
 								<!-- Table -->
 								<div class="table-responsive">
 									<table cellpadding="0" cellspacing="0" class="stripe" id="editReportTable" width="100%">
 										<thead>
 											<tr>
-												<th>BNO</th>
-                                                <th>Ref #</th>
-                                                <th>Name</th>
-												<th>Date</th>
-                                                <th>Receive</th>
-                                                <th>Due</th>
+												<th>t_id</th>
+                                                <th>Date</th>
+                                                <th>Pay</th>
+												<th>Pay Plan</th>
+                                                <th>Rent</th>
                                                 <th>Control</th>
 												
 											</tr>
@@ -225,8 +222,8 @@
                                     </a>
 									<div class="clearfix"></div>
 								</div>
+							</div>
 							
-						</div>
 							
 							
 						</div>
@@ -245,42 +242,26 @@
 				<div class="modal-content">
 					<div class="modal-header" style="background-color:#528FE2">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
-						<h4 class="modal-title" style="color:#FFF"><b>Transaction adjustment</b></h4>
+						<h4 class="modal-title" style="color:#FFF"><b>Reccurring adjustment</b></h4>
 					</div>
 					<div class="modal-body">
 						<form id="adjustmentTransForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
 							<div class="form-group">
-                                <label for="RefNumbTenant" class="control-label col-lg-3">Ref Numb / Name</label>
+                                <label for="RefNumbTenant" class="control-label col-lg-3">Date</label>
                                 <div class="col-lg-5">
                                     <input id="RefNumbTenant" name="RefNumbTenant" class="form-control" type="text" required/>
                                 </div>
-							</div>
-							<div class="form-group">
-								<label for="AdjstDate" class="control-label col-lg-3">Date</label>
-								<div class="col-lg-5">
-									<div id="adjstDatePicker" class="input-group date">
-										<input id="AdjstDate" name="AdjstDate" type="text" class="form-control" placeholder="Pick Date" readonly required>
-										<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
-									</div>
-								</div>
-							</div>
+                            </div>
                             <div class="form-group">
-                                <label for="TransReceive" class="control-label col-lg-3">Receive</label>
+                                <label for="TransReceive" class="control-label col-lg-3">Pay</label>
 								<div class="col-lg-5">
 									<input id="TransReceive" name="TransReceive" class="form-control" type="text" maxlength="20" required/>
 								</div>
                             </div>
-                            <div class="form-group">
-                                    <label for="TransDue" class="control-label col-lg-3">Due</label>
-                                    <div class="col-lg-5">
-                                        <input id="TransDue" name="TransDue" class="form-control" type="text" maxlength="20" required/>
-                                    </div>
-                                </div>
-                            <input id="key" name="key" type="hidden" required>
+                            
                             <input id="t_id" name="t_id" type="hidden" required>
-                            <input id="refN" name="refN" type="hidden" required/>
-                           
-							<input id="build_no" name="build_no" type="hidden" required>
+                            <input id="rent" name="rent" type="hidden" required>
+                            <input id="payPlan" name="payPlan" type="hidden" required>
 						</form>
 					</div>
 					<div class="modal-footer">
@@ -290,24 +271,7 @@
 				</div>
 			</div>
 		</div>
-        <!-- Modal -->
-		<div id="modalConfirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
-						<h4 class="modal-title">Warning</h4>
-					</div>
-					<div class="modal-body">
-						<p>Are you sure you want to remove this report?</p>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
-						<button id="confirmYes" type="button" class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Remove</button>
-					</div>
-				</div>
-			</div>
-		</div>
+        
 		<!-- modal Notif-->
 		<div id="notifModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog">
@@ -369,7 +333,6 @@
 		<script src="js/jquery.slimscroll.min.js"></script>
 		<!-- Data Tables JS -->
 		<script src="js/jquery.dataTables.min.js"></script>
-		<script src="js/jquery.dataTables.js"></script>
 		<script src="js/dataTables.fixedHeader.min.js"></script>
 		<!-- Pretty Photo JS -->
 		<script src="js/jquery.prettyPhoto.js"></script>	
@@ -389,12 +352,7 @@
 		<!-- Custom JS -->
 		<script src="js/custom.js"></script>
 		<script src="js/custom_logincheck.js"></script>
-		<script src="js/custom_edit_report.js"></script>
-		<script>
-		$('#adjstDatePicker').datepicker({
-			format: "d-M-yy",
-			autoclose: true
-		});
-		</script>
+		<script src="js/custom_edit_rec.js"></script>
+		
 	</body>	
 </html>

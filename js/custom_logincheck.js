@@ -422,7 +422,8 @@ firebase.auth().onAuthStateChanged(function(user) {
 								var statOccupy=snapshot.child("stat_occupy").val();
 								var refN = snapshot.child("ref_number").val();
 								var refN1= refN.split(" ");
-								var refNumber=refN1[0]+refN[1]+refN[2];
+								var refNumber=refN1[0]+refN1[1]+refN1[2];
+								
 								if ((statOccupy=="approved") || (statOccupy=="active")){ // Status approved or active
 									var tenantRef = firebase.database().ref().child("tenant/"+tenantID);
 									tenantRef.once('value', function(snapshot) {
@@ -440,7 +441,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 												response(results.slice(0, 10));
 											},
 											select: function(event, ui) {
-												window.location = "tenant_details.html?id="+ui.item.tenantid;
+												window.location = "tenant_details.html?"+ui.item.tenantid+"?"+ui.item.refnumber;
 												return false;
 											}
 										});
@@ -462,7 +463,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 								var refN = snapshot.child("ref_number").val();
 								console.log(refN)
 								var refN1= refN.split(" ");
-								var refNumber=refN1[0]+refN[1]+refN[2];
+								var refNumber=refN1[0]+refN1[1]+refN1[2];
 								if ((statOccupy=="approved") || (statOccupy=="active")){ // Status approved or active
 									var tenantRef = firebase.database().ref().child("tenant/"+tenantID);
 									tenantRef.once('value', function(snapshot) {
@@ -497,7 +498,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 												response(results.slice(0, 10));
 											},
 											select: function(event, ui) {
-												window.location = "tenant_details.html?id="+ui.item.tenantid;
+												window.location = "tenant_details.html?"+ui.item.tenantid+"?"+ui.item.refnumber;
 												return false;
 											}
 										});
@@ -516,7 +517,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 													response(results.slice(0, 10));
 												},
 												select: function(event, ui) {
-													window.location = "tenant_details.html?id="+ui.item.tenantid;
+													window.location = "tenant_details.html?"+ui.item.tenantid+"?"+ui.item.refnumber;
 													return false;
 												}
 											});
@@ -540,7 +541,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 								var statOccupy=snapshot.child("stat_occupy").val();
 								var refN = snapshot.child("ref_number").val();
 								var refN1= refN.split(" ");
-								var refNumber=refN1[0]+refN[1]+refN[2];
+								var refNumber=refN1[0]+refN1[1]+refN1[2];
 								
 								// Status not approved or active
 								for (i=0;i<tenantNames.length;i++){
@@ -553,7 +554,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 												response(results.slice(0, 10));
 											},
 											select: function(event, ui) {
-												window.location = "tenant_details.html?id="+ui.item.tenantid;
+												window.location = "tenant_details.html?"+ui.item.tenantid+"?"+ui.item.refnumber;
 												return false;
 											}
 										});
@@ -583,7 +584,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 								response(results.slice(0, 10));
 							},
 							select: function(event, ui) {
-								window.location = "tenant_details.html?id="+ui.item.tenantid;
+								window.location = "tenant_details.html?"+ui.item.tenantid+"?"+ui.item.refnumber;
 								return false;
 							}
 						});

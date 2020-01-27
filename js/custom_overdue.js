@@ -319,7 +319,7 @@ $(document).ready(function() {
 							
 							// overdueRef2=firebase.database().ref().child("tenant/"+tenantID);
 							var name = shortenString(tenantdata[i].full_name,15) 
-							table1.row.add([refN,"<a href='tenant_details.html?id="+i+"'>"+name+"</a>",reformatDate(overdueDate),shortenString(tenant[i].prop_addr,25),buildNo,floorNo,roomNo,split_ph(tenantdata[i].cont_mobile)]).node().id = 'over'+i;
+							table1.row.add([refN,"<a href='tenant_details.html?"+i+"?"+refNumber+"'>"+name+"</a>",reformatDate(overdueDate),shortenString(tenant[i].prop_addr,25),buildNo,floorNo,roomNo,split_ph(tenantdata[i].cont_mobile)]).node().id = 'over'+i;
 							
 						}
 					}
@@ -345,7 +345,7 @@ $(document).ready(function() {
 									
 									// overdueRef2=firebase.database().ref().child("tenant/"+tenantID);
 									var name = shortenString(tenantdata[i].full_name,15) 
-									table1.row.add([refN,"<a href='tenant_details.html?id="+i+"'>"+name+"</a>",reformatDate(overdueDate),shortenString(tenant[i].prop_addr,25),buildNo,floorNo,roomNo,split_ph(tenantdata[i].cont_mobile)]).node().id = 'over'+i;
+									table1.row.add([refN,"<a href='tenant_details.html?id="+i+"?"+refNumber+"'>"+name+"</a>",reformatDate(overdueDate),shortenString(tenant[i].prop_addr,25),buildNo,floorNo,roomNo,split_ph(tenantdata[i].cont_mobile)]).node().id = 'over'+i;
 									
 								}
 							}

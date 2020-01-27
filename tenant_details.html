@@ -562,7 +562,7 @@
 													<option value="Debit">Debit</option>
 												</select>
 											</div>
-											<h4><a class="pull-right" style="margin-top:10px;" onclick="recurringPage()"><u>Recurring invoice</u></a></h4>
+											<a class="pull-right" style="margin-top:10px;cursor: pointer" onclick="recurringPage()"><u>Recurring invoice</u></a>
 											</div>
 											<h3 style="margin-bottom:20px;">Bond Money Ledger</h3>
 											<div class="page-tables" style="margin-bottom:5px;">
@@ -671,14 +671,13 @@
 								<div class="col-lg-5">
 									<select id="invoiceDetails" name="invoiceDetails" class="form-control" required>
 										<option value="">Select Details</option>
-										<option value="rentdue">Rental Due</option>
 										<option value="finedue">Fine Due</option>
 										<option value="otherdue">Other Due</option>
 									</select>
 								</div>
 							</div>
-							<div id="invoiceDetailsOtherBlock" class="form-group" style="display:none;">
-								<label for="invoiceDetailsOther" class="control-label col-lg-3">Other</label>
+							<div id="invoiceDetailsOtherBlock" class="form-group">
+								<label for="invoiceDetailsOther" class="control-label col-lg-3">Details</label>
 								<div class="col-lg-5">
 									<input id="invoiceDetailsOther" name="invoiceDetailsOther" class="form-control" type="text" required/>
 								</div>
@@ -762,10 +761,32 @@
 								</div>
 							</div>
 							<div id="paymentDetailsAdjustBlock" class="form-group" style="display:none;">
+								<div class="row">
 								<label for="paymentDetailsAdjust" class="control-label col-lg-3">Adjustment</label>
-								<div class="col-lg-5">
-									<input id="paymentDetailsAdjust" name="paymentDetailsAdjust" class="form-control" type="text" required/>
+								<div class="col-lg-6">
+									<select id="adjstDetails" name="adjstDetails" class="form-control" required>
+										<option value="">Select Details</option>
+										<option value="Rental Payment">Rental Payment</option>
+										<option value="Fine Payment">Fine Payment</option>
+										<option value="Bond Money Payment">Bond Money Payment</option>
+										<option value="Adjustment">Adjustment</option>
+										<option value="Other Payment">Other Payment</option>
+										<option value="Rental Due">Rental Due</option>
+										<option value="Fine Due">Fine Due</option>
+										<option value="Bond Money Due">Bond Money Due</option>
+										<option value="Other Due">Other Due</option>
+									</select>
 								</div>
+							</div>
+							<div class="row" style="margin-top: 10px">
+								<label for="adjstDate" class="control-label col-lg-3">on</label>
+								<div class="col-lg-6">
+									<div id="adjstDatePicker" class="input-group date">
+										<input id="adjstDate" name="adjstDate" type="text" class="form-control" placeholder="Pick Date" readonly required>
+										<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+									</div>
+								</div>
+							</div>
 							</div>
 						</form>
 					</div>
@@ -808,6 +829,7 @@
 					<!-- body -->
 						<span id="nonactiveM"></span>
 						<span id="tenantM"></span>
+						<input type="hidden" id="nonActiveD" name="nonActiveD" value="">
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
@@ -831,6 +853,7 @@
 								<div class="col-lg-8">
 									<div class="checkbox">
 										<span id="extendPropAddr" name="extendPropAddr"></span>
+										
 									</div>
 								</div>
 							</div>
@@ -861,18 +884,11 @@
 								<label for="startDate" class="control-label col-lg-3">Start Date</label>
 								<div class="col-md-4">
 									<div id="sdatePicker" class="input-group date">
-										<input id="sdate_edt" name="sdate_edt" type="text" class="form-control" placeholder="Pick Date" >
+										<input id="startDate" name="startDate" type="text" class="form-control" placeholder="Pick Date" >
 										<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
 									</div>
-								</div>
-								
-								
-								
+								</div>	
 							</div>
-							
-
-							
-						
 							<div class="form-group" style="margin:0px -10px;">
 								<label for="extendIntend" class="control-label col-lg-3">Intended Length of Stay</label>
 								<div class="intendedLength">
@@ -1024,6 +1040,10 @@
 		<!-- Data Tables JS -->
 		<script src="js/jquery.dataTables.min.js"></script>	
 		<script src="js/dataTables.date-us.js"></script>
+		<script src="js/dataTables.buttons.min.js"></script>
+		<script src="js/buttons.html5.min.js"></script>
+		<script src="js/jszip.min.js"></script>
+		<script src="js/dataTables.fixedHeader.min.js"></script>
 		<!-- Pretty Photo JS -->
 		<script src="js/jquery.prettyPhoto.js"></script>	
 		<!-- Rate It JS -->
@@ -1057,6 +1077,15 @@
 			format: "d-M-yyyy",
 			autoclose: true
 		})
+		$('#adjstDatePicker').datepicker({
+			format: "d-M-yy",
+			autoclose: true
+		});
+		$('#sdatePicker').datepicker({
+			format: "d-M-yy",
+			autoclose: true
+		});
+		
 		$("#invoiceDate").val(reformatDate(getTodayDate()));
 		$("#paymentDate").val(reformatDate(getTodayDate()));
 		</script>

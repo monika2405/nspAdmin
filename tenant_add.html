@@ -284,6 +284,7 @@
 												</div>
 											</div>
 										</div>
+
 										<div class="form-group">
 											<label for="fprice" class="control-label col-lg-2">Final Price</label>
 											<div class="col-lg-3">
@@ -302,7 +303,38 @@
 												</div>
 											</div>
 										</div>
+										<div class="form-group">
+											<label for="prorata" class="control-label col-lg-2">Prorata</label>
+											<div class="col-lg-3">
+												<input id="prorata" name="prorata" type="checkbox">
+											</div>
+										</div>
+										<div class="prorataPricing" style="display:none;">
+											<div class="form-group">
+												<label for="prrprice" class="control-label col-lg-2">Price</label>
+												<div class="col-lg-3">
+													<div class="checkbox">
+														<span id="prrprice" name="prrprice">Rp. -</span>
+														<input id="pryearp" name="pryearp" type="hidden" value="" readonly>
+														<input id="prcprice" name="prcprice" type="hidden" value="" readonly>
+														<span>&nbsp;</span>
+														<button id="prpadj" type="button" class="btn btn-xs btn-primary" style="display:none;"><img src="img/icons/plusminus.svg" width="12px"></button>
+													</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="prfprice" class="control-label col-lg-2">Final Price</label>
+													<div class="col-lg-3">
+														<div class="checkbox">
+															<span id="prfprice" name="prfprice">Rp. -</span>
+															<input id="prcfprice" name="prcfprice" type="hidden" value="" readonly>
+															<input id="prpayadjt" name="prpayadjt" type="hidden" value="0" readonly>
+														</div>
+													</div>
+											</div>
+										</div>
 									</div>
+									
 									<div class="form-group">
 										<label for="ctoption" class="control-label col-lg-2">Intended length of stay</label>
 										<div class="col-lg-3">

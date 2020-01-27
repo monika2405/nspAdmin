@@ -29,7 +29,14 @@ var table1 = $('#sledger').DataTable({
 	{
 		targets: [2,3,4],
 		width: "22%"
-	}]
+	}],
+	dom: 'Bfrtip',
+    buttons: [ {
+        extend: 'excelHtml5',
+        autoFilter: true,
+		title: 'Laporan Ledger '+window.location.href.split('?')[2]+'',
+		sheetName: window.location.href.split('?')[2]
+    } ]
 });
 
 var bondList = [];
@@ -285,12 +292,7 @@ function countTotalBondReceived() {
 }
 
 function recurringPage(){
-	var rent=$("#payment1").text()
-	rent2=rent.split("paid")[0]
-	payplan=rent.split("paid ")[1]
-	payplan2=payplan.split(" Electricity")[0]
-	rent = rem_fmoney(rent2).toString()
-	window.location='tenant_recurring.html?id='+id+'/='+rent+'/='+payplan2;
+	window.location='tenant_recurring.html?id='+id;
 }
 
 function countBondBalance() {
@@ -378,15 +380,23 @@ function nonactiveModal(){
 	var refNumber = $("#tenant_id").html()
 	$('#nonactiveM').html("Are you sure to Non-Active "+refNumber+" ?");
 	$('#nonactiveM').val(refNumber);
+	$('#nonActiveD').val(refNumber);
 	$("#nonActiveModal").modal();
 }
 
 function nonActive(){
-	id2 = window.location.href.split('=')[1];
-	id = id2.split("#")[0];
-	newfirebase=firebase.database().ref().child("tenantendContract/"+id);
-	contract=firebase.database().ref().child("contract/"+id+"/"+room_id);
+	id = window.location.href.split('?')[1];
+	var build_id = parseInt($('#nonActiveD').val().substring(1,3))
+	var room_id = $('#nonActiveD').val().split(" ").join("").substring(0,7)
+	newfirebase=firebase.database().ref().child("HistoryRoom/"+build_id+"/"+room_id+"/"+id);
+	payment = firebase.database().ref().child("payment/"+id);
+	contract=firebase.database().ref().child("newContract/"+id);
 	tenantRef = firebase.database().ref().child("tenant-room");
+	booking = firebase.database().ref().child("booking-tenant/"+id)
+	tenant =  firebase.database().ref().child("tenant/"+id);
+	tenantroom = firebase.database().ref().child("tenant-room/"+id);
+	recurring = firebase.database().ref("recurringPay/"+id)
+
 	tenantRef.once('value', function(snapshot){
 		var tenantCount = parseInt(snapshot.child("total_tenant").val()) - 1;
 		tenantRef.update({
@@ -395,36 +405,12 @@ function nonActive(){
 	})
 	
 	contract.on("child_added", function(snapshot){
-		if (snapshot.key!="historyperiod" && snapshot.key!="status"){
-			var bond = snapshot.child("bond").val();
-			var ctrt_length = snapshot.child("ctrt_length").val();
-			var ctrt_type = snapshot.child("ctrt_type").val();
-			var end_date = snapshot.child("end_date").val();
-			var payPlan = snapshot.child("payPlan").val();
-			var refNumb = snapshot.child("refNumb").val();
-			var rent = snapshot.child("rent").val();
-			var start_date = snapshot.child("start_date").val();
-			newfirebase.child("contract").push({
-				"bond":bond,
-				"ctrt_length":ctrt_length,
-				"ctrt_type":ctrt_type,
-				"end_date":end_date,
-				"payPlan":payPlan,
-				"refNumb":refNumb,
-				"rent":rent,
-				"start_date":start_date
-			})
-		}
-		else if (snapshot.key=="historyperiod"){
-			historyperiod = snapshot.val();	
-			newfirebase.child("contract").update({
-				"historyperiod":historyperiod
-			})
-		}
+		newfirebase.child("contract").set(snapshot.val())
 	})
 	
-	payment = firebase.database().ref().child("payment/"+id);
+	
 	payment.on("child_added", function(snapshot){
+		
 		if (snapshot.key!="balance"&&snapshot.key!= "bondWaitDue"&&snapshot.key!="recurring"){
 			var date = snapshot.child("date").val();
 			var desc = snapshot.child("desc").val();
@@ -453,64 +439,8 @@ function nonActive(){
 				"bondWaitDue":bondWaitDue
 			})
 		}
-		else if (snapshot.key == "recurring"){
-			var recurring = snapshot.val();
-			newfirebase.child("payment").update({
-				"recurring":recurring
-			})
-		}
 	 })
 	
-
-	setTimeout(function(){
-		firebase.database().ref().child("payment/"+id).remove();
-		firebase.database().ref().child("contract/"+id).remove();
-		firebase.database().ref().child("tenant/"+id).remove();
-		firebase.database().ref().child("tenant-room/"+id).remove();
-		firebase.database().ref().child("overdue/"+id).remove();
-		//stop loading icon
-		$("#cover-spin").fadeOut(250, function() {
-			$(this).hide();
-		})
-	
-		//success notification
-		$.gritter.add({
-			title: 'Tenant has been deactivated',
-			text: 'Tenant was successfuly be deactivated',
-			image: './img/bell.png',
-			sticky: false,
-			time: 3500,
-			class_name: 'gritter-custom'
-		})
-		setTimeout(function(){
-			window.location='home.html';
-		}, 1000);
-		
-	}, 2000);
-
-}
-
-//Fungsi untuk End-Contract Tenant
-function endContractModal(){
-	var refNumber = $("#tenant_id").html()
-	$('#endM').html("Are you sure to end contract "+refNumber+" ?");
-	$('#endM').val(refNumber);
-	$("#endModal").modal();
-}
-
-
-function endContract(){
-	var refNumber = $("#tenant_id").html()
-	refNumb=refNumber.split(" ")
-	refNumb2=refNumb[0]+refNumb[1]+refNumb[2]
-	var room_id=refNumb2.substring(0,7)
-	id2 = window.location.href.split('=')[1];
-	id = id2.split("#")[0];
-	var historyperiod=0
-	newfirebase=firebase.database().ref().child("tenantendContract/"+id);
-	
-	
-	tenant =  firebase.database().ref().child("tenant/"+id);
 	tenant.once("value", function(snapshot){
 		var full_name=snapshot.child("full_name").val();
 		var birth_date=snapshot.child("birth_date").val();
@@ -574,7 +504,7 @@ function endContract(){
 			}
 		})
 	})
-	tenantroom = firebase.database().ref().child("tenant-room/"+id);
+ 
 	tenantroom.on("child_added", function(snapshot){
 		var apply_date = snapshot.child("apply_date").val();
 		var adjst_bond = snapshot.child("adjst_bond").val();
@@ -622,6 +552,62 @@ function endContract(){
 			rent_bond	: rent_bond
 		})
 	})
+
+	setTimeout(function(){
+		firebase.database().ref().child("payment/"+id).remove();
+		firebase.database().ref().child("newContract/"+id).remove();
+		firebase.database().ref().child("tenant/"+id).remove();
+		firebase.database().ref().child("tenant-room/"+id).remove();
+		firebase.database().ref().child("overdue/"+id).remove();
+		firebase.database().ref().child("booking-tenant/"+id).remove();
+		firebase.database().ref().child("dataRoom/"+build_id+"/"+id).remove()
+		firebase.database().ref().child("first-payment/"+id).remove()
+		firebase.database().ref().child("recurringPay/"+id).remove()
+		recurring.remove()
+		//stop loading icon
+		$("#cover-spin").fadeOut(250, function() {
+			$(this).hide();
+		})
+	
+		//success notification
+		$.gritter.add({
+			title: 'Tenant has been deactivated',
+			text: 'Tenant was successfuly be deactivated',
+			image: './img/bell.png',
+			sticky: false,
+			time: 3500,
+			class_name: 'gritter-custom'
+		})
+		setTimeout(function(){
+			window.location='home.html';
+		}, 1000);
+		
+	}, 2000);
+
+}
+
+//Fungsi untuk End-Contract Tenant
+function endContractModal(){
+	var refNumber = $("#tenant_id").html()
+	$('#endM').html("Are you sure to end contract "+refNumber+" ?");
+	$('#endM').val(refNumber);
+	$("#endModal").modal();
+}
+
+
+function endContract(){
+	var refNumber = $("#tenant_id").html()
+	refNumb=refNumber.split(" ")
+	refNumb2=refNumb[0]+refNumb[1]+refNumb[2]
+	var build_id = refNumb2.substring(1,3)
+	var room_id=refNumb2.substring(0,7)
+	id = window.location.href.split('?')[1];
+	var historyperiod=0
+	recurringRef = firebase.database().ref().child("recurringPay/"+id)
+	recurringRef.remove()
+	firebase.database().ref().child("dataRoom/"+build_id+"/"+id).remove()
+	
+	
 	setTimeout(function(){
 		$("#contract_details").append(" Contract Ended")
 		$("#end").hide()
@@ -631,7 +617,8 @@ function endContract(){
 		tenantid2=$("#tenant_id").html().substring(0,9)
 		tenantid3=tenantid2.split(" ")
 		tenantid4=tenantid3[0]+tenantid3[1]+tenantid3[2]
-		contract=firebase.database().ref().child("contract/"+id+"/"+tenantid4);
+		contract=firebase.database().ref().child("newContract/"+id+"/"+tenantid4);
+		
 		var enddate = $("#period1").text()
 		enddate2=enddate.split(" - ")[1]
 		var bond=$("#bond1").text()
@@ -642,8 +629,11 @@ function endContract(){
 		payplan2=payplan.split(" Electricity")[0]
 		bond =rem_fmoney(bond2).toString()
 		rent = rem_fmoney(rent2).toString()
+		
+		
+		var newhistoryperiod=++historyperiod
 		if(enddate2=="Ongoing"){
-			contract.push({
+			contract.child(newhistoryperiod).update({
 				"ctrt_length": "-",
 				"refNumb":refNumber,
 				"ctrt_type":"-",
@@ -657,14 +647,11 @@ function endContract(){
 				"status":"inactive"
 			})
 			contract.update({
-				"historyperiod":++historyperiod
+				"historyperiod":newhistoryperiod
 			})
 		}else{
 			contract.update({
 				"status":"inactive"
-			})
-			contract.update({
-				"historyperiod":++historyperiod
 			})
 		}
 		
@@ -703,6 +690,7 @@ function addInvoice() {
 	var invoiceDetailsOther = $("#invoiceDetailsOther").val();
 	reportRef = firebase.database().ref().child("reportAccount2");
 	paymentRef = firebase.database().ref().child("payment/"+id);
+	
 	if (invoiceDetails == "rentdue") {
 		var invoiceDetailsFull = "Rental Due";
 	} else if (invoiceDetails == "finedue") {
@@ -714,7 +702,19 @@ function addInvoice() {
 	} else {
 		var invoiceDetailsFull = "Other Due - "+invoiceDetailsOther;
 	}
-	var invoiceRecurrent = $("#invoiceRecurrent").val(); 
+	// var invoiceRecurrent = $("#invoiceRecurrent").val(); 
+	// if (invoiceRecurrent != "onetime"){
+	// 	recurringRef.on("value", function(snapshot){
+	// 		var total = (snapshot.child("total_recurring").val())+1
+	// 		recurringRef.child("due:"+total).update({
+	// 			"rent":invoiceAmount,
+	// 			"date":invoiceDate,
+	// 			"payPlan": invoiceRecurrent,
+	// 			"status": "active",
+	//			"details": invoiceDetailsOther
+	// 		})
+	// 	})
+	// }
 
 	overdueRef.once('value', function(snapshot){
 		prevDue = snapshot.child("balance").val()
@@ -798,7 +798,6 @@ function addInvoice() {
 		})
 		//reset invoice form
 		$('#addInvoiceForm').trigger("reset");
-		$("#invoiceDetailsOtherBlock").hide();
 		$("#invoiceRecurrentBlock").show();
 		removeOptions(document.getElementById("invoiceDetails"));
 		var optionElement1 = document.createElement("option");
@@ -828,21 +827,118 @@ function addInvoice() {
 
 function addPayment() {
 
-	function checkFirstPayment(id,building_id,refNumber,date){
+	function checkFirstPayment(id,building_id,refNumber,date,room_id){
+		
 		var fpayRef = firebase.database().ref().child("first-payment/"+id);
 		var reportRef = firebase.database().ref().child("reportAccount2/"+building_id+"/"+id);
-		fpayRef.on('child_added', function(snapshot){
+		var recurring = firebase.database().ref("recurringPay/"+id)
+		var contract  = firebase.database().ref("newContract/"+id+"/"+room_id)
+		var booking = firebase.database().ref().child("booking-tenant/"+id)
+		fpayRef.on('value', function(snapshot){
 			var payment = snapshot.child("payment").val();
 			var balance = snapshot.child("bond-balance").val();
+			
 			if(payment==0){
-					reportRef.push({
-						"date":date,
-						"due": balance,
-						"inputDate":Date.today().toString("MM/dd/yyyy"),
-						"receive":0,
-						"refNumb":refNumber,
-						"tenant_id":id
+				contract.on("value", function(snapshot){
+					
+					var historyperiod = snapshot.child("historyperiod").val().toString()
+					
+					contract.child(historyperiod).on("value", function(snapshot){
+						var payPlan = snapshot.child("payPlan").val()
+						var rent = snapshot.child("rent").val()
+						
+						if (payPlan=="monthly"){
+							
+							recurring.update({
+								"total_recurring": 0
+							})
+							recurring.child("rental").set({
+								"payPlan": payPlan,
+								"payment": "pay",
+								"prevRecurringDate": new Date(date).addMonths(1).toString("MM/d/yyyy"),
+								"rent": rent,
+								"status": "active"
+								}).then(function onSuccess(res) {		
+									reportRef.push({
+										"date":date,
+										"due": balance,
+										"inputDate":Date.today().toString("MM/d/yyyy"),
+										"receive":0,
+										"refNumb":refNumber,
+									}).then(function onSuccess(res){
+										booking.set({
+											"status": "booked"
+										})
+										}).catch(function onError(err) {
+											return "unsuccess"
+										});	
+								}).catch(function onError(err) {
+									return "unsuccess"
+								});
+							
+						}else if(payPlan == "semiannually"){
+							recurring.update({
+								"total_recurring": 0
+							})
+							recurring.child("rental").set({
+								"payPlan": payPlan,
+								"payment": "pay",
+								"prevRecurringDate": new Date(date).addMonths(6).toString("MM/d/yyyy"),
+								"rent": rent,
+								"status": "active"
+								}).then(function onSuccess(res) {
+									reportRef.push({
+										"date":date,
+										"due": balance,
+										"inputDate":Date.today().toString("MM/d/yyyy"),
+										"receive":0,
+										"refNumb":refNumber,
+									}).then(function onSuccess(res){
+										booking.set({
+											"status": "booked"
+										})
+									}).catch(function onError(err) {
+											return "unsuccess"
+										});	
+								}).catch(function onError(err) {
+									return "unsuccess"
+								});
+							
+						}else if(payPlan == "annually"){
+							recurring.update({
+								"total_recurring": 0
+							})
+							recurring.child("rental").set({
+								"payPlan": payPlan,
+								"payment": "pay",
+								"prevRecurringDate": new Date(date).addMonths(12).toString("MM/d/yyyy"),
+								"rent": rent,
+								"status": "active"
+								}).then(function onSuccess(res) {
+									reportRef.push({
+										"date":date,
+										"due": balance,
+										"inputDate":Date.today().toString("MM/d/yyyy"),
+										"receive":0,
+										"refNumb":refNumber,
+									}).then(function onSuccess(res){
+										booking.set({
+											"status": "booked"
+										})
+									}).catch(function onError(err) {
+											return "unsuccess"
+										});	
+								}).catch(function onError(err) {
+									return "unsuccess"
+								});
+							
+						}
+						
 					})
+				})
+						
+			}else{
+				return "success"
 			}
 		})
 	}
@@ -852,6 +948,7 @@ function addPayment() {
 		$('#addPaymentForm').trigger("reset");
 		$("#paymentDetailsOtherBlock").hide();
 		$("#paymentDetailsAdjustBlock").hide();
+		
 		removeOptions(document.getElementById("paymentDetails"));
 		var optionElement1 = document.createElement("option");
 		var optionElement2 = document.createElement("option");
@@ -880,12 +977,15 @@ function addPayment() {
 	var refNumberHtml=refNumberHtml.split(" ");
 	var refNumberHtml=refNumberHtml[0]+refNumberHtml[1]+refNumberHtml[2];
 	var building_id = refNumberHtml.substring(1,3);
+	var room_id = refNumberHtml.substring(0,7)
 	
 	//init firebase
 	var paymentRef = firebase.database().ref().child("payment/"+id);
 	var overdueRef = firebase.database().ref().child("overdue/"+id);
 	var reportRef = firebase.database().ref().child("reportAccount2");
 	var fpayRef = firebase.database().ref().child("first-payment/"+id);
+	var virtual = firebase.database().ref("virtualAccountReport/"+id)
+	
 	
 	//collect data from payment form
 	var paymentDate = reformatDate2($("#paymentDate").val());
@@ -893,7 +993,8 @@ function addPayment() {
 	var paymentAmount = parseInt($("#paymentAmountCond").val()+rem_moneydot($("#paymentAmount").val()));
 	var paymentDetails = $("#paymentDetails").val();
 	var paymentDetailsOther = $("#paymentDetailsOther").val();
-	var paymentDetailsAdjust = $("#paymentDetailsAdjust").val();
+	var adjst_details = $("#adjstDetails").val()
+	var adjst_date = $("#adjstDate").val()
 	if (paymentDetails == "rentpay") {
 		var paymentDetailsFull = "Rental Payment";
 	} else if (paymentDetails == "finepay") {
@@ -905,23 +1006,24 @@ function addPayment() {
 	} else if (paymentDetails == "refund") {
 		var paymentDetailsFull = "Bond Money Refund";
 	} else if (paymentDetails == "adjustpay") {
-		var paymentDetailsFull = "Adjustment - "+paymentDetailsAdjust;
+		var paymentDetailsFull = "Adjustment - "+adjst_details+" on "+adjst_date;
+		var date = reformatDate2(adjst_date)
+		month = date.split("/")[0]
+		year = date.split("/")[2]
+		if (adjst_details=="Rental Due"){
+			virtual.child(month+":"+year).remove()
+		}
+		
 	} else {
 		var paymentDetailsFull = "Other Payment - "+paymentDetailsOther;
 	}
-	checkFirstPayment(id,building_id,refNumberHtml,paymentDate)
-	.then(function onSuccess(res){
-		stage1();
-		}).catch(function onError(err){
-			$.gritter.add({
-				title: 'Error Stage 1a',
-				text: err.code+" : "+err.message,
-				image: './img/bell.png',
-				sticky: false,
-				time: 3500,
-				class_name: 'gritter-custom'
-			});
-		})
+	
+	checkFirstPayment(id,building_id,refNumberHtml,paymentDate,room_id)
+	setTimeout(() => {
+		stage1()
+	}, 5000);
+	
+	
 	
 	
 	function stage1() {
@@ -1046,30 +1148,82 @@ function addPayment() {
 		}
 		var thisYear = d.getFullYear();
 		var thisDate = thisMonth+"/"+thisDay+"/"+thisYear;
+
+		if(paymentDetails=="refund"){
+			reportRef.child(building_id+"/"+id).push({
+				"due":paymentAmount,
+				"receive": 0,
+				"date": paymentDate,
+				"inputDate": thisDate,
+				"refNumb": refNumberHtml,
+			}).then(function onSuccess(res) {
+				stage4();
+			}).catch(function onError(err) {
+				//stop loading icon
+				$("#cover-spin").fadeOut(250, function() {
+					$(this).hide();
+				});
+				//error notification
+				$.gritter.add({
+					title: 'Error Stage 3',
+					text: err.code+" : "+err.message,
+					image: './img/bell.png',
+					sticky: false,
+					time: 3500,
+					class_name: 'gritter-custom'
+				});
+			});
+		}else if(paymentDetails=="transfer"){
+			reportRef.child(building_id+"/"+id).push({
+				"due":0,
+				"receive": paymentAmount,
+				"date": paymentDate,
+				"inputDate": thisDate,
+				"refNumb": refNumberHtml,
+			}).then(function onSuccess(res) {
+				stage4()
+			}).catch(function onError(err) {
+				//stop loading icon
+				$("#cover-spin").fadeOut(250, function() {
+					$(this).hide();
+				});
+				//error notification
+				$.gritter.add({
+					title: 'Error Stage 3',
+					text: err.code+" : "+err.message,
+					image: './img/bell.png',
+					sticky: false,
+					time: 3500,
+					class_name: 'gritter-custom'
+				});
+			});
+		}else{
+			reportRef.child(building_id+"/"+id).push({
+				"receive":paymentAmount,
+				"due": 0,
+				"date": paymentDate,
+				"inputDate": thisDate,
+				"refNumb": refNumberHtml,
+			}).then(function onSuccess(res) {
+				stage4();
+			}).catch(function onError(err) {
+				//stop loading icon
+				$("#cover-spin").fadeOut(250, function() {
+					$(this).hide();
+				});
+				//error notification
+				$.gritter.add({
+					title: 'Error Stage 3',
+					text: err.code+" : "+err.message,
+					image: './img/bell.png',
+					sticky: false,
+					time: 3500,
+					class_name: 'gritter-custom'
+				});
+			});
+		}
 		
-		reportRef.child(building_id+"/"+id).push({
-			"receive":paymentAmount,
-			"due": 0,
-			"date": paymentDate,
-			"inputDate": thisDate,
-			"refNumb": refNumberHtml,
-		}).then(function onSuccess(res) {
-			stage4();
-		}).catch(function onError(err) {
-			//stop loading icon
-			$("#cover-spin").fadeOut(250, function() {
-				$(this).hide();
-			});
-			//error notification
-			$.gritter.add({
-				title: 'Error Stage 3',
-				text: err.code+" : "+err.message,
-				image: './img/bell.png',
-				sticky: false,
-				time: 3500,
-				class_name: 'gritter-custom'
-			});
-		});
+		
 	}
 	
 	function stage4() {
@@ -2381,27 +2535,20 @@ function addPayment() {
 function extendTenant() {
 	var historyperiod=0
 	var status = ""
-	var contract2 = firebase.database().ref().child("contract/"+id+"");
-        contract2.on('child_added', function(snapshot){
-            room_id=snapshot.key
-						var contract4 = firebase.database().ref().child("contract/"+id+"/"+room_id+"");
-						contract4.on('value', function(snapshot){
-							historyperiod=snapshot.child("historyperiod").val()
-							status=snapshot.child("status").val();
-						})
-						// contract4.on('child_added', function(snapshot){
-						// 	var bond = snapshot.child("bond").val()
-						// 	var ctrt_length=snapshot.child("ctrt_length").val()
-						// 	var ctrt_type = snapshot.child("ctrt_type").val()
-						// 	var payPlan = snapshot.child("payPlan").val()
-						// 	var refNumb = snapshot.child("refNumb").val()
-						// 	var rent=snapshot.child("rent").val()
-						// 	var start_date = snapshot.child("start_date").val()
-						// 	var end_date = snapshot.child("end_date").val()
-						// })
-				})
+	id = window.location.href.split('?')[1];
+	var build_id = parseInt($("#extendBuildNo").text()).toString()
+	var contract2 = firebase.database().ref().child("newContract/"+id+"");
+	var recurringRef = firebase.database().ref("recurringPay/"+id+"/rental")
+	
+	contract2.on('child_added', function(snapshot){
+		room_id=snapshot.key										
+		contract2.child(room_id).on('value', function(snapshot){							
+			historyperiod=snapshot.child("historyperiod").val()							
+			status=snapshot.child("status").val();						
+		})		
+	})
+
 	//collect data from form
-	historyperiod++;
 	var refNumber = $("#tenant_id").html();
 	var payPlan = $("#extendPayPlan").val();
 	var bondPrice = $("#fbond").html();
@@ -2422,6 +2569,11 @@ function extendTenant() {
 	else{
 		endDate = "Ongoing"
 	}
+	recurringRef.update({
+		"payPlan":payPlan,
+		"rent":rem_fmoney(rentPrice).toString()
+	})
+	
 	bondPrice2=bondPrice.split("Rp. ")[1]
 	bondPrice3=bondPrice2.split(",-")[0]
 	bondPrice4=bondPrice3.split(".")
@@ -2440,16 +2592,19 @@ function extendTenant() {
 	}
 	
 	$("#extendForm").trigger("reset");
-	
-	if (status=="inactive"){
-		firebase.database().ref().child("tenant_endContract/"+id).remove();
-	}
 
 	tenantid2=$("#tenant_id").html().substring(0,9)
 	tenantid3=tenantid2.split(" ")
 	tenantid4=tenantid3[0]+tenantid3[1]+tenantid3[2]
-	var contract = firebase.database().ref().child("contract/"+id+"/"+tenantid4+"");
-	contract.push({
+	
+	if (status=="inactive"){
+		firebase.database().ref().child("HistoryRoom/"+build_id+"/"+tenantid4+"/"+id).remove();
+	}
+
+	
+	var newhistoryperiod = ++historyperiod
+	var contract = firebase.database().ref().child("newContract/"+id+"/"+tenantid4+"");
+	contract.child(newhistoryperiod).update({
 		"ctrt_length": ctrt_length,
 		"refNumb":refNumber,
 		"ctrt_type":ctrt_type,
@@ -2460,45 +2615,11 @@ function extendTenant() {
 		"rent":rentPrice5
 	})
 	contract.update({
-		"historyperiod":++historyperiod,
+		"historyperiod":newhistoryperiod,
 		"status":"active"
 	})
 	//create due on ledger
-	/*
-	var bondPriceInt = parseInt($("#cfbond").val());
-	var rentPriceInt = parseInt($("#cfprice").val());
-	ledgerList.push({
-		"date":reformatDate2(startDate),
-		"desc":"Bond Money Due",
-		"invoice":bondPriceInt,
-		"payment":null
-	});
-	ledgerList.push({
-		"date":reformatDate2(startDate),
-		"desc":"Rental Due",
-		"invoice":rentPriceInt,
-		"payment":null
-	});
-	ledgerList = sortArrayByDate(ledgerList);
-	table1.clear();
-	for (x in ledgerList) {
-		table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,ledgerList[x].invoice,ledgerList[x].payment,null]);	
-	}
-	table1.draw();
-	countTotalDue();
-	countTotalReceived();
-	countBalance();
-	countTotalBalance();
-	//change start date to end of contract
-	$("#startDate").html($("#endDate").html());
-	//reset input
-	$("#extendPayPlan")
-		.val("")
-		.trigger("change");
-	$("#extendIntend")
-		.val("")
-		.trigger("change");
-	*/
+	
 	setTimeout(function(){
 		//stop loading icon
 		$("#cover-spin").fadeOut(250, function() {
@@ -2667,7 +2788,7 @@ function doneEdit(){
 				$(this).hide();
 			});
 			setTimeout(function(){
-				window.location='tenant_details.html?id='+id;
+				window.location='tenant_details.html?'+id+"?"+ref_num;
 			}, 1000);
 			
 		}).catch(function onError(err) {
@@ -2747,7 +2868,7 @@ function fillTenantData(){
 						var refnumber = tenantNames[i].refnumber;
 					}
 					//redirect from accounting building
-					if ((tenantNames[i].tenantid)+"#ledger" == id2) {
+					if ((tenantNames[i].tenantid)+"#ledger" == id+"#"+tab) {
 						$("#ledger").addClass("in active")
 						$("#tenant").removeClass("in active")
 						$("#tabtenant").removeClass("active")
@@ -2811,53 +2932,54 @@ $(window).scroll(function(){
 $(document).ready(function() {
 	
 	// invoice and payment scroll
-	/* window.onscroll = function() {
-		myFunction()
-	};
-	var elemelon = $("#btnpayin");
-	var position = elemelon.position();
-	var sticky = position.top;
-	alert(sticky);
-	function myFunction() {
-		if (window.pageYOffset > 280) {
-			elemelon.addClass("sticky");
-		} else {
-			elemelon.removeClass("sticky");
-		}
-	} */
+	
 	//start
-	id2 = window.location.href.split('=')[1];
-	id = id2.split("#")[0];
+	id = window.location.href.split('?')[1];
+	ref_num =( window.location.href.split('?')[2]).split("#")[0];
+	tab = ( window.location.href.split('?')[2]).split("#")[1]
 	
-	refNumberHtml = $("#tenant_id").html();
-	var building_id = refNumberHtml.substring(1,3);
-	
-	var tenantNames = [];
 	bondp=0
 	rentp=0
 	var historyperiod = 0
 	var status = ""
-
-	var contract = firebase.database().ref().child("contract/"+id+"");
+	var contract = firebase.database().ref().child("newContract/"+id+"");
 	paymentRef = firebase.database().ref().child("payment/"+id);
 	overdueRef = firebase.database().ref().child("overdue/"+id);
-	reportRef = firebase.database().ref().child("reportAccount");
-
+	reportRef = firebase.database().ref().child("reportAccount2");
 	setTimeout(() => {
-		var due = rem_fmoney($("#lDueTot").html());
-		var receive = rem_fmoney($("#lReceivedTot").html());
-		var balance = rem_fmoney($("#lBalanceTot").html());
+		refNumberHtml = $("#tenant_id").text();
 		
-		paymentRef.update({
-			"balance": balance,
-			"receive": receive,
-			"due": due
-		});
+		var due = $("#lDueTot").text()
+		var receive = $("#lReceivedTot").text()
+		var balance = $("#lBalanceTot").text()
+		due = due.split("Rp. ")
+		due = due[1].split(".").join("")
+		due = due.split(",-")
+		due = parseInt(due[0])
+		receive = receive.split("Rp. ")
+		receive = receive[1].split(".").join("")
+		receive = receive.split(",-")
+		receive = parseInt(receive[0])
+		balance = balance.split("Rp. ")
+		balance = balance[1].split(".").join("")
+		balance = balance.split(",-")
+		if (balance[1]==")"){
+			balance = "-"+balance[0]
+		}else{
+			balance = balance[0]
+		}
+		
+		paymentRef.once('value', function(snapshot){
+			paymentRef.update({
+				"balance": balance,
+				"receive": receive,
+				"due": due
+			})	
+		})
 	}, 3000);
-
 	contract.on("child_added", function(snapshot){
 		room_id=snapshot.key
-		var contract2 = firebase.database().ref().child("contract/"+id+"/"+room_id+"");
+		var contract2 = firebase.database().ref().child("newContract/"+id+"/"+room_id+"");
 		contract2.on('value',function(snapshot){
 			historyperiod=snapshot.child("historyperiod").val()
 			status=snapshot.child("status").val()
@@ -2866,7 +2988,7 @@ $(document).ready(function() {
 	tenantcontract={}
 	contract.on('child_added', function(snapshot){
 		room_id=snapshot.key
-		var contract2 = firebase.database().ref().child("contract/"+id+"/"+room_id+"");
+		var contract2 = firebase.database().ref().child("newContract/"+id+"/"+room_id+"");
 		contract2.on('child_added', function(snapshot){
 			if (snapshot.key!="status" && snapshot.key !="historyperiod"){
 				tenantcontract[id]=snapshot.val()
@@ -2909,7 +3031,7 @@ $(document).ready(function() {
 			<label for="bond" class="control-label col-lg-3">Bond</label>
 			<div class="col-lg-9">
 				<div class="checkbox">
-					<span id="bond`+historyperiod+`" name="bond" >`+bondPrice+`to be paid at the first contract</span>
+					<span id="bond`+historyperiod+`" name="bond" >`+bondPrice+`to be paid at the beginning of contract</span>
 				</div>
 			</div>
 		</div>
@@ -2929,9 +3051,35 @@ $("#tenanthistory").append(data)
 --historyperiod
 	})
 	
+})
+
+setTimeout(() => {
+	
+	// console.log(status)
+	if (status=="inactive"){
+		$("#contract_details").append(" Contract Ended")
+		$("#end").hide()
+	}
+	startdate=$("#period1").text().split("- ")[1]
+	// console.log(startdate)
+	if (startdate!="Ongoing"){
+		startdate=reformatDate2(startdate)
+		startdate2=new Date(startdate)
+		startdate3=reformatDate(startdate2.addDays(1).toString("MM/dd/yyyy"))
+		// console.log(startdate3)
+		$("#ExtendstartDate").html(startdate3);		
+	}
+	else{
+		startdate3=reformatDate(Date.today().toString("MM/dd/yyyy"))
+		$("#ExtendstartDate").html(startdate3);	
+	}
+
+
+}, 6000);
+	
 	
 	//membuka modal extend / end contract / non active
-	openModal = id2.split("#")[1];
+	openModal = id
 	if (typeof(openModal) != "undefined"){
 		//membuka modal extend
 		if (openModal=="extend"){
@@ -2940,36 +3088,12 @@ $("#tenanthistory").append(data)
 			endContractModal();
 		} else if (openModal=="non-active"){
 			nonactiveModal();
-		}_
+		}
 	}
 	
-	})
-
-	//contract ended information
-	setTimeout(() => {
-		
-		if (status=="inactive"){
-			$("#contract_details").append(" Contract Ended")
-			$("#end").hide()
-		}
-		startdate=$("#period1").text().split("- ")[1]
-		
-		if (startdate!="Ongoing"){
-			
-			startdate=reformatDate2(startdate)
-			startdate2=new Date(startdate)
-			startdate3=reformatDate(startdate2.addDays(1).toString("MM/dd/yyyy"))
-			$("#sdate_edt").val(reformatDate4(startdate2.addDays(1).toString("MM/dd/yyyy")));
-			$("#ExtendstartDate").html(startdate3);		
-		}
-		else{
-			startdate3=reformatDate(Date.today().toString("MM/dd/yyyy"))
-			$("#sdate_edt").val(reformatDate4(startdate2.addDays(1).toString("MM/dd/yyyy")));
-			$("#ExtendstartDate").html(startdate3);	
-		}
 
 
-	}, 6000);
+	
 
 	// mengambil data yang approved atau occupy dari firebase ke dalam list
 	var trRef1 = firebase.database().ref().child("tenant-room/"+id);
@@ -3107,7 +3231,7 @@ $("#tenanthistory").append(data)
 						var refnumber = tenantNames[i].refnumber;
 					}
 					//redirect from accounting building
-					if ((tenantNames[i].tenantid)+"#ledger" == id2) {
+					if ((tenantNames[i].tenantid)+"#ledger" == id+"#"+tab) {
 						$("#ledger").addClass("in active")
 						$("#tenant").removeClass("in active")
 						$("#tabtenant").removeClass("active")
@@ -3116,8 +3240,10 @@ $("#tenanthistory").append(data)
 						var refnumber = tenantNames[i].refnumber;
 					}
 				}
+				
 				//check tenant exist
 				if (label== null) {	
+					console.log(tenantNames)
 					window.alert("Tenant doesn't exist");
 					window.location="tenant_main.html";
 				}
@@ -3199,18 +3325,6 @@ $("#tenanthistory").append(data)
 	//invoice amount listener
 	$("#invoiceAmount").on('keyup change', function() {
 		$("#invoiceAmount").val(get_moneydot($("#invoiceAmount").val()));
-	})
-	//invoice modal details listener
-	$("#invoiceDetails").on('change', function() {
-		if ($(this).find("option:selected").attr("value") == "otherdue") {
-			$("#invoiceDetailsOtherBlock").fadeIn(250, function() {
-				$(this).show();
-			})
-		} else {
-			$("#invoiceDetailsOtherBlock").fadeOut(250, function() {
-				$(this).hide();
-			})
-		}
 	})
 	//invoice modal add listener
 	$("#addInvoiceButton").click(function() {
@@ -3458,9 +3572,10 @@ $("#tenanthistory").append(data)
 		}
 	});
 
-	$("#sdate_edt").on('change', function(){
-		$("#ExtendstartDate").html(reformatDate4($("#sdate_edt").val()))
+	$("#startDate").on('change', function(){
+		$("#ExtendstartDate").html($("#startDate").val())
 	})
+
 
 	//extend modal intend listener
 	$("#ExtendIntendAngka").on('change', function() {
@@ -3644,7 +3759,7 @@ $("#tenanthistory").append(data)
 			countTotalBalance();
 		}
     });
-	
+
 	
 	//get data from payment database
 	paymentRef = firebase.database().ref().child("payment/"+id);

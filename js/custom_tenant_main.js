@@ -39,38 +39,6 @@ function shortenString(yourString,maxLength){
 	
 }
 
-function deleteBooking(tenantID) {
-	
-	$("#confirmYes").off();
-	$("#modalConfirm").modal();
-	$("#confirmYes").click(function () {
-		startPageLoad();
-		var tenantRef = firebase.database().ref("tenant");
-		var trRef = firebase.database().ref("tenant-room");
-		tenantRef.child(tenantID).remove(
-		).then(function onSuccess(res) {
-			trRef.child(tenantID).remove(
-			).then(function onSuccess(res) {
-				trRef.once("value", function() {
-					var tenantCount = parseInt(snapshot.child("total_tenant").val()) - 1;
-					trRef.update({
-						total_tenant : tenantCount
-					}).then(function onSuccess(res) {
-						addNotification("Booking removed","Booking successfully removed.");
-						stopPageLoad();
-					}).catch(function onError(err) {
-						addNotification("Error Remove Booking",err.code+" : "+err.message);
-					});
-				});
-			}).catch(function onError(err) {
-				addNotification("Error Remove Booking",err.code+" : "+err.message);
-			});
-		}).catch(function onError(err) {
-			addNotification("Error Remove Booking",err.code+" : "+err.message);
-		});
-	});
-	
-}
 
 $(document).ready(function() {
 	

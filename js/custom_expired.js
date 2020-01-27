@@ -70,39 +70,31 @@ $("#submitNonActive").click(function(){
 function nonActive(){
 	id2 = window.location.href.split('=')[1];
 	id = id2.split("#")[0];
-	newfirebase=firebase.database().ref().child("tenantendContract/"+id);
-	contract=firebase.database().ref().child("contract/"+id+"/"+room_id);
-	contract.on("child_added", function(snapshot){
-		if (snapshot.key!="historyperiod" && snapshot.key!="status"){
-			var bond = snapshot.child("bond").val();
-			var ctrt_length = snapshot.child("ctrt_length").val();
-			var ctrt_type = snapshot.child("ctrt_type").val();
-			var end_date = snapshot.child("end_date").val();
-			var payPlan = snapshot.child("payPlan").val();
-			var refNumb = snapshot.child("refNumb").val();
-			var rent = snapshot.child("rent").val();
-			var start_date = snapshot.child("start_date").val();
-			newfirebase.child("contract").push({
-				"bond":bond,
-				"ctrt_length":ctrt_length,
-				"ctrt_type":ctrt_type,
-				"end_date":end_date,
-				"payPlan":payPlan,
-				"refNumb":refNumb,
-				"rent":rent,
-				"start_date":start_date
-			})
-		}
-		else if (snapshot.key=="historyperiod"){
-			historyperiod = snapshot.val();	
-			newfirebase.child("contract").update({
-				"historyperiod":historyperiod
-			})
-		}
+	var build_id = parseInt($('#nonActiveD').val().substring(1,3))
+	var room_id = $('#nonActiveD').val().split(" ").join("").substring(0,7)
+	newfirebase=firebase.database().ref().child("HistoryRoom/"+build_id+"/"+room_id+"/"+id);
+	payment = firebase.database().ref().child("payment/"+id);
+	contract=firebase.database().ref().child("newContract/"+id);
+	tenantRef = firebase.database().ref().child("tenant-room");
+	booking = firebase.database().ref().child("booking-tenant/"+id)
+	tenant =  firebase.database().ref().child("tenant/"+id);
+	tenantroom = firebase.database().ref().child("tenant-room/"+id);
+	recurring = firebase.database().ref("recurringPay/"+id)
+
+	tenantRef.once('value', function(snapshot){
+		var tenantCount = parseInt(snapshot.child("total_tenant").val()) - 1;
+		tenantRef.update({
+			total_tenant : tenantCount
+		})
 	})
 	
-	payment = firebase.database().ref().child("payment/"+id);
+	contract.on("child_added", function(snapshot){
+		newfirebase.child("contract").set(snapshot.val())
+	})
+	
+	
 	payment.on("child_added", function(snapshot){
+		
 		if (snapshot.key!="balance"&&snapshot.key!= "bondWaitDue"&&snapshot.key!="recurring"){
 			var date = snapshot.child("date").val();
 			var desc = snapshot.child("desc").val();
@@ -131,72 +123,8 @@ function nonActive(){
 				"bondWaitDue":bondWaitDue
 			})
 		}
-		else if (snapshot.key == "recurring"){
-			var recurring = snapshot.val();
-			newfirebase.child("payment").update({
-				"recurring":recurring
-			})
-		}
 	 })
 	
-
-	setTimeout(function(){
-		firebase.database().ref().child("payment/"+id).remove();
-		firebase.database().ref().child("contract/"+id).remove();
-		firebase.database().ref().child("tenant/"+id).remove();
-		firebase.database().ref().child("tenant-room/"+id).remove();
-		firebase.database().ref().child("overdue/"+id).remove();
-		//stop loading icon
-		$("#cover-spin").fadeOut(250, function() {
-			$(this).hide();
-		})
-	
-		//success notification
-		$.gritter.add({
-			title: 'Tenant has been deactivated',
-			text: 'Tenant was successfuly be deactivated',
-			image: './img/bell.png',
-			sticky: false,
-			time: 3500,
-			class_name: 'gritter-custom'
-		})
-		setTimeout(function(){
-			window.location='home.html';
-		}, 1000);
-		
-	}, 2000);
-
-}
-
-//Fungsi untuk End-Contract Tenant
-function endContractModal(){
-	var refNumber = $("#tenant_id").html()
-	$('#endM').html("Are you sure to end contract "+refNumber+" ?");
-	$('#endM').val(refNumber);
-	$("#endModal").modal();
-}
-
-$("#submitEnd").click(function(){
-	$('#endModal').modal('hide');
-	$("#cover-spin").fadeIn(250, function() {
-		$(this).show();
-	})
-	endContract();
-
-})
-
-function endContract(){
-	var refNumber = $("#tenant_id").html()
-	refNumb=refNumber.split(" ")
-	refNumb2=refNumb[0]+refNumb[1]+refNumb[2]
-	var room_id=refNumb2.substring(0,7)
-	id2 = window.location.href.split('=')[1];
-	id = id2.split("#")[0];
-	var historyperiod=0
-	newfirebase=firebase.database().ref().child("tenantendContract/"+id);
-	
-	
-	tenant =  firebase.database().ref().child("tenant/"+id);
 	tenant.once("value", function(snapshot){
 		var full_name=snapshot.child("full_name").val();
 		var birth_date=snapshot.child("birth_date").val();
@@ -260,7 +188,7 @@ function endContract(){
 			}
 		})
 	})
-	tenantroom = firebase.database().ref().child("tenant-room/"+id);
+ 
 	tenantroom.on("child_added", function(snapshot){
 		var apply_date = snapshot.child("apply_date").val();
 		var adjst_bond = snapshot.child("adjst_bond").val();
@@ -308,6 +236,70 @@ function endContract(){
 			rent_bond	: rent_bond
 		})
 	})
+
+	setTimeout(function(){
+		firebase.database().ref().child("payment/"+id).remove();
+		firebase.database().ref().child("newContract/"+id).remove();
+		firebase.database().ref().child("tenant/"+id).remove();
+		firebase.database().ref().child("tenant-room/"+id).remove();
+		firebase.database().ref().child("overdue/"+id).remove();
+		firebase.database().ref().child("booking-tenant/"+id).remove();
+		firebase.database().ref().child("dataRoom/"+build_id+"/"+id).remove()
+		firebase.database().ref().child("first-payment/"+id).remove()
+		recurring.remove()
+		//stop loading icon
+		$("#cover-spin").fadeOut(250, function() {
+			$(this).hide();
+		})
+	
+		//success notification
+		$.gritter.add({
+			title: 'Tenant has been deactivated',
+			text: 'Tenant was successfuly be deactivated',
+			image: './img/bell.png',
+			sticky: false,
+			time: 3500,
+			class_name: 'gritter-custom'
+		})
+		setTimeout(function(){
+			window.location='home.html';
+		}, 1000);
+		
+	}, 2000);
+
+}
+
+//Fungsi untuk End-Contract Tenant
+function endContractModal(){
+	var refNumber = $("#tenant_id").html()
+	$('#endM').html("Are you sure to end contract "+refNumber+" ?");
+	$('#endM').val(refNumber);
+	$("#endModal").modal();
+}
+
+$("#submitEnd").click(function(){
+	$('#endModal').modal('hide');
+	$("#cover-spin").fadeIn(250, function() {
+		$(this).show();
+	})
+	endContract();
+
+})
+
+function endContract(){
+	var refNumber = $("#tenant_id").html()
+	refNumb=refNumber.split(" ")
+	refNumb2=refNumb[0]+refNumb[1]+refNumb[2]
+	var build_id = refNumb2.substring(1,3)
+	var room_id=refNumb2.substring(0,7)
+	id2 = window.location.href.split('=')[1];
+	id = id2.split("#")[0];
+	var historyperiod=0
+	recurringRef = firebase.database().ref().child("recurringPay/"+id)
+	recurringRef.remove()
+	firebase.database().ref().child("dataRoom/"+build_id+"/"+id).remove()
+	
+	
 	setTimeout(function(){
 		$("#contract_details").append(" Contract Ended")
 		$("#end").hide()
@@ -317,7 +309,8 @@ function endContract(){
 		tenantid2=$("#tenant_id").html().substring(0,9)
 		tenantid3=tenantid2.split(" ")
 		tenantid4=tenantid3[0]+tenantid3[1]+tenantid3[2]
-		contract=firebase.database().ref().child("contract/"+id+"/"+tenantid4);
+		contract=firebase.database().ref().child("newContract/"+id+"/"+tenantid4);
+		
 		var enddate = $("#period1").text()
 		enddate2=enddate.split(" - ")[1]
 		var bond=$("#bond1").text()
@@ -328,8 +321,11 @@ function endContract(){
 		payplan2=payplan.split(" Electricity")[0]
 		bond =rem_fmoney(bond2).toString()
 		rent = rem_fmoney(rent2).toString()
+		
+		
+		var newhistoryperiod=++historyperiod
 		if(enddate2=="Ongoing"){
-			contract.push({
+			contract.child(newhistoryperiod).update({
 				"ctrt_length": "-",
 				"refNumb":refNumber,
 				"ctrt_type":"-",
@@ -343,14 +339,11 @@ function endContract(){
 				"status":"inactive"
 			})
 			contract.update({
-				"historyperiod":++historyperiod
+				"historyperiod":newhistoryperiod
 			})
 		}else{
 			contract.update({
 				"status":"inactive"
-			})
-			contract.update({
-				"historyperiod":++historyperiod
 			})
 		}
 		
@@ -581,7 +574,7 @@ $(document).ready(function() {
 	});
 	
 	// get data from database
-	var contractRef = firebase.database().ref("contract");
+	var contractRef = firebase.database().ref("newContract");
 	var tenantRoomRef = firebase.database().ref("tenant-room");
 	var tenantRef = firebase.database().ref("tenant");
 	var d = new Date();
@@ -612,7 +605,7 @@ $(document).ready(function() {
 								tenantObj = {
 									"tenant_id":tenantID,
 									"refNum":refNumber,
-									"content":[refNumFormat,"<a href='tenant_details.html?id="+tenantID+"' class='pull-left'>"+tenantName+"</a>",reformatDate(endDate),propertyAddress,buildNo,floorNo,roomNo,tenantPhone,`<button id="extender" type="button" class="btn btn-xs btn-primary" title="Send email"><i class="fa fa-envelope"></i></button> `+`<button id="extender" type="button" class="btn btn-xs btn-success" title="Extend"><i class="fa fa-plus"></i></button> `+`<button id="end" type="button" class="btn btn-xs btn-danger" onclick="endContractModal()" title="End contract"><i class="fa fa-times"></i></button> `+`<button id="nonactive" type="button" class="btn btn-xs btn-warning" onclick="nonactiveModal()" title="Non-Active"><i class="fa fa-minus"></i></button>`],
+									"content":[refNumFormat,"<a href='tenant_details.html?"+tenantID+"?"+refNumber+"' class='pull-left'>"+tenantName+"</a>",reformatDate(endDate),propertyAddress,buildNo,floorNo,roomNo,tenantPhone,`<button id="extender" type="button" class="btn btn-xs btn-primary" title="Send email"><i class="fa fa-envelope"></i></button> `+`<button id="extender" type="button" class="btn btn-xs btn-success" title="Extend"><i class="fa fa-plus"></i></button> `+`<button id="end" type="button" class="btn btn-xs btn-danger" onclick="endContractModal()" title="End contract"><i class="fa fa-times"></i></button> `+`<button id="nonactive" type="button" class="btn btn-xs btn-warning" onclick="nonactiveModal()" title="Non-Active"><i class="fa fa-minus"></i></button>`],
 								}
 								listTenant.push(tenantObj);
 								
