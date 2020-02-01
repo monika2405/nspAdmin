@@ -192,7 +192,7 @@ $(document).ready(function() {
 							newObj = {
 								"statOccupy":"approved",
 								"refNum":refNumber,
-								"content":[refNumFormat,statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact],
+								"content":[refNumFormat,statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_details.html?"+tenantID+"?"+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact],
 								"tenant_id":tenantID
 							}
 							listApproveT.push(newObj);
@@ -215,7 +215,7 @@ $(document).ready(function() {
 							newObj = {
 								"statOccupy":"approved",
 								"refNum":refNumber,
-								"content":[refNumFormat,statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact],
+								"content":[refNumFormat,statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_details.html?"+tenantID+"?"+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact],
 								"tenant_id":tenantID
 							}
 							listApproveT.push(newObj);
@@ -269,7 +269,7 @@ $(document).ready(function() {
 							newObj = {
 								"statOccupy":statOccupy,
 								"refNum":refNumber,
-								"content":[listApproveT[i].content[0],statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact],
+								"content":[listApproveT[i].content[0],statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_details.html?"+tenantID+"?"+refNumber+"'' class='pull-left'>"+tenantName+"</a>",tenantContact],
 								"tenant_id":tenantID
 							}
 							listApproveT[i]=newObj;

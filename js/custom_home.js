@@ -170,7 +170,6 @@ function shortenString(yourString,maxLength){
 
 function addInvoice() {
 	var invoiceAmount = parseInt(rem_moneydot($("#invoiceAmount").val()))
-		console.log($("#invoiceAmount").val())
 		var refNumberHtml = $("#invoiceTenantRef").val();
 		var ref_num = $("#invoiceTenantRef").val().split(" ").join("")
 		var id = $("#invoiceTenantID").val();
@@ -2482,11 +2481,14 @@ $(document).ready(function() {
 			if (tenant!={} && tenantdata!={}){
 				for (i in tenant){
 					paymentRef.child(i).once('value', function(snapshot) {
+
 						if (snapshot.val() != null) {  // Have payments
-							
+							if (snapshot.key=="t_737"){
+								console.log("ada")
+							}
 						} else {  // No payments
 							// jika status = approved
-							
+							console.log(i)
 							if (tenant[i].stat_occupy=="approved"){
 								refNumFormat=tenant[i].ref_number
 								refN=refNumFormat.split(" ")
@@ -2543,9 +2545,14 @@ $(document).ready(function() {
 					for (i in tenant){
 						paymentRef.child(i).once('value', function(snapshot) {
 							if (snapshot.val() != null) {  // Have payments
-								
+								if (snapshot.key=="t_737"){
+									console.log("ada")
+								}
 							} else {  // No payments
 								// jika status = approved
+								if (snapshot.key=="t_737"){
+									console.log("!ada")
+								}
 								if (tenant[i].stat_occupy=="approved"){
 									refNumFormat=tenant[i].ref_number
 									refN=refNumFormat.split(" ")
@@ -2600,7 +2607,7 @@ $(document).ready(function() {
 			table2.clear()
 			if (tenant!={} && tenantdata!={} && overdue!={}){
 				for (i in paymentBal){
-					console.log(i)
+					
 					var balance = overdue[i].balance;
 					//validasi jika balance balance !=0
 					if (balance<0){

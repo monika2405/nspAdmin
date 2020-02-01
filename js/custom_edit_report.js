@@ -399,5 +399,5 @@ $(document).ready(function() {
     
     setTimeout(() => {
         PageLoadOff();
-    }, 20000);
+    }, 30000);
 })

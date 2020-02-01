@@ -15,6 +15,7 @@ var tenantEnd = firebase.database().ref("tenantendContract")
 var HistoryRoom = firebase.database().ref("HistoryRoom")
 var recurringPay = firebase.database().ref("recurringPay")
 var overdue = firebase.database().ref("overdue")
+var overdueBackup = firebase.database().ref("overdueBackup")
 
 
 // function reformatDate2(inputDate) {
@@ -614,3 +615,34 @@ var overdue = firebase.database().ref("overdue")
 //     })
 // }
 //================================================================================================
+
+//=================================Backup Overdue Child===========================================
+// overdueBackup.remove()
+// overdue.on('child_added', function(snapshot){
+//     var tenant_id=snapshot.key
+//     overdue.child(tenant_id).on('child_added', function(snapshot){
+//         overdueBackup.child(tenant_id+"/"+snapshot.key).set(snapshot.val())
+//     })
+// })
+//================================================================================================
+
+//===============================Push Overdue baru==========================================
+// payment.on('child_added', function(snapshot){
+//     var tenant_id = snapshot.key
+//     payment.child(tenant_id).on('value', function(snapshot){
+//         var balance = parseInt(snapshot.child("balance").val())
+//         payment.child(tenant_id).on('child_added', function(snapshot){
+//             if (snapshot.key!= "balance" && snapshot.key!= "bondWaitDue" && snapshot.key!= "due" && snapshot.key!= "receive"){
+//                 var desc = snapshot.child("desc").val()
+//                 var date = snapshot.child("date").val()
+//                 if (desc=="Rental Due"){
+//                     console.log(tenant_id)
+//                     overdue.child(tenant_id).update({
+//                         "balance": balance,
+//                         "date_due": date
+//                     })
+//                 }
+//             }                                                   
+//         })
+//     })
+// })

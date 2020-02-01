@@ -694,7 +694,7 @@ function addInvoice() {
 	if (invoiceDetails == "rentdue") {
 		var invoiceDetailsFull = "Rental Due";
 	} else if (invoiceDetails == "finedue") {
-		var invoiceDetailsFull = "Fine Due";
+		var invoiceDetailsFull = "Fine Due - "+invoiceDetailsOther;
 	} else if (invoiceDetails == "transfer") {
 		var invoiceDetailsFull = "Bond Money Transfer";
 	} else if (invoiceDetails == "refund") {
@@ -2946,6 +2946,8 @@ $(document).ready(function() {
 	paymentRef = firebase.database().ref().child("payment/"+id);
 	overdueRef = firebase.database().ref().child("overdue/"+id);
 	reportRef = firebase.database().ref().child("reportAccount2");
+	virtual = firebase.database().ref("virtualAccountReport/"+id)
+
 	setTimeout(() => {
 		refNumberHtml = $("#tenant_id").text();
 		
@@ -2976,7 +2978,9 @@ $(document).ready(function() {
 				"due": due
 			})	
 		})
-	}, 3000);
+		
+		virtual.update({"balance": balance})
+	}, 8000);
 	contract.on("child_added", function(snapshot){
 		room_id=snapshot.key
 		var contract2 = firebase.database().ref().child("newContract/"+id+"/"+room_id+"");

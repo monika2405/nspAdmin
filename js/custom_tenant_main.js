@@ -150,7 +150,7 @@ $(document).ready(function() {
 							newObj = {
 								"statOccupy":"approved",
 								"refNum":refNumber,
-								"content":[refNumFormat,statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' style='background-color:#c8bca6' disabled ><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' style='background-color:#c8bca6' disabled><i class='fa fa-times'></i></button>"],
+								"content":[refNumFormat,statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_details.html?"+tenantID+"?"+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' style='background-color:#c8bca6' disabled ><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' style='background-color:#c8bca6' disabled><i class='fa fa-times'></i></button>"],
 								"tenant_id":tenantID
 							}
 							listApproveT.push(newObj);
@@ -173,7 +173,7 @@ $(document).ready(function() {
 							newObj = {
 								"statOccupy":"approved",
 								"refNum":refNumber,
-								"content":[refNumFormat,statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' style='background-color:#c8bca6' disabled ><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('"+tenantID+"')><i class='fa fa-times'></i></button>"],
+								"content":[refNumFormat,statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_details.html?"+tenantID+"?"+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' style='background-color:#c8bca6' disabled ><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('"+tenantID+"')><i class='fa fa-times'></i></button>"],
 								"tenant_id":tenantID
 							}
 							listApproveT.push(newObj);
@@ -227,7 +227,7 @@ $(document).ready(function() {
 							newObj = {
 								"statOccupy":statOccupy,
 								"refNum":refNumber,
-								"content":[listApproveT[i].content[0],statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",tenantContact,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"') style='background-color:#c8bca6' disabled ><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('"+tenantID+"')><i class='fa fa-times'></i></button>"],
+								"content":[listApproveT[i].content[0],statingDate,propAddr,buildNo,floorNo,roomNo,"<a href='tenant_details.html?"+refNumber+"?"+tenantID+"' class='pull-left'>"+tenantName+"</a>",tenantContact,"<button id='approve_booking"+refNumber+"' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking"+refNumber+"') style='background-color:#c8bca6' disabled ><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('"+tenantID+"')><i class='fa fa-times'></i></button>"],
 								"tenant_id":tenantID
 							}
 							listApproveT[i]=newObj;

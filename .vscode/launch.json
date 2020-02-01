@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Kuis_Besar",
+            "request": "launch",
+            "mainClass": "Kuis_Besar"
+        }
+    ]
+}
