@@ -441,11 +441,11 @@ var overdueBackup = firebase.database().ref("overdueBackup")
 //                 var last_date = new Date(snapshot.child("prevRecurringDate").val())
 //                 var prevRecurringDate = new Date(snapshot.child("prevRecurringDate").val()).toString("MM")
                 
-//                 if (prevRecurringDate=="08"){
-//                     if(payPlan=="semiannually"){
+//                 if (prevRecurringDate=="01"){
+//                     if(payPlan=="monthly"){
 //                         console.log(tenant_id)
 //                         payment.child(tenant_id).push({
-//                             "date": last_date.addMonths(6).toString("MM/dd/yyyy"),
+//                             "date": last_date.addMonths(1).toString("MM/dd/yyyy"),
 //                             "desc": "Rental Due",
 //                             "list": "ledgerList",
 //                             "invoice": rent
@@ -464,6 +464,52 @@ var overdueBackup = firebase.database().ref("overdueBackup")
 //                         virtualAccount.child(tenant_id+"/"+"02:2020").set({
 //                             "date": last_date.toString("MM/dd/yyyy"),
 //                             "due": rent
+//                         })
+
+//                     }
+//                 }
+//             })
+//        }
+//     })
+//  })
+//==============================================================================================
+
+//=========================Push Fine dari Recurring terakhir=============================
+
+// recurringPay.on('child_added', function(snapshot){
+//     var tenant_id = snapshot.key
+//     payment.child(tenant_id).once('child_added', function(snapshot){
+//        if (snapshot.key!= "balance" && snapshot.key!="bondWaitDue" && snapshot.key!="receive" && snapshot.key!= "due" ){
+//             var refNumb = snapshot.child("refnumber").val()
+//             var build_no = refNumb.substring(1,3)
+//             recurringPay.child(tenant_id+"/rental").on('value', function(snapshot){
+//                 var payPlan=snapshot.child("payPlan").val()
+//                 var rent = snapshot.child("rent").val()*0.1
+//                 var payment = snapshot.child("payment").val()
+//                 var prevRecurringDate = new Date(snapshot.child("prevRecurringDate").val()).toString("MM")
+//                 var fineDate =  new Date(snapshot.child("prevRecurringDate").val()).addDays(5).toString("MM/dd/yyyy")
+                
+//                 if (prevRecurringDate=="02"){
+//                     if(payPlan=="monthly"){
+//                         console.log(refNumb,rent, payment,fineDate)
+//                         payment.child(tenant_id).push({
+//                             "date": fineDate,
+//                             "desc": "Fine Due",
+//                             "list": "ledgerList",
+//                             "invoice": rent
+//                         })
+                        
+//                         reportAccount2.child(build_no+"/"+tenant_id).push({
+//                             "date":fineDate,
+//                             "due": rent,
+//                             "inputDate":"02/05/2020",
+//                             "receive":0,
+//                             "refNumb":refNumb
+//                         })
+//                         virtualAccount.child(tenant_id+"/balance").on('value', function(snapshot){
+//                             var prevBalance = parseInt(snapshot.val())
+//                             console.log(tenant_id, prevBalance-rent)
+//                             virtualAccount.child(tenant_id+"/balance").update(prevBalance-rent)
 //                         })
 
 //                     }
@@ -643,6 +689,17 @@ var overdueBackup = firebase.database().ref("overdueBackup")
 //                     })
 //                 }
 //             }                                                   
+//         })
+//     })
+// })
+//=============================================================================================
+
+//================================Update Child Overdue=========================================
+// virtualAccount.on('child_added', function(snapshot){
+//     var tenant_id = snapshot.key
+//     virtualAccount.child(tenant_id+"/balance").on('value', function(snapshot){
+//         overdue.child(tenant_id).update({
+//             "balance": parseInt(snapshot.val())
 //         })
 //     })
 // })

@@ -2213,6 +2213,7 @@ $(document).ready(function() {
 	contractdata={}
 	overdue={}
 	booking={}
+	refPayment=[]
 
 	//boolean variable if there is a change
 	tenantChange = false
@@ -2261,6 +2262,7 @@ $(document).ready(function() {
 			var child_id=snapshot.key
 			if (child_id=="balance"){
 				paymentBal[id]=snapshot.val()
+				refPayment.push(id)
 			}else if(child_id=="recurring"){
 				paymentRec[id]=snapshot.val()
 			}
@@ -2472,22 +2474,69 @@ $(document).ready(function() {
 		listApproveT=[];
 		setTimeout(() => {
 			table1.clear();
-			console.log(tenant)
-			console.log(tenantdata)
-			console.log(paymentBal)
-			console.log(paymentRec)
-			console.log(contractdata)
-			console.log(overdue)
+			// console.log(tenant)
+			// console.log(tenantdata)
+			// console.log(paymentBal)
+			// console.log(paymentRec)
+			// console.log(contractdata)
+			// console.log(overdue)
 			if (tenant!={} && tenantdata!={}){
 				for (i in tenant){
-					paymentRef.child(i).once('value', function(snapshot) {
-
-						if (snapshot.val() != null) {  // Have payments
-							if (snapshot.key=="t_737"){
-								console.log("ada")
+					if(!(refPayment.includes(i))){
+						if (tenant[i].stat_occupy=="approved"){
+							refNumFormat=tenant[i].ref_number
+							refN=refNumFormat.split(" ")
+							refNumber=refN[0]+refN[1]+refN[2]
+							tenantName=shortenString(tenantdata[i].full_name,8)
+							statingDate=tenant[i].start_date
+							propAddr=shortenString(tenant[i].prop_addr,10)
+							
+							// untuk sort , datanya dimasukan ke list
+							newObj = {
+								"statOccupy":"approved",
+								"refNum":refNumber,
+								"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",reformatDate(statingDate),propAddr,"<i class='fa fa-check'  style='color:#83E53A'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"','"+i+"')><i class='fa fa-times'></i></button>"],
+								"tenant_id":i,
+								"start_date":statingDate
 							}
-						} else {  // No payments
-							// jika status = approved
+							listApproveT.push(newObj);
+						}
+						//jika status = booking
+						if(tenant[i].stat_occupy=="booking") {
+							// untuk sort , datanya dimasukan ke list
+							refNumFormat=tenant[i].ref_number
+							refN=refNumFormat.split(" ")
+							refNumber=refN[0]+refN[1]+refN[2]
+							tenantName=shortenString(tenantdata[i].full_name,8);
+							statingDate=tenant[i].start_date
+							propAddr=shortenString(tenant[i].prop_addr,10)
+							newObj = {
+								"statOccupy":"booking",
+								"refNum":refNumber,
+								"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",reformatDate(statingDate),propAddr,"<i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"','"+i+"')><i class='fa fa-times'></i></button>"],
+								"tenant_id":i,
+								"start_date":statingDate
+							}
+							listApproveT.push(newObj);
+						}
+					}	
+				}
+				listApproveT = sortByStatOccupy(listApproveT);
+					//add hasil sort ke datatables
+				for (i=0;i<listApproveT.length;i++) {
+					console.log("in table booking")
+					table1.row.add(listApproveT[i].content).node().id = 'booking'+listApproveT[i].refNum;
+				}
+				table1.draw();
+			}else{
+				setTimeout(() => {
+					// console.log(tenant)
+					// console.log(tenantdata)
+					// console.log(paymentBal)
+					// console.log(paymentRec)
+					// console.log(contractdata)
+					for (i in tenant){
+						if(!(refPayment.includes(i))){
 							console.log(i)
 							if (tenant[i].stat_occupy=="approved"){
 								refNumFormat=tenant[i].ref_number
@@ -2526,69 +2575,6 @@ $(document).ready(function() {
 								listApproveT.push(newObj);
 							}
 						}	
-					});
-				}
-				listApproveT = sortByStatOccupy(listApproveT);
-					//add hasil sort ke datatables
-				for (i=0;i<listApproveT.length;i++) {
-					console.log("in table booking")
-					table1.row.add(listApproveT[i].content).node().id = 'booking'+listApproveT[i].refNum;
-				}
-				table1.draw();
-			}else{
-				setTimeout(() => {
-					console.log(tenant)
-					console.log(tenantdata)
-					console.log(paymentBal)
-					console.log(paymentRec)
-					console.log(contractdata)
-					for (i in tenant){
-						paymentRef.child(i).once('value', function(snapshot) {
-							if (snapshot.val() != null) {  // Have payments
-								if (snapshot.key=="t_737"){
-									console.log("ada")
-								}
-							} else {  // No payments
-								// jika status = approved
-								if (snapshot.key=="t_737"){
-									console.log("!ada")
-								}
-								if (tenant[i].stat_occupy=="approved"){
-									refNumFormat=tenant[i].ref_number
-									refN=refNumFormat.split(" ")
-									refNumber=refN[0]+refN[1]+refN[2]
-									tenantName=shortenString(tenantdata[i].full_name,8)
-									statingDate=tenant[i].start_date
-									propAddr=shortenString(tenant[i].prop_addr,10)
-									
-									// untuk sort , datanya dimasukan ke list
-									newObj = {
-										"statOccupy":"approved",
-										"refNum":refNumber,
-										"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",reformatDate(statingDate),propAddr,"<i class='fa fa-check' style='color:#83E53A'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('"+i+"')><i class='fa fa-times'></i></button>"],
-										"tenant_id":i
-									}
-									listApproveT.push(newObj);
-								}
-								//jika status = booking
-								if(tenant[i].stat_occupy=="booking") {
-									// untuk sort , datanya dimasukan ke list
-									refNumFormat=tenant[i].ref_number
-									refN=refNumFormat.split(" ")
-									refNumber=refN[0]+refN[1]+refN[2]
-									tenantName=shortenString(tenantdata[i].full_name,8);
-									statingDate=tenant[i].start_date
-									propAddr=shortenString(tenant[i].prop_addr,10)
-									newObj = {
-										"statOccupy":"booking",
-										"refNum":refNumber,
-										"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",reformatDate(statingDate),propAddr,"<i class='fa fa-check' style='color:#83E53A'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('"+i+"')><i class='fa fa-times'></i></button>"],
-										"tenant_id":i
-									}
-									listApproveT.push(newObj);
-								}
-							}	
-						});
 					}
 					listApproveT = sortByStatOccupy(listApproveT);
 						//add hasil sort ke datatables
@@ -2611,6 +2597,7 @@ $(document).ready(function() {
 					var balance = overdue[i].balance;
 					//validasi jika balance balance !=0
 					if (balance<0){
+						console.log(i)
 						var refN = tenant[i].ref_number
 						var re_num =tenant[i].ref_number.split(" ").join("")
 						var statOccupy = tenant[i].stat_occupy
@@ -2717,7 +2704,7 @@ $(document).ready(function() {
 					var keyDate = tenant[i].key_date
 					var statOccupy = tenant[i].stat_occupy
 					var refN = tenant[i].ref_number
-					ref_num = tenant[j].ref_number.split(" ").join("")
+					ref_num = tenant[i].ref_number.split(" ").join("")
 					var note = tenant[i].notes
 					var noteIcon=""
 					var note1=""
