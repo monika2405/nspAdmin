@@ -801,14 +801,50 @@
 		<div id="endModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
-					<div class="modal-header">
+					<div class="modal-header" style="background-color:#ED4747">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
-						<h4 class="modal-title">End Contract</h4>
+						<h4 class="modal-title" style="color:#FFF">End Contract</h4>
 					</div>
 					<div class="modal-body">
-					<!-- body -->
-						<span id="endM"></span>
-						<span id="tenantM"></span>
+						<form id="endContractForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+							<div class="form-group">
+								<label for="tenantRef" class="control-label col-lg-4">Ref. Number</label>
+								<div class="col-lg-8">
+									<div class="checkbox">
+										<span id="tenantRef" name="tenantRef"></span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="tenantName" class="control-label col-lg-4">Name</label>
+								<div class="col-lg-8">
+									<div class="checkbox">
+										<span id="tenantName" name="tenantName"></span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="endContractDate" class="control-label col-lg-4">End Contract Date</label>
+								<div class="col-lg-4">
+									<div id="endContractDP" class="input-group date">
+										<input id="endContractDate" name="endContractDate" type="text" class="form-control" placeholder="Pick Date" required>
+										<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+									</div>
+								</div>	
+							</div>
+							<div class="form-group">
+								<label for="lastInvoiceAmount" class="control-label col-lg-4">Last Invoice</label>
+								<div class="col-lg-4">
+									<input id="lastInvoiceAmount" name="lastInvoiceAmount" class="form-control" type="text" maxlength="20" required/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="penaltyPriceAmount" class="control-label col-lg-4">Penalty Price</label>
+								<div class="col-lg-4">
+									<input id="penaltyPriceAmount" name="penaltyPriceAmount" class="form-control" type="text" maxlength="20" required/>
+								</div>
+							</div>
+						</form>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
@@ -1082,6 +1118,10 @@
 			autoclose: true
 		});
 		$('#sdatePicker').datepicker({
+			format: "d-M-yy",
+			autoclose: true
+		});
+		$('#endContractDP').datepicker({
 			format: "d-M-yy",
 			autoclose: true
 		});

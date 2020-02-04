@@ -588,9 +588,10 @@ function nonActive(){
 
 //Fungsi untuk End-Contract Tenant
 function endContractModal(){
-	var refNumber = $("#tenant_id").html()
-	$('#endM').html("Are you sure to end contract "+refNumber+" ?");
-	$('#endM').val(refNumber);
+	var refNumber = $("#tenant_id").html();
+	var name = $("#tenant_name").html();
+	$('#tenantRef').html(refNumber);
+	$('#tenantName').html(name);
 	$("#endModal").modal();
 }
 
@@ -606,7 +607,9 @@ function endContract(){
 	recurringRef = firebase.database().ref().child("recurringPay/"+id)
 	recurringRef.remove()
 	firebase.database().ref().child("dataRoom/"+build_id+"/"+id).remove()
-	
+	var endContractDate = reformatDate2($("#endContractDate").val());
+	var lastInvoiceAmount = rem_moneydot($("#lastInvoiceAmount").val());
+	var penaltyPriceAmount = rem_moneydot($("#penaltyPriceAmount").val());
 	
 	setTimeout(function(){
 		$("#contract_details").append(" Contract Ended")
@@ -655,22 +658,35 @@ function endContract(){
 			})
 		}
 		
-		
-		//stop loading icon
-		$("#cover-spin").fadeOut(250, function() {
-			$(this).hide();
-		})
-	
-		
-		//success notification
-		$.gritter.add({
-			title: 'Contract was Ended ',
-			text: 'Contract was successfully ended',
-			image: './img/bell.png',
-			sticky: false,
-			time: 3500,
-			class_name: 'gritter-custom'
-		})
+		firebase.database().ref("endingContract/"+id+"/"+tenantid4).update({
+			"endContractDate": endContractDate,
+			"lastInvoiceAmount": lastInvoiceAmount,
+			"penaltyPriceAmount": penaltyPriceAmount
+		}).then(function onSuccess(res) {		
+			//stop loading icon
+			$("#cover-spin").fadeOut(250, function() {
+				$(this).hide();
+			});
+			//success notification
+			$.gritter.add({
+				title: 'Contract was Ended ',
+				text: 'Contract was successfully ended',
+				image: './img/bell.png',
+				sticky: false,
+				time: 3500,
+				class_name: 'gritter-custom'
+			})
+		}).catch(function onError(err) {
+			//error notification
+			$.gritter.add({
+				title: 'Error EndingContract',
+				text: err.code+" : "+err.message,
+				image: './img/bell.png',
+				sticky: false,
+				time: 3500,
+				class_name: 'gritter-custom'
+			});
+		});
 	}, 2000);
 	
 }
@@ -1029,12 +1045,14 @@ function addPayment() {
 	function stage1() {
 		overdueRef.once('value', function(snapshot){
 			var prevDue = snapshot.child("balance").val();
+			var prevDate = new Date(snapshot.child("date_due").val())
 			if (prevDue==null) {
 				var trRef1 = firebase.database().ref().child("tenant-room/"+id);
 				trRef1.once('child_added', function(snapshot) {
 					var bondPrice=snapshot.child("rent_bond").val();
 					var rent = snapshot.child("rent_price").val();
 					var startDate = snapshot.child("start_date").val();
+					
 					overdueRef.update({
 						"balance":(paymentAmount-bondPrice-rent),
 						"date_due": startDate
@@ -1057,25 +1075,81 @@ function addPayment() {
 					});
 				});
 			} else {
-				overdueRef.update({
-					"balance": parseInt(prevDue) + paymentAmount,
-				}).then(function onSuccess(res) {
-					stage2();
-				}).catch(function onError(err) {
-					//stop loading icon
-					$("#cover-spin").fadeOut(250, function() {
-						$(this).hide();
-					});
-					//error notification
-					$.gritter.add({
-						title: 'Error Stage 1b',
-						text: err.code+" : "+err.message,
-						image: './img/bell.png',
-						sticky: false,
-						time: 3500,
-						class_name: 'gritter-custom'
-					});
-				});
+				var contract = firebase.database.ref("newContract/"+id)
+				contract.on('child_added', function(snapshot){
+					var room_id = snapshot.key
+					contract.child(room_id).on('value', function(snapshot){
+						var historyperiod = snapshot.child("historyperiod").val()
+						contract.child(room_id+"/"+historyperiod).on('value', function(snapshot){
+							var payPlan = snapshot.child("payPlan").val()
+							if (payPlan=="monthly"){
+								overdueRef.update({
+									"balance": parseInt(prevDue) + paymentAmount,
+									"date_due": prevDate.addMonths(1).toString("MM/DD/YYYY")
+								}).then(function onSuccess(res) {
+									stage2();
+								}).catch(function onError(err) {
+									//stop loading icon
+									$("#cover-spin").fadeOut(250, function() {
+										$(this).hide();
+									});
+									//error notification
+									$.gritter.add({
+										title: 'Error Stage 1b',
+										text: err.code+" : "+err.message,
+										image: './img/bell.png',
+										sticky: false,
+										time: 3500,
+										class_name: 'gritter-custom'
+									});
+								});
+							}else if (payPlan == "semiannually"){
+								overdueRef.update({
+									"balance": parseInt(prevDue) + paymentAmount,
+									"date_due": prevDate.addMonths(6).toString("MM/DD/YYYY")
+								}).then(function onSuccess(res) {
+									stage2();
+								}).catch(function onError(err) {
+									//stop loading icon
+									$("#cover-spin").fadeOut(250, function() {
+										$(this).hide();
+									});
+									//error notification
+									$.gritter.add({
+										title: 'Error Stage 1b',
+										text: err.code+" : "+err.message,
+										image: './img/bell.png',
+										sticky: false,
+										time: 3500,
+										class_name: 'gritter-custom'
+									});
+								});
+							}else if (payPlan == "annually"){
+								overdueRef.update({
+									"balance": parseInt(prevDue) + paymentAmount,
+									"date_due": prevDate.addMonths(12).toString("MM/DD/YYYY")
+								}).then(function onSuccess(res) {
+									stage2();
+								}).catch(function onError(err) {
+									//stop loading icon
+									$("#cover-spin").fadeOut(250, function() {
+										$(this).hide();
+									});
+									//error notification
+									$.gritter.add({
+										title: 'Error Stage 1b',
+										text: err.code+" : "+err.message,
+										image: './img/bell.png',
+										sticky: false,
+										time: 3500,
+										class_name: 'gritter-custom'
+									});
+								});
+							}
+							
+						})
+					})
+				})
 			}
 		});
 	}
@@ -3647,6 +3721,14 @@ setTimeout(() => {
 			extendTenant();
 		}
 	})
+	//end contract form last invoice amount listener
+	$("#lastInvoiceAmount").on('keyup change', function() {
+		$("#lastInvoiceAmount").val(get_moneydot($("#lastInvoiceAmount").val()));
+	})
+	//end contract form penalty price amount listener
+	$("#penaltyPriceAmount").on('keyup change', function() {
+		$("#penaltyPriceAmount").val(get_moneydot($("#penaltyPriceAmount").val()));
+	})
 	
 	
 	$("#endModal").draggable({
@@ -3665,14 +3747,18 @@ setTimeout(() => {
 
 	})
 
+	$("#endContractForm").validate({
+		submitHandler: function() {
+			$('#endModal').modal('hide');
+			$("#cover-spin").fadeIn(250, function() {
+				$(this).show();
+			})
+			endContract();
+		}
+	})
 	
 	$("#submitEnd").click(function(){
-		$('#endModal').modal('hide');
-		$("#cover-spin").fadeIn(250, function() {
-			$(this).show();
-		})
-		endContract();
-
+		$("#endContractForm").submit();
 	})
 	
 	// filter onchange
