@@ -16,7 +16,7 @@ var HistoryRoom = firebase.database().ref("HistoryRoom")
 var recurringPay = firebase.database().ref("recurringPay")
 var overdue = firebase.database().ref("overdue")
 var overdueBackup = firebase.database().ref("overdueBackup")
-
+var endingContract = firebase.database().ref("endingContract")
 
 // function reformatDate2(inputDate) {
 // 	months=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Aug","Sep","Oct","Nov","Des","Dec","May"];
@@ -700,6 +700,22 @@ var overdueBackup = firebase.database().ref("overdueBackup")
 //     virtualAccount.child(tenant_id+"/balance").on('value', function(snapshot){
 //         overdue.child(tenant_id).update({
 //             "balance": parseInt(snapshot.val())
+//         })
+//     })
+// })
+//=============================================================================================
+
+//============================Buat Child Ref number di ending contract==========================
+// endingContract.on('child_added', function(snapshot){
+//     var tenant_id = snapshot.key
+//     endingContract.child(tenant_id).on('child_added', function(snapshot){
+//         var room_id = snapshot.key
+//         tenantRoom.child(tenant_id+"/"+room_id).on('value', function(snapshot){
+//             var refNumb = snapshot.child("ref_number").val()  
+//             endingContract.child(tenant_id+"/"+room_id).update({
+//                 "refNumber":refNumb
+//             })
+
 //         })
 //     })
 // })

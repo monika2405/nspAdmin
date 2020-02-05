@@ -1075,17 +1075,18 @@ function addPayment() {
 					});
 				});
 			} else {
-				var contract = firebase.database.ref("newContract/"+id)
+				var contract = firebase.database().ref("newContract/"+id)
 				contract.on('child_added', function(snapshot){
 					var room_id = snapshot.key
 					contract.child(room_id).on('value', function(snapshot){
 						var historyperiod = snapshot.child("historyperiod").val()
 						contract.child(room_id+"/"+historyperiod).on('value', function(snapshot){
 							var payPlan = snapshot.child("payPlan").val()
+							if(paymentDetails == "rentpay"){
 							if (payPlan=="monthly"){
 								overdueRef.update({
 									"balance": parseInt(prevDue) + paymentAmount,
-									"date_due": prevDate.addMonths(1).toString("MM/DD/YYYY")
+									"date_due": prevDate.addMonths(1).toString("M/d/YYYY")
 								}).then(function onSuccess(res) {
 									stage2();
 								}).catch(function onError(err) {
@@ -1106,7 +1107,7 @@ function addPayment() {
 							}else if (payPlan == "semiannually"){
 								overdueRef.update({
 									"balance": parseInt(prevDue) + paymentAmount,
-									"date_due": prevDate.addMonths(6).toString("MM/DD/YYYY")
+									"date_due": prevDate.addMonths(6).toString("M/d/YYYY")
 								}).then(function onSuccess(res) {
 									stage2();
 								}).catch(function onError(err) {
@@ -1127,7 +1128,7 @@ function addPayment() {
 							}else if (payPlan == "annually"){
 								overdueRef.update({
 									"balance": parseInt(prevDue) + paymentAmount,
-									"date_due": prevDate.addMonths(12).toString("MM/DD/YYYY")
+									"date_due": prevDate.addMonths(12).toString("M/d/YYYY")
 								}).then(function onSuccess(res) {
 									stage2();
 								}).catch(function onError(err) {
@@ -1146,6 +1147,28 @@ function addPayment() {
 									});
 								});
 							}
+						}else{
+							overdueRef.update({
+								"balance": parseInt(prevDue) + paymentAmount
+								
+							}).then(function onSuccess(res) {
+								stage2();
+							}).catch(function onError(err) {
+								//stop loading icon
+								$("#cover-spin").fadeOut(250, function() {
+									$(this).hide();
+								});
+								//error notification
+								$.gritter.add({
+									title: 'Error Stage 1b',
+									text: err.code+" : "+err.message,
+									image: './img/bell.png',
+									sticky: false,
+									time: 3500,
+									class_name: 'gritter-custom'
+								});
+							});
+						}
 							
 						})
 					})

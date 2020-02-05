@@ -304,8 +304,9 @@ $(document).ready(function() {
 				for (i in overdue){
 					console.log(i);
 					var balance = overdue[i].balance;
+					var payPlan = tenant[i].pay_plan;
 					//validasi jika balance balance !=0
-					if (balance<0){
+					if (balance<0 && payPlan == "monthly"){
 						var refN = tenant[i].ref_number
 						var refN1= refN.split(" ");
 						var refNumber = refN1[0]+refN1[1]+refN1[2];

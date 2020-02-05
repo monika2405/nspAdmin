@@ -1222,26 +1222,7 @@ $(document).ready(function() {
 			$("#fprice").html(get_fmoney(pembulatan(adjprice)));
 			$("#cfprice").val(pembulatan(adjprice));
 			$("#payadjt").val(prompter);
-			if ($("#payplan").find("option:selected").attr("value") == "annually") {
-				var yearPr = $("#cfprice").val();
-				var yearBo = pembulatan((parseInt(yearPr)/12).toFixed(2));
-				$("#fbond").html(get_fmoney(yearBo));
-				$("#cfbond").val(yearBo);
-			} else if ($("#payplan").find("option:selected").attr("value") == "semiannually") {
-				var sixPr = $("#cfprice").val();
-				var yearPr = pembulatan((((sixPr-25000)/1.1)*2).toFixed(2));
-				var monthPr = pembulatan((((parseInt(yearPr)/12)*1.2)+25000).toFixed(2));
-				var sixBo = pembulatan(monthPr);
-				$("#fbond").html(get_fmoney(sixBo));
-				$("#cfbond").val(sixBo);
-			} else if ($("#payplan").find("option:selected").attr("value") == "monthly") {
-				var monthPr = $("#cfprice").val();
-				var yearPr = pembulatan((((monthPr-25000)/1.2)*12).toFixed(2));
-				var sixPr = pembulatan((((parseInt(yearPr)/2)*1.1)+25000).toFixed(2));
-				var monthBo = pembulatan((sixPr/6).toFixed(2));
-				$("#fbond").html(get_fmoney(monthBo));
-				$("#cfbond").val(monthBo);
-			}
+			
 		}
 	});
 	//confirm bond adjustment listener

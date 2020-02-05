@@ -2257,9 +2257,7 @@ function editKeyCollectDateModal(keyDate,tenantID,tenantRef,notes) {
 }
 
 
-function pushRentalDue(){
-	today = Date.today()
-}
+
 
 
 $(document).ready(function() {
@@ -2653,8 +2651,9 @@ $(document).ready(function() {
 				for (i in paymentBal){
 					
 					var balance = overdue[i].balance;
+					var payPlan = tenant[i].pay_plan;
 					//validasi jika balance balance !=0
-					if (balance<0){
+					if (balance<0 && payPlan == "monthly"){
 						console.log(i)
 						var refN = tenant[i].ref_number
 						var re_num =tenant[i].ref_number.split(" ").join("")
@@ -2675,8 +2674,9 @@ $(document).ready(function() {
 				setTimeout(() => {
 					for (i in paymentBal){
 						var balance = parseInt(paymentBal[i]);
+						var payPlan = tenant[i].pay_plan;
 						//validasi jika balance balance !=0
-						if (balance<0){
+						if (balance<0 && payPlan == "monthly"){
 							var refN = tenant[i].ref_number
 							var re_num =  tenant[i].ref_number.split(" ").join("")
 							var statOccupy = tenant[i].stat_occupy
