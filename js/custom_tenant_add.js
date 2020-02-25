@@ -135,6 +135,30 @@ function reformatDate4(inputDate) {
 	
 }
 
+function reformatDate5(inputDate) {
+	
+	months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+	months2=["01","02","03","04","05","06","07","08","09","10","11","12"];
+	inputBroke=inputDate.split("-");
+	inputDay=inputBroke[0];
+	inputMonth=inputBroke[1];
+	inputYear=inputBroke[2];
+	if (parseInt(inputDay) < 10) {
+		outputDay = "0"+inputDay;
+	} else {
+		outputDay = inputDay;
+	}
+	for (var i=0;i<months.length;i++) {
+		if (inputMonth == months[i]) {
+			outputMonth = months2[i];
+			break
+		}
+	}
+	outputYear = inputYear;
+	return (outputMonth+"/"+outputDay+"/"+outputYear);
+	
+}
+
 function date_diff_indays(d1, d2) {
 	
 	var diff = Date.parse(d2) - Date.parse(d1);
@@ -183,65 +207,65 @@ function uploadDB() {
 	//listen value to reach threshold
 	$("#thresholdCounter").change(function() {
 		if ($(this).val() == "6") { //wait until finish uploading
-			/*
-			//send email
-			var ref = $("#roomid").html()+$("#tenantno").html();
-			var ref = ref.split(" ")[0]+ref.split(" ")[1]+ref.split(" ")[2];
-			var noLantai = String(ref.charAt(3))+String(ref.charAt(4));
-			var noKamar = String(ref.charAt(5))+String(ref.charAt(6));
-			//send email
-			var message = "Dear "+$("#afname").val()+",<br>"+"Terima kasih telah melakukan pemesanan kamar di NSP \n\n\nNoPemesanan : "+ref+"<br>Alamat : "+$("#propaddr_st").html()+", "+$("#propaddr_ct").html()+" "+$("#propaddr_pv").html()+" "+$("#propaddr_zp").html()+"<br>No. Kamar : "+noKamar+"<br>Lantai : "+noLantai+"<br>Starting Date : "+$("#edate").val()+"\n\nPemesanan saudara/i akan segera kami proses paling lambat 3 hari kerja. Saudara/i bisa memeriksa status penesanan anda pada link berikut : <a href='http://example.com'>example.com</a>";
-			//set to firebase
-			var sendEmail = firebase.database().ref().child("sendEmail");
-			sendEmail.set({
-				'subject' : "Konfirmasi Pemesanan Kamar",
-				'to' : $("#email").val(),
-				'message' : message,
-			});
-			//membangunkan heroku
-			var xhr0 = new XMLHttpRequest();
-			xhr0.open('GET', "https://sendemailgokost.herokuapp.com/", true);
-			xhr0.send();
-			xhr0.onreadystatechange = processRequest;
-			 //kondisi ketika webhook selesai di buka
-			function processRequest(e) {
-				if (xhr0.readyState == 4) {
-					//mengirim email
-					var xhr = new XMLHttpRequest();
-					xhr.open('GET', "https://sendemailgokost.herokuapp.com/webhook", true);
-					xhr.send();
+			
+		// 	//send email
+		// 	var ref = $("#roomid").html()+$("#tenantno").html();
+		// 	var ref = ref.split(" ")[0]+ref.split(" ")[1]+ref.split(" ")[2];
+		// 	var noLantai = String(ref.charAt(3))+String(ref.charAt(4));
+		// 	var noKamar = String(ref.charAt(5))+String(ref.charAt(6));
+		// 	//send email
+		// 	var message = "Dear "+$("#afname").val()+",<br>"+"Terima kasih telah melakukan pemesanan kamar di NSP \n\n\nNoPemesanan : "+ref+"<br>Alamat : "+$("#propaddr_st").html()+", "+$("#propaddr_ct").html()+" "+$("#propaddr_pv").html()+" "+$("#propaddr_zp").html()+"<br>No. Kamar : "+noKamar+"<br>Lantai : "+noLantai+"<br>Starting Date : "+$("#edate").val()+"\n\nPemesanan saudara/i akan segera kami proses paling lambat 3 hari kerja.</a>";
+		// 	//set to firebase
+		// 	var sendEmail = firebase.database().ref().child("sendEmail");
+		// 	sendEmail.set({
+		// 		'subject' : "Konfirmasi Pemesanan Kamar",
+		// 		'to' : $("#email").val(),
+		// 		'message' : message,
+		// 	});
+		// 	//membangunkan heroku
+		// 	var xhr0 = new XMLHttpRequest();
+		// 	xhr0.open('GET', "https://sendemailgokost.herokuapp.com/", true);
+		// 	xhr0.send();
+		// 	xhr0.onreadystatechange = processRequest;
+		// 	 //kondisi ketika webhook selesai di buka
+		// 	function processRequest(e) {
+		// 		if (xhr0.readyState == 4) {
+		// 			//mengirim email
+		// 			var xhr = new XMLHttpRequest();
+		// 			xhr.open('GET', "https://sendemailgokost.herokuapp.com/webhook", true);
+		// 			xhr.send();
 				 
-					xhr.onreadystatechange = processRequest;
-					 //kondisi ketika webhook selesai di buka
-					function processRequest(e) {
-						if (xhr.readyState == 4) {
-							//stop loading
-							$("#cover-spin").fadeOut(250, function() {
-								$(this).hide();
-							})
-							//stop threshold listener
-							$("#thresholdCounter").off();
-							//success notification
-							$.gritter.add({
-								title: 'Tenant Added',
-								text: 'Tenant was successfully added to the database.',
-								image: './img/bell.png',
-								sticky: false,
-								time: 3500,
-								class_name: 'gritter-custom'
-							});
-							//stop loading icon
-							$("#loadingUpload").fadeOut(250, function() {
-								$(this).hide();
-							});
-							setTimeout(function() {
-								window.location="home.html";
-							}, 1200);
-						}
-					}
-				}
-			}
-			*/
+		// 			xhr.onreadystatechange = processRequest;
+		// 			 //kondisi ketika webhook selesai di buka
+		// 			function processRequest(e) {
+		// 				if (xhr.readyState == 4) {
+		// 					//stop loading
+		// 					$("#cover-spin").fadeOut(250, function() {
+		// 						$(this).hide();
+		// 					})
+		// 					//stop threshold listener
+		// 					$("#thresholdCounter").off();
+		// 					//success notification
+		// 					$.gritter.add({
+		// 						title: 'Tenant Added',
+		// 						text: 'Tenant was successfully added to the database.',
+		// 						image: './img/bell.png',
+		// 						sticky: false,
+		// 						time: 3500,
+		// 						class_name: 'gritter-custom'
+		// 					});
+		// 					//stop loading icon
+		// 					$("#loadingUpload").fadeOut(250, function() {
+		// 						$(this).hide();
+		// 					});
+		// 					setTimeout(function() {
+		// 						window.location="home.html";
+		// 					}, 1200);
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		
 			//stop loading
 			$("#cover-spin").fadeOut(250, function() {
 				$(this).hide();
@@ -271,6 +295,7 @@ function uploadDB() {
 	const dbRefTenant = firebase.database().ref("tenant");
 	const dbRefTenantRoom = firebase.database().ref("tenant-room");
 	
+	
 	dbRefTenant.once('value', function(snapshot) {
 		if (snapshot.hasChildren()) { //tenant list filledj
 			var currCount = snapshot.child("counter").val();
@@ -288,20 +313,36 @@ function uploadDB() {
 		
 		fpayRef = firebase.database().ref().child("first-payment/"+tenantID)
 		dataRoom = firebase.database().ref().child("dataRoom/"+build_id+"/"+tenantID)
-		
+		var ed_date=""
 		var contract = firebase.database().ref().child("newContract/"+tenantID+"/"+$("#myRoomID").val()+"");
 		var sd_date = new Date(reformatDate2($("#edate").val()))
-		var ed_date = sd_date.addMonths(parseInt($("#ctoption").val())).toString("M/d/yyyy")
-		contract.child("1").set({
-			"ctrt_length": $("#ctoption").val(),
-			"refNumb":$("#roomid").html()+$("#tenantno").html(),
-			"ctrt_type":"Months",
-			"bond": rem_fmoney($("#fbond").html()),
-			"end_date":ed_date,
-			"start_date":reformatDate2($("#edate").val()),
-			"payPlan":$("#payplan").val(),
-			"rent":rem_fmoney($("#fprice").html())
-		})
+		if (sd_date.toString("dd") <= 15){
+			ed_date = sd_date.addMonths(parseInt($("#ctoption").val())-1).toString("M/d/yyyy")
+			contract.child("1").set({
+				"ctrt_length": $("#ctoption").val(),
+				"refNumb":$("#roomid").html()+$("#tenantno").html(),
+				"ctrt_type":"Months",
+				"bond": rem_fmoney($("#fbond").html()),
+				"end_date":new Date(ed_date).toString("MM")+"/31/"+new Date(ed_date).toString("yyyy"),
+				"start_date":reformatDate2($("#edate").val()),
+				"payPlan":$("#payplan").val(),
+				"rent":rem_fmoney($("#fprice").html())
+			})
+		}else{
+			ed_date = sd_date.addMonths(parseInt($("#ctoption").val())).toString("M/d/yyyy")
+			contract.child("1").set({
+				"ctrt_length": $("#ctoption").val(),
+				"refNumb":$("#roomid").html()+$("#tenantno").html(),
+				"ctrt_type":"Months",
+				"bond": rem_fmoney($("#fbond").html()),
+				"end_date":new Date(ed_date).toString("MM")+"/31/"+new Date(ed_date).toString("yyyy"),
+				"start_date":reformatDate2($("#edate").val()),
+				"payPlan":$("#payplan").val(),
+				"rent":rem_fmoney($("#fprice").html())
+			})
+		}
+		
+		
 		contract.update({
 			"historyperiod":1,
 			"status": "active"
@@ -309,18 +350,19 @@ function uploadDB() {
 		
 		fpayRef.set({
 			"payment":0,
-			"bond-balance":rem_fmoney($("#fprice").html())
+			"bond-balance":rem_fmoney($("#prfprice").html())
 		})
 		dataRoom.set("there")
 		//update last ref
 		const updateLastRef = firebase.database().ref("property/residential/building_no:"+$("#propnumb").html().split(" ")[1].split(")")[0]+"/floor:"+$("#floornumb").val()+"/ID:"+$("#myRoomID").val());
 		updateLastRef.update({
-			"last_ref":$("#refnumb").val()
+			"last_ref":$("#refnumb").val(),
+			"availdate": ed_date
 		});
 		
 		dbRefTenant.child(tenantID).set({
 			full_name : $("#afname").val(),
-			birth_date : reformatDate2($("#bdate").val()),
+			birth_date : reformatDate5($("#bdate").val()),
 			occupation : $("#occupy").val(),
 			id_type1 : $("#idtype1").val(),
 			id_number1 : $("#idno1").val(),
@@ -388,6 +430,7 @@ function uploadDB() {
 					pay_plan : $("#payplan").val(),
 					adjst_pay : $("#payadjt").val(),
 					adjst_bond : $("#bondadjt").val(),
+					prorata_price : rem_fmoney($("#prfprice").html()),
 					stat_approve : "waiting",
 					stat_process : "continue",
 					key_collection : {
@@ -653,6 +696,7 @@ function uploadDB() {
 			$("#thresholdCounter").trigger("change");
 		}
 	});
+	
 	
 }
 
@@ -1013,7 +1057,29 @@ $(document).ready(function() {
 			$("#tenantno").html(inpStart);
 		}
 	})
-	$( "#prorata" ).prop( "checked", true );
+	$('input[type="checkbox"]').click(function(){
+		if($(this).prop("checked") == true){
+			$(".prorataPricing").fadeIn(250, function() {
+				$(this).show();
+			})
+			$("#prrprice,#prfprice").html($("#rprice").text());
+			
+			$("#prpadj").fadeIn(200, function() {
+				$(this).show();
+			})
+			console.log("hide",$("#prrprice,#pfprice").text())
+		}
+		else if($(this).prop("checked") == false){
+			$(".prorataPricing").fadeOut(250, function() {
+				$(this).hide();
+			})
+			$("#prprice,#pfprice").html("");
+			$("#prpadj").fadeOut(200, function() {
+				$(this).hide();
+			})
+			console.log("hide",$("#prprice,#pfprice").html() )
+		}
+	});
 
 	//reset address listener
 	$("#resetaddr").on('click', function() {
@@ -1057,6 +1123,7 @@ $(document).ready(function() {
 				$("#bmoney,#fbond").html(get_fmoney(yearBo));
 				$("#cprice,#cfprice").val(yearPr);
 				$("#cbond,#cfbond").val(yearBo);
+				$("#prfprice").html(get_fmoney(yearPr))
 				$("#padj,#badj").fadeIn(200, function() {
 					$(this).show();
 				})
@@ -1068,6 +1135,7 @@ $(document).ready(function() {
 				$("#bmoney,#fbond").html(get_fmoney(sixBo));
 				$("#cprice,#cfprice").val(sixPr);
 				$("#cbond,#cfbond").val(sixBo);
+				$("#prfprice").html(get_fmoney(sixPr))
 				$("#padj,#badj").fadeIn(200, function() {
 					$(this).show();
 				})
@@ -1079,6 +1147,7 @@ $(document).ready(function() {
 				$("#bmoney,#fbond").html(get_fmoney(monthBo));
 				$("#cprice,#cfprice").val(monthPr);
 				$("#cbond,#cfbond").val(monthBo);
+				$("#prfprice").html(get_fmoney(monthPr))
 				$("#padj,#badj").fadeIn(200, function() {
 					$(this).show();
 				})
@@ -1198,6 +1267,10 @@ $(document).ready(function() {
 			$(this).val(reformatBirth($(this).val()));
 		}
 	})
+	//prorata adjustment listener
+	$("#prpadj").on('click', function() {
+		$("#pmodalPriceAdjt").modal();
+	});
 	//price adjustment listener
 	$("#padj").on('click', function() {
 		$("#modalPriceAdjt").modal();
@@ -1206,6 +1279,10 @@ $(document).ready(function() {
 	$("#badj").on('click', function() {
 		$("#modalBondAdjt").modal();
 	});
+	//prorata adjustment auto dot
+	$("#ppriceAdjustment").on('keyup change', function() {
+		$("#ppriceAdjustment").val(get_moneydot($("#ppriceAdjustment").val()));
+	});
 	//price adjustment auto dot
 	$("#priceAdjustment").on('keyup change', function() {
 		$("#priceAdjustment").val(get_moneydot($("#priceAdjustment").val()));
@@ -1213,6 +1290,17 @@ $(document).ready(function() {
 	//bond adjustment auto dot
 	$("#bondAdjustment").on('keyup change', function() {
 		$("#bondAdjustment").val(get_moneydot($("#bondAdjustment").val()));
+	});
+	//confirm prorata adjustment listener
+	$("#pconfirmPriceAdjt").on('click', function() {
+		var prompter = rem_moneydot($("#ppriceAdjustment").val());
+		if (prompter != null && prompter != "") {
+			var adjprice = parseInt(prompter);
+			$("#prfprice").html(get_fmoney(pembulatan(adjprice)));
+			$("#prcfprice").val(pembulatan(adjprice));
+			$("#prpayadjt").val(prompter);
+			
+		}
 	});
 	//confirm price adjustment listener
 	$("#confirmPriceAdjt").on('click', function() {
@@ -1230,7 +1318,7 @@ $(document).ready(function() {
 		var prompter = rem_moneydot($("#bondAdjustment").val());
 		if (prompter != null && prompter != "") {
 			var adjbond = parseInt(prompter);
-			$("#fbond").html(get_fmoney(pembulatan(adjbond)));
+			$("#fbond").html(get_fmoney(adjbond));
 			$("#bondadjt").val(prompter);
 		}
 	});
@@ -1249,6 +1337,7 @@ $(document).ready(function() {
 			element: 'input[name="bdate"]'
 		});
 	});
+	
 	
 })
 

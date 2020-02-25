@@ -1,40 +1,40 @@
 function removeOptions(selectbox) {
-	
-    //clear select options
-    for(i=selectbox.options.length-1; i>=1; i--) {
-        selectbox.remove(i);
-    }
-	
+
+	//clear select options
+	for (i = selectbox.options.length - 1; i >= 1; i--) {
+		selectbox.remove(i);
+	}
+
 }
 
 function get_fmoney(money) {
-	
-	var rev     = parseInt(money, 10).toString().split('').reverse().join('');
-	var rev2    = '';
-	for(var i = 0; i < rev.length; i++){
-		rev2  += rev[i];
-		if((i + 1) % 3 === 0 && i !== (rev.length - 1)){
+
+	var rev = parseInt(money, 10).toString().split('').reverse().join('');
+	var rev2 = '';
+	for (var i = 0; i < rev.length; i++) {
+		rev2 += rev[i];
+		if ((i + 1) % 3 === 0 && i !== (rev.length - 1)) {
 			rev2 += '.';
 		}
 	}
-	return ("Rp. "+rev2.split('').reverse().join('') + ',-')
-	
+	return ("Rp. " + rev2.split('').reverse().join('') + ',-')
+
 }
 
 function rem_fmoney(money) {
-	
-	return parseInt(money.substring(4,money.length-2).split(".").join(""))
-	
+
+	return parseInt(money.substring(4, money.length - 2).split(".").join(""))
+
 }
 
 function rem_moneydot(money) {
-	
+
 	return parseInt(money.split(".").join(""));
-	
+
 }
 
 function get_moneydot(money) {
-	
+
 	if (isNaN(parseInt(money))) {
 		var convertmoney = "";
 	} else {
@@ -42,35 +42,35 @@ function get_moneydot(money) {
 		var convertmoney = money.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
 	}
 	return convertmoney;
-	
+
 }
 
 //sort list by status approve or booking
-function sortByStatOccupy(listApproveT){
-	newArray=[]
-	
+function sortByStatOccupy(listApproveT) {
+	newArray = []
+
 	//jika statusnya booking
-	for (i=0;i<listApproveT.length;i++) {
-		if (listApproveT[i].statOccupy=="booking"){
+	for (i = 0; i < listApproveT.length; i++) {
+		if (listApproveT[i].statOccupy == "booking") {
 			newObj = {
-				"statOccupy":listApproveT[i].statOccupy,
-				"refNum":listApproveT[i].refNum,
-				"content":listApproveT[i].content,
-				"tenant_id":listApproveT[i].tenant_id
+				"statOccupy": listApproveT[i].statOccupy,
+				"refNum": listApproveT[i].refNum,
+				"content": listApproveT[i].content,
+				"tenant_id": listApproveT[i].tenant_id
 			}
 			newArray.push(newObj);
 		}
 	}
-		
+
 	//jika statusnya approved
-	for (i=0;i<listApproveT.length;i++) {
-		if (listApproveT[i].statOccupy=="approved"){
-			
+	for (i = 0; i < listApproveT.length; i++) {
+		if (listApproveT[i].statOccupy == "approved") {
+
 			newObj = {
-				"statOccupy":listApproveT[i].statOccupy,
-				"refNum":listApproveT[i].refNum,
-				"content":listApproveT[i].content,
-				"tenant_id":listApproveT[i].tenant_id
+				"statOccupy": listApproveT[i].statOccupy,
+				"refNum": listApproveT[i].refNum,
+				"content": listApproveT[i].content,
+				"tenant_id": listApproveT[i].tenant_id
 			}
 			newArray.push(newObj);
 		}
@@ -79,54 +79,54 @@ function sortByStatOccupy(listApproveT){
 }
 
 function reformatDate(inputDate) {
-	
-	months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-	inputBroke=inputDate.split("/");
-	inputDay=parseInt(inputBroke[1]);
-	inputMonth=parseInt(inputBroke[0]);
-	inputYear=inputBroke[2];
-	outputDay=inputDay;
-	outputMonth=months[inputMonth-1];
-	outputYear=inputYear.split("")[2]+inputYear.split("")[3];
-	return (outputDay+"-"+outputMonth+"-"+outputYear);
-	
+
+	months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+	inputBroke = inputDate.split("/");
+	inputDay = parseInt(inputBroke[1]);
+	inputMonth = parseInt(inputBroke[0]);
+	inputYear = inputBroke[2];
+	outputDay = inputDay;
+	outputMonth = months[inputMonth - 1];
+	outputYear = inputYear.split("")[2] + inputYear.split("")[3];
+	return (outputDay + "-" + outputMonth + "-" + outputYear);
+
 }
 
 function reformatDate2(inputDate) {
-	
-	months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-	months2=["01","02","03","04","05","06","07","08","09","10","11","12"];
-	inputBroke=inputDate.split("-");
-	inputDay=inputBroke[0];
-	inputMonth=inputBroke[1];
-	inputYear=inputBroke[2];
+
+	months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+	months2 = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
+	inputBroke = inputDate.split("-");
+	inputDay = inputBroke[0];
+	inputMonth = inputBroke[1];
+	inputYear = inputBroke[2];
 	if (parseInt(inputDay) < 10) {
 		outputDay = inputDay;
 	} else {
 		outputDay = inputDay;
 	}
-	for (var i=0;i<months.length;i++) {
+	for (var i = 0; i < months.length; i++) {
 		if (inputMonth == months[i]) {
 			outputMonth = months2[i];
 			break
 		}
 	}
-	outputYear = "20"+inputYear;
-	return (outputMonth+"/"+outputDay+"/"+outputYear);
-	
+	outputYear = "20" + inputYear;
+	return (outputMonth + "/" + outputDay + "/" + outputYear);
+
 }
 
 function date_diff_indays(d1, d2) {
-	
+
 	var diff = Date.parse(d2) - Date.parse(d1);
 	return Math.floor(diff / 86400000);
-	
+
 }
 
 function dateToday_diff(d1) {
-	var today =  new Date();
+	var today = new Date();
 	var diff = Date.parse(today) - Date.parse(d1);
-	if (Math.floor(diff / 86400000)<0){
+	if (Math.floor(diff / 86400000) < 0) {
 		return true;
 	} else {
 		return false;
@@ -134,167 +134,166 @@ function dateToday_diff(d1) {
 }
 
 //menjumlahkan hari dengan tanggal yang diminta
-function sumDate(hari,date){
+function sumDate(hari, date) {
 	var intend = parseInt(hari);
 	//set date yang ditentukan
 	var someDate = new Date(date);
 	//menjumlahkan tanggal
-	someDate.setDate(someDate.getDate() + intend); 
+	someDate.setDate(someDate.getDate() + intend);
 	newDate = String(someDate).split(" ")
 	var endMonth = newDate[1];
 	var endDay = newDate[2];
 	var endYear = newDate[3];
 
-	var endDate = endDay+"-"+endMonth+"-"+endYear;
+	var endDate = endDay + "-" + endMonth + "-" + endYear;
 
 	return endDate;
 }
 
-function sumMonth(date,month) {
-  var d = new Date(date);
-  d.setMonth(d.getMonth()+month);
-  newDate = String(d).split(" ")
-  var endMonth = newDate[1];
-  var endDay = newDate[2];
-  var endYear = newDate[3];
-  return reformatDate2(endDay+"-"+endMonth+"-"+endYear);
+function sumMonth(date, month) {
+	var d = new Date(date);
+	d.setMonth(d.getMonth() + month);
+	newDate = String(d).split(" ")
+	var endMonth = newDate[1];
+	var endDay = newDate[2];
+	var endYear = newDate[3];
+	return reformatDate2(endDay + "-" + endMonth + "-" + endYear);
 }
 
-function shortenString(yourString,maxLength){
+function shortenString(yourString, maxLength) {
 
 	//trim the string to the maximum length
 	var trimmedString = yourString.substr(0, maxLength);
 
-	return trimmedString+"..."
+	return trimmedString + "..."
 }
 
 function addInvoice() {
 	var invoiceAmount = parseInt(rem_moneydot($("#invoiceAmount").val()))
-		var refNumberHtml = $("#invoiceTenantRef").val();
-		var ref_num = $("#invoiceTenantRef").val().split(" ").join("")
-		var id = $("#invoiceTenantID").val();
-		var building_id = refNumberHtml.substring(1,3);
-		var invoiceDetails = $("#invoiceDetails").val();
-		var invoiceDetailsOther = $("#invoiceDetailsOtherBlock").val();
-		var invoiceDate = reformatDate2($("#invoiceDate").val());
-		var dueDate = $("#invoiceDate").val();
+	var refNumberHtml = $("#invoiceTenantRef").val();
+	var ref_num = $("#invoiceTenantRef").val().split(" ").join("")
+	var id = $("#invoiceTenantID").val();
+	var building_id = refNumberHtml.substring(1, 3);
+	var invoiceDetails = $("#invoiceDetails").val();
+	var invoiceDetailsOther = $("#invoiceDetailsOtherBlock").val();
+	var invoiceDate = reformatDate2($("#invoiceDate").val());
+	var dueDate = $("#invoiceDate").val();
 
-		if (invoiceDetails == "rentdue") {
-			var invoiceDetailsFull = "Rental Due";
-		} else if (invoiceDetails == "finedue") {
-			var invoiceDetailsFull = "Fine Due";
-		} else {
-			var invoiceDetailsFull = "Other Payment - "+invoiceDetailsOther;
-		}
-
-		
-
-		reportRef = firebase.database().ref().child("reportAccount2");
-		paymentRef = firebase.database().ref().child("payment/"+id);
-		var recurringRef = firebase.database().ref("recurringPay/"+id)
-
-		// var invoiceRecurrent = $("#invoiceRecurrent").val(); 
-		// if (invoiceRecurrent != "onetime"){
-		// 	recurringRef.on("value", function(snapshot){
-		// 		var total = (snapshot.child("total_recurring").val())+1
-		// 		recurringRef.child("due:"+total).update({
-		// 			"rent":invoiceAmount,
-		// 			"date":invoiceDate,
-		// 			"payPlan": invoiceRecurrent,
-		// 			"status": "active",
-		//			"details": invoiceDetailsOther
-		// 		})
-		// 	})
-		// }
+	if (invoiceDetails == "rentdue") {
+		var invoiceDetailsFull = "Rental Due";
+	} else if (invoiceDetails == "finedue") {
+		var invoiceDetailsFull = "Fine Due";
+	} else {
+		var invoiceDetailsFull = "Other Payment - " + invoiceDetailsOther;
+	}
 
 
-		overdueRef.once('value', function(snapshot){
-			prevDue = snapshot.child("balance").val()
-			if (prevDue== null){
-				var trRef1 = firebase.database().ref().child("tenant-room/"+id);
-				trRef1.once('child_added', function(snapshot) {
-					var bondPrice=parseInt(snapshot.child("rent_bond").val());
-					var rent = parseInt(snapshot.child("rent_price").val());
-					overdueRef.set({
-						"balance": -bondPrice-rent-parseInt(invoiceAmount),
-						"date_due": invoiceDate
-					})
+
+	reportRef = firebase.database().ref().child("reportAccount2");
+	paymentRef = firebase.database().ref().child("payment/" + id);
+	var recurringRef = firebase.database().ref("recurringPay/" + id)
+
+	// var invoiceRecurrent = $("#invoiceRecurrent").val(); 
+	// if (invoiceRecurrent != "onetime"){
+	// 	recurringRef.on("value", function(snapshot){
+	// 		var total = (snapshot.child("total_recurring").val())+1
+	// 		recurringRef.child("due:"+total).update({
+	// 			"rent":invoiceAmount,
+	// 			"date":invoiceDate,
+	// 			"payPlan": invoiceRecurrent,
+	// 			"status": "active",
+	//			"details": invoiceDetailsOther
+	// 		})
+	// 	})
+	// }
+
+
+	overdueRef.once('value', function (snapshot) {
+		prevDue = snapshot.child("balance").val()
+		if (prevDue == null) {
+			var trRef1 = firebase.database().ref().child("tenant-room/" + id);
+			trRef1.once('child_added', function (snapshot) {
+				var bondPrice = parseInt(snapshot.child("rent_bond").val());
+				var rent = parseInt(snapshot.child("rent_price").val());
+				overdueRef.set({
+					"balance": -bondPrice - rent - parseInt(invoiceAmount),
+					"date_due": invoiceDate
+				})
 			})
-			}else{
-				if (prevDue>0){
-					overdueRef.update({
-						"balance": parseInt(prevDue) - parseInt(invoiceAmount),
-						"date_due": invoiceDate
-					})
-				}else{
-					overdueRef.update({
-						"balance": parseInt(prevDue) - parseInt(invoiceAmount)
-					})
-				}			
+		} else {
+			if (prevDue > 0) {
+				overdueRef.update({
+					"balance": parseInt(prevDue) - parseInt(invoiceAmount),
+					"date_due": invoiceDate
+				})
+			} else {
+				overdueRef.update({
+					"balance": parseInt(prevDue) - parseInt(invoiceAmount)
+				})
 			}
-		})
+		}
+	})
 
-		paymentRef.once('value', function(snapshot){
-			var prevBalance = parseInt(snapshot.child("balance").val())
-			var prevInvoice = snapshot.child("due").val()
-			if (prevInvoice==null){
-				paymentRef.update({
-					"balance": (prevBalance - invoiceAmount).toString(),
-					"due":parseInt(invoiceAmount)
-				})
-			}
-			else{
-				paymentRef.update({
-					"balance": (prevBalance - invoiceAmount).toString(),
-					"due":parseInt(invoiceAmount)+prevInvoice
-				})
-			}
-			
-			
-				
-			
-		
-		})
-		paymentRef.push({
-			"date":invoiceDate,
-			"desc":invoiceDetailsFull,
-			"invoice":invoiceAmount,
-			"payment":null,
-			"refnumber":refNumberHtml,
-			"list":"ledgerList"
-		});
-		
-		var d = new Date();
-		var thisDay = d.getDate();
-		if (parseInt(thisDay) < 10) {
-			thisDay = "0"+thisDay;
+	paymentRef.once('value', function (snapshot) {
+		var prevBalance = parseInt(snapshot.child("balance").val())
+		var prevInvoice = snapshot.child("due").val()
+		if (prevInvoice == null) {
+			paymentRef.update({
+				"balance": (prevBalance - invoiceAmount).toString(),
+				"due": parseInt(invoiceAmount)
+			})
+		} else {
+			paymentRef.update({
+				"balance": (prevBalance - invoiceAmount).toString(),
+				"due": parseInt(invoiceAmount) + prevInvoice
+			})
 		}
-		var thisMonth = d.getMonth() + 1;
-		if (parseInt(thisMonth) < 10) {
-			thisMonth = "0"+thisMonth;
-		}
-		var thisYear = d.getFullYear();
-		var thisDate = thisMonth+"/"+thisDay+"/"+thisYear;
-		
-		reportRef.child(building_id+"/"+id).push({
-			"due":invoiceAmount,
-			"receive": 0,
-			"date":invoiceDate,
-			"inputDate": thisDate,
-			"refNumb": refNumberHtml
-		})
-		
-		
-	setTimeout(function(){
+
+
+
+
+
+	})
+	paymentRef.push({
+		"date": invoiceDate,
+		"desc": invoiceDetailsFull,
+		"invoice": invoiceAmount,
+		"payment": null,
+		"refnumber": refNumberHtml,
+		"list": "ledgerList"
+	});
+
+	var d = new Date();
+	var thisDay = d.getDate();
+	if (parseInt(thisDay) < 10) {
+		thisDay = "0" + thisDay;
+	}
+	var thisMonth = d.getMonth() + 1;
+	if (parseInt(thisMonth) < 10) {
+		thisMonth = "0" + thisMonth;
+	}
+	var thisYear = d.getFullYear();
+	var thisDate = thisMonth + "/" + thisDay + "/" + thisYear;
+
+	reportRef.child(building_id + "/" + id).push({
+		"due": invoiceAmount,
+		"receive": 0,
+		"date": invoiceDate,
+		"inputDate": thisDate,
+		"refNumb": refNumberHtml
+	})
+
+
+	setTimeout(function () {
 		//stop loading icon
-		$("#cover-spin").fadeOut(250, function() {
+		$("#cover-spin").fadeOut(250, function () {
 			$(this).hide();
 		})
 		//reset invoice form
 		$('#addInvoiceForm').trigger("reset");
-		
+
 		$("#invoiceRecurrentBlock").show();
-		
+
 		removeOptions(document.getElementById("invoiceDetails"));
 		var optionElement1 = document.createElement("option");
 		var optionElement2 = document.createElement("option");
@@ -308,8 +307,8 @@ function addInvoice() {
 		document.getElementById("invoiceDetails").appendChild(optionElement1);
 		document.getElementById("invoiceDetails").appendChild(optionElement2);
 		document.getElementById("invoiceDetails").appendChild(optionElement3);
-		
-		
+
+
 		//success notification
 		$.gritter.add({
 			title: 'Invoice Added',
@@ -319,12 +318,12 @@ function addInvoice() {
 			time: 3500,
 			class_name: 'gritter-custom'
 		})
-		setTimeout(function(){
-			window.location='tenant_details.html?'+id+"?"+ref_num+"#ledger";
+		setTimeout(function () {
+			window.location = 'tenant_details.html?' + id + "?" + ref_num + "#ledger";
 		}, 1000);
 	}, 1000);
-	
-	
+
+
 }
 
 var bondList = [];
@@ -334,28 +333,28 @@ var historyperiod = 1;
 
 function addPayment() {
 
-	function checkFirstPayment(id,building_id,refNumber,date,room_id){
-		
-		var fpayRef = firebase.database().ref().child("first-payment/"+id);
-		var reportRef = firebase.database().ref().child("reportAccount2/"+building_id+"/"+id);
-		var recurring = firebase.database().ref("recurringPay/"+id)
-		var contract  = firebase.database().ref("newContract/"+id+"/"+room_id)
-		var booking = firebase.database().ref().child("booking-tenant/"+id)
-		fpayRef.on('value', function(snapshot){
+	function checkFirstPayment(id, building_id, refNumber, date, room_id) {
+
+		var fpayRef = firebase.database().ref().child("first-payment/" + id);
+		var reportRef = firebase.database().ref().child("reportAccount2/" + building_id + "/" + id);
+		var recurring = firebase.database().ref("recurringPay/" + id)
+		var contract = firebase.database().ref("newContract/" + id + "/" + room_id)
+		var booking = firebase.database().ref().child("booking-tenant/" + id)
+		fpayRef.on('value', function (snapshot) {
 			var payment = snapshot.child("payment").val();
 			var balance = snapshot.child("bond-balance").val();
-			
-			if(payment==0){
-				contract.on("value", function(snapshot){
-					
+
+			if (payment == 0) {
+				contract.on("value", function (snapshot) {
+
 					var historyperiod = snapshot.child("historyperiod").val().toString()
-					
-					contract.child(historyperiod).on("value", function(snapshot){
+
+					contract.child(historyperiod).on("value", function (snapshot) {
 						var payPlan = snapshot.child("payPlan").val()
 						var rent = snapshot.child("rent").val()
-						
-						if (payPlan=="monthly"){
-							
+
+						if (payPlan == "monthly") {
+
 							recurring.update({
 								"total_recurring": 0
 							})
@@ -365,25 +364,25 @@ function addPayment() {
 								"prevRecurringDate": new Date(date).addMonths(1).toString("MM/d/yyyy"),
 								"rent": rent,
 								"status": "active"
-								}).then(function onSuccess(res) {		
-									reportRef.push({
-										"date":date,
-										"due": balance,
-										"inputDate":Date.today().toString("MM/d/yyyy"),
-										"receive":0,
-										"refNumb":refNumber,
-									}).then(function onSuccess(res){
-										booking.set({
-											"status": "booked"
-										})
-										}).catch(function onError(err) {
-											return "unsuccess"
-										});	
+							}).then(function onSuccess(res) {
+								reportRef.push({
+									"date": date,
+									"due": balance,
+									"inputDate": Date.today().toString("MM/d/yyyy"),
+									"receive": 0,
+									"refNumb": refNumber,
+								}).then(function onSuccess(res) {
+									booking.set({
+										"status": "booked"
+									})
 								}).catch(function onError(err) {
 									return "unsuccess"
 								});
-							
-						}else if(payPlan == "semiannually"){
+							}).catch(function onError(err) {
+								return "unsuccess"
+							});
+
+						} else if (payPlan == "semiannually") {
 							recurring.update({
 								"total_recurring": 0
 							})
@@ -393,25 +392,25 @@ function addPayment() {
 								"prevRecurringDate": new Date(date).addMonths(6).toString("MM/d/yyyy"),
 								"rent": rent,
 								"status": "active"
+							}).then(function onSuccess(res) {
+								reportRef.push({
+									"date": date,
+									"due": balance,
+									"inputDate": Date.today().toString("MM/d/yyyy"),
+									"receive": 0,
+									"refNumb": refNumber,
 								}).then(function onSuccess(res) {
-									reportRef.push({
-										"date":date,
-										"due": balance,
-										"inputDate":Date.today().toString("MM/d/yyyy"),
-										"receive":0,
-										"refNumb":refNumber,
-									}).then(function onSuccess(res){
-										booking.set({
-											"status": "booked"
-										})
-									}).catch(function onError(err) {
-											return "unsuccess"
-										});	
+									booking.set({
+										"status": "booked"
+									})
 								}).catch(function onError(err) {
 									return "unsuccess"
 								});
-							
-						}else if(payPlan == "annually"){
+							}).catch(function onError(err) {
+								return "unsuccess"
+							});
+
+						} else if (payPlan == "annually") {
 							recurring.update({
 								"total_recurring": 0
 							})
@@ -421,35 +420,35 @@ function addPayment() {
 								"prevRecurringDate": new Date(date).addMonths(12).toString("MM/d/yyyy"),
 								"rent": rent,
 								"status": "active"
+							}).then(function onSuccess(res) {
+								reportRef.push({
+									"date": date,
+									"due": balance,
+									"inputDate": Date.today().toString("MM/d/yyyy"),
+									"receive": 0,
+									"refNumb": refNumber,
 								}).then(function onSuccess(res) {
-									reportRef.push({
-										"date":date,
-										"due": balance,
-										"inputDate":Date.today().toString("MM/d/yyyy"),
-										"receive":0,
-										"refNumb":refNumber,
-									}).then(function onSuccess(res){
-										booking.set({
-											"status": "booked"
-										})
-									}).catch(function onError(err) {
-											return "unsuccess"
-										});	
+									booking.set({
+										"status": "booked"
+									})
 								}).catch(function onError(err) {
 									return "unsuccess"
 								});
-							
+							}).catch(function onError(err) {
+								return "unsuccess"
+							});
+
 						}
-						
+
 					})
 				})
-						
-			}else{
+
+			} else {
 				return "success"
 			}
 		})
 	}
-	
+
 	function resetPaymentForm() {
 		//reset payment form
 		$('#addPaymentForm').trigger("reset");
@@ -477,20 +476,21 @@ function addPayment() {
 		document.getElementById("paymentDetails").appendChild(optionElement4);
 		document.getElementById("paymentDetails").appendChild(optionElement5);
 	}
-	
+
 	// get id , refnum
 	var refNumberHtml = $("#paymentTenantRef").val();
 	var id = $("#paymentTenantID").val();
-	var building_id = refNumberHtml.substring(1,3);
-	var room_id = refNumberHtml.substring(0,7)
+	var building_id = refNumberHtml.substring(1, 3);
+	var room_id = refNumberHtml.substring(0, 7)
 	//init firebase
-	paymentRef = firebase.database().ref().child("payment/"+id);
-	fpayRef = firebase.database().ref().child("first-payment/"+id);
-	overdueRef = firebase.database().ref().child("overdue/"+id);
+	paymentRef = firebase.database().ref().child("payment/" + id);
+	fpayRef = firebase.database().ref().child("first-payment/" + id);
+	overdueRef = firebase.database().ref().child("overdue/" + id);
 	reportRef = firebase.database().ref().child("reportAccount2");
+	var recurring = firebase.database().ref("recurringPay/" + id)
 	//collect data from payment form
 	var paymentDate = reformatDate2($("#paymentDate").val());
-	var paymentAmount = parseInt($("#paymentAmountCond").val()+rem_moneydot($("#paymentAmount").val()));
+	var paymentAmount = parseInt($("#paymentAmountCond").val() + rem_moneydot($("#paymentAmount").val()));
 	var paymentDetails = $("#paymentDetails").val();
 	var paymentDetailsOther = $("#paymentDetailsOther").val();
 	var paymentDetailsAdjust = $("#paymentDetailsAdjust").val();
@@ -498,59 +498,65 @@ function addPayment() {
 	var adjst_date = $("#adjstDate").val()
 	if (paymentDetails == "rentpay") {
 		var paymentDetailsFull = "Rental Payment";
+		recurring.child("rental").update({
+			"payment": "pay"
+		})
 	} else if (paymentDetails == "finepay") {
 		var paymentDetailsFull = "Fine Payment";
 	} else if (paymentDetails == "bondpay") {
 		var paymentDetailsFull = "Bond Money Payment";
 	} else if (paymentDetails == "transfer") {
 		var paymentDetailsFull = "Bond Money Transfer";
+		recurring.child("rental").update({
+			"payment": "pay"
+		})
 	} else if (paymentDetails == "refund") {
 		var paymentDetailsFull = "Bond Money Refund";
-	}  else if (paymentDetails == "adjustpay") {
-		var paymentDetailsFull = "Adjustment - "+adjst_details+" on "+adjst_date;
+	} else if (paymentDetails == "adjustpay") {
+		var paymentDetailsFull = "Adjustment - " + adjst_details + " on " + adjst_date;
 		var date = reformatDate2(adjst_date)
 		month = date.split("/")[0]
 		year = date.split("/")[2]
-		if (adjst_details=="Rental Due"){
-			virtual.child(month+":"+year).remove()
+		if (adjst_details == "Rental Due") {
+			virtual.child(month + ":" + year).remove()
 		}
-	}else {
-		var paymentDetailsFull = "Other Payment - "+paymentDetailsOther;
+	} else {
+		var paymentDetailsFull = "Other Payment - " + paymentDetailsOther;
 	}
 
-	checkFirstPayment(id,building_id,refNumberHtml,paymentDate,room_id)
-	
+	checkFirstPayment(id, building_id, refNumberHtml, paymentDate, room_id)
+
 	setTimeout(() => {
 		stage1();
 	}, 5000);
-	
-	
-	
+
+
+
 	function stage1() {
-		overdueRef.once('value', function(snapshot){
+		overdueRef.once('value', function (snapshot) {
 			var prevDue = snapshot.child("balance").val();
 			var prevDate = new Date(snapshot.child("date_due").val())
-			if (prevDue==null) {
-				var trRef1 = firebase.database().ref().child("tenant-room/"+id);
-				trRef1.once('child_added', function(snapshot) {
-					var bondPrice=snapshot.child("rent_bond").val();
+			if (prevDue == null) {
+				var trRef1 = firebase.database().ref().child("tenant-room/" + id);
+				trRef1.once('child_added', function (snapshot) {
+					var bondPrice = snapshot.child("rent_bond").val();
 					var rent = snapshot.child("rent_price").val();
 					var startDate = snapshot.child("start_date").val();
-					
+
 					overdueRef.update({
-						"balance":(paymentAmount-bondPrice-rent),
+						"balance": (paymentAmount - bondPrice - rent),
 						"date_due": startDate
 					}).then(function onSuccess(res) {
 						stage2();
 					}).catch(function onError(err) {
 						//stop loading icon
-						$("#cover-spin").fadeOut(250, function() {
+						$("#cover-spin").fadeOut(250, function () {
 							$(this).hide();
 						});
 						//error notification
 						$.gritter.add({
 							title: 'Error Stage 1a',
-							text: err.code+" : "+err.message,
+							text: err.code + " : " + err.message,
 							image: './img/bell.png',
 							sticky: false,
 							time: 3500,
@@ -559,14 +565,14 @@ function addPayment() {
 					});
 				});
 			} else {
-				var contract = firebase.database.ref("newContract/"+id)
-				contract.on('child_added', function(snapshot){
+				var contract = firebase.database().ref("newContract/" + id)
+				contract.on('child_added', function (snapshot) {
 					var room_id = snapshot.key
-					contract.child(room_id).on('value', function(snapshot){
+					contract.child(room_id).on('value', function (snapshot) {
 						var historyperiod = snapshot.child("historyperiod").val()
-						contract.child(room_id+"/"+historyperiod).on('value', function(snapshot){
+						contract.child(room_id + "/" + historyperiod).on('value', function (snapshot) {
 							var payPlan = snapshot.child("payPlan").val()
-							if (payPlan=="monthly"){
+							if (payPlan == "monthly") {
 								overdueRef.update({
 									"balance": parseInt(prevDue) + paymentAmount,
 									"date_due": prevDate.addMonths(1).toString("MM/DD/YYYY")
@@ -574,20 +580,20 @@ function addPayment() {
 									stage2();
 								}).catch(function onError(err) {
 									//stop loading icon
-									$("#cover-spin").fadeOut(250, function() {
+									$("#cover-spin").fadeOut(250, function () {
 										$(this).hide();
 									});
 									//error notification
 									$.gritter.add({
 										title: 'Error Stage 1b',
-										text: err.code+" : "+err.message,
+										text: err.code + " : " + err.message,
 										image: './img/bell.png',
 										sticky: false,
 										time: 3500,
 										class_name: 'gritter-custom'
 									});
 								});
-							}else if (payPlan == "semiannually"){
+							} else if (payPlan == "semiannually") {
 								overdueRef.update({
 									"balance": parseInt(prevDue) + paymentAmount,
 									"date_due": prevDate.addMonths(6).toString("MM/DD/YYYY")
@@ -595,20 +601,20 @@ function addPayment() {
 									stage2();
 								}).catch(function onError(err) {
 									//stop loading icon
-									$("#cover-spin").fadeOut(250, function() {
+									$("#cover-spin").fadeOut(250, function () {
 										$(this).hide();
 									});
 									//error notification
 									$.gritter.add({
 										title: 'Error Stage 1b',
-										text: err.code+" : "+err.message,
+										text: err.code + " : " + err.message,
 										image: './img/bell.png',
 										sticky: false,
 										time: 3500,
 										class_name: 'gritter-custom'
 									});
 								});
-							}else if (payPlan == "annually"){
+							} else if (payPlan == "annually") {
 								overdueRef.update({
 									"balance": parseInt(prevDue) + paymentAmount,
 									"date_due": prevDate.addMonths(12).toString("MM/DD/YYYY")
@@ -616,13 +622,13 @@ function addPayment() {
 									stage2();
 								}).catch(function onError(err) {
 									//stop loading icon
-									$("#cover-spin").fadeOut(250, function() {
+									$("#cover-spin").fadeOut(250, function () {
 										$(this).hide();
 									});
 									//error notification
 									$.gritter.add({
 										title: 'Error Stage 1b',
-										text: err.code+" : "+err.message,
+										text: err.code + " : " + err.message,
 										image: './img/bell.png',
 										sticky: false,
 										time: 3500,
@@ -630,36 +636,36 @@ function addPayment() {
 									});
 								});
 							}
-							
+
 						})
 					})
 				})
 			}
 		});
 	}
-	
+
 	function stage2() {
-		paymentRef.once('value', function(snapshot){
-			if (snapshot.child("balance").val()==null){
-				var trRef1 = firebase.database().ref().child("tenant-room/"+id);
-				trRef1.once('child_added', function(snapshot) {
-					var bondPrice=snapshot.child("rent_bond").val();
+		paymentRef.once('value', function (snapshot) {
+			if (snapshot.child("balance").val() == null) {
+				var trRef1 = firebase.database().ref().child("tenant-room/" + id);
+				trRef1.once('child_added', function (snapshot) {
+					var bondPrice = snapshot.child("rent_bond").val();
 					var rent = snapshot.child("rent_price").val()
-					
+
 					paymentRef.update({
-						"balance": (paymentAmount-bondPrice-rent).toString(),
+						"balance": (paymentAmount - bondPrice - rent).toString(),
 						"receive": paymentAmount
 					}).then(function onSuccess(res) {
 						stage3();
 					}).catch(function onError(err) {
 						//stop loading icon
-						$("#cover-spin").fadeOut(250, function() {
+						$("#cover-spin").fadeOut(250, function () {
 							$(this).hide();
 						});
 						//error notification
 						$.gritter.add({
 							title: 'Error Stage 2a',
-							text: err.code+" : "+err.message,
+							text: err.code + " : " + err.message,
 							image: './img/bell.png',
 							sticky: false,
 							time: 3500,
@@ -669,21 +675,21 @@ function addPayment() {
 				});
 			} else {
 				var prevBalance = parseInt(snapshot.child("balance").val());
-				var prevRec =parseInt(snapshot.child("receive").val());
+				var prevRec = parseInt(snapshot.child("receive").val());
 				paymentRef.update({
 					"balance": (prevBalance + paymentAmount).toString(),
-					"receive": paymentAmount+prevRec
+					"receive": paymentAmount + prevRec
 				}).then(function onSuccess(res) {
 					stage3();
 				}).catch(function onError(err) {
 					//stop loading icon
-					$("#cover-spin").fadeOut(250, function() {
+					$("#cover-spin").fadeOut(250, function () {
 						$(this).hide();
 					});
 					//error notification
 					$.gritter.add({
 						title: 'Error Stage 2b',
-						text: err.code+" : "+err.message,
+						text: err.code + " : " + err.message,
 						image: './img/bell.png',
 						sticky: false,
 						time: 3500,
@@ -693,23 +699,23 @@ function addPayment() {
 			}
 		});
 	}
-	
+
 	function stage3() {
 		var d = new Date();
 		var thisDay = d.getDate();
 		if (parseInt(thisDay) < 10) {
-			thisDay = "0"+thisDay;
+			thisDay = "0" + thisDay;
 		}
 		var thisMonth = d.getMonth() + 1;
 		if (parseInt(thisMonth) < 10) {
-			thisMonth = "0"+thisMonth;
+			thisMonth = "0" + thisMonth;
 		}
 		var thisYear = d.getFullYear();
-		var thisDate = thisMonth+"/"+thisDay+"/"+thisYear;
+		var thisDate = thisMonth + "/" + thisDay + "/" + thisYear;
 
-		if(paymentDetails=="refund"){
-			reportRef.child(building_id+"/"+id).push({
-				"due":paymentAmount,
+		if (paymentDetails == "refund") {
+			reportRef.child(building_id + "/" + id).push({
+				"due": paymentAmount,
 				"receive": 0,
 				"date": paymentDate,
 				"inputDate": thisDate,
@@ -718,22 +724,22 @@ function addPayment() {
 				stage4();
 			}).catch(function onError(err) {
 				//stop loading icon
-				$("#cover-spin").fadeOut(250, function() {
+				$("#cover-spin").fadeOut(250, function () {
 					$(this).hide();
 				});
 				//error notification
 				$.gritter.add({
 					title: 'Error Stage 3',
-					text: err.code+" : "+err.message,
+					text: err.code + " : " + err.message,
 					image: './img/bell.png',
 					sticky: false,
 					time: 3500,
 					class_name: 'gritter-custom'
 				});
 			});
-		}else if(paymentDetails=="transfer"){
-			reportRef.child(building_id+"/"+id).push({
-				"due":0,
+		} else if (paymentDetails == "transfer") {
+			reportRef.child(building_id + "/" + id).push({
+				"due": 0,
 				"receive": paymentAmount,
 				"date": paymentDate,
 				"inputDate": thisDate,
@@ -742,22 +748,22 @@ function addPayment() {
 				stage4()
 			}).catch(function onError(err) {
 				//stop loading icon
-				$("#cover-spin").fadeOut(250, function() {
+				$("#cover-spin").fadeOut(250, function () {
 					$(this).hide();
 				});
 				//error notification
 				$.gritter.add({
 					title: 'Error Stage 3',
-					text: err.code+" : "+err.message,
+					text: err.code + " : " + err.message,
 					image: './img/bell.png',
 					sticky: false,
 					time: 3500,
 					class_name: 'gritter-custom'
 				});
 			});
-		}else{
-			reportRef.child(building_id+"/"+id).push({
-				"receive":paymentAmount,
+		} else {
+			reportRef.child(building_id + "/" + id).push({
+				"receive": paymentAmount,
 				"due": 0,
 				"date": paymentDate,
 				"inputDate": thisDate,
@@ -766,13 +772,13 @@ function addPayment() {
 				stage4();
 			}).catch(function onError(err) {
 				//stop loading icon
-				$("#cover-spin").fadeOut(250, function() {
+				$("#cover-spin").fadeOut(250, function () {
 					$(this).hide();
 				});
 				//error notification
 				$.gritter.add({
 					title: 'Error Stage 3',
-					text: err.code+" : "+err.message,
+					text: err.code + " : " + err.message,
 					image: './img/bell.png',
 					sticky: false,
 					time: 3500,
@@ -780,74 +786,80 @@ function addPayment() {
 				});
 			});
 		}
-		
-		
+
+
 	}
-	
+
 	function stage4() {
 		//start set payment
-		var trRef1 = firebase.database().ref().child("tenant-room/"+id);
-		trRef1.once('child_added', function(snapshot) {
+		var trRef1 = firebase.database().ref().child("tenant-room/" + id);
+		trRef1.once('child_added', function (snapshot) {
 			//mengambil bond price
-			var bondPrice=snapshot.child("rent_bond").val();
-			
-			paymentRef.once('value', function(snapshot) {
+			var bondPrice = snapshot.child("rent_bond").val();
+
+			paymentRef.once('value', function (snapshot) {
 				//mengambil bondWaitDue
-				var bondWaitDue=snapshot.child("bondWaitDue").val();
+				var bondWaitDue = snapshot.child("bondWaitDue").val();
 				//jika belum selesai pembayaran bondwaitdue
-				if (bondWaitDue==null){
+				if (bondWaitDue == null) {
 					bondWaitDue = bondPrice;
 				} else {
 					bondWaitDue = bondWaitDue;
 				}
 				if (paymentDetails == "bondpay") { //bond money payment
-					if (bondWaitDue-paymentAmount < 0) {
+					if (bondWaitDue - paymentAmount < 0) {
 						if (bondWaitDue != 0) {
-							var bondLeft = paymentAmount-bondWaitDue;
+							var bondLeft = paymentAmount - bondWaitDue;
 							paymentRef.push({
-								"date":paymentDate,
-								"desc":"Bond Money Deposit",
-								"invoice":null,
-								"payment":bondWaitDue,
-								"refnumber":refNumberHtml,
-								"list":"bondList"
-							}).then(function onSuccess(res){
+								"date": paymentDate,
+								"adjst_details": adjst_details,
+								"adjst_date": adjst_date,
+								"desc": "Bond Money Deposit",
+								"invoice": null,
+								"payment": bondWaitDue,
+								"refnumber": refNumberHtml,
+								"list": "bondList"
+							}).then(function onSuccess(res) {
 								fpayRef.update({
 									"bond-balance": bondLeft,
 									"payment": 1
 								}).then(function onSuccess(res) {
 									paymentRef.push({
-										"date":paymentDate,
-										"desc":paymentDetailsFull,
-										"invoice":null,
-										"payment":bondWaitDue,
-										"refnumber":refNumberHtml,
-										"list":"ledgerList"
+										"date": paymentDate,
+										"adjst_details": adjst_details,
+										"adjst_date": adjst_date,
+										"desc": paymentDetailsFull,
+										"invoice": null,
+										"payment": bondWaitDue,
+										"refnumber": refNumberHtml,
+										"list": "ledgerList"
 									}).then(function onSuccess(res) {
 										if (bondLeft != 0) {
 											paymentRef.push({
-												"date":paymentDate,
-												"desc":"Rental Payment",
-												"invoice":null,
-												"payment":bondLeft,
-												"refnumber":refNumberHtml,
-												"list":"ledgerList"
+												"date": paymentDate,
+												"adjst_details": adjst_details,
+												"adjst_date": adjst_date,
+												"desc": "Rental Payment",
+												"invoice": null,
+												"payment": bondLeft,
+												"refnumber": refNumberHtml,
+												"list": "ledgerList"
 											}).then(function onSuccess(res) {
 												bondWaitDue = 0;
 												//set bond wait due
 												paymentRef.update({
-													"bondWaitDue" : bondWaitDue
+													"bondWaitDue": bondWaitDue
 												}).then(function onSuccess(res) {
 													stage5();
 												}).catch(function onError(err) {
 													//stop loading icon
-													$("#cover-spin").fadeOut(250, function() {
+													$("#cover-spin").fadeOut(250, function () {
 														$(this).hide();
 													});
 													//error notification
 													$.gritter.add({
 														title: 'Error Stage 4-111d',
-														text: err.code+" : "+err.message,
+														text: err.code + " : " + err.message,
 														image: './img/bell.png',
 														sticky: false,
 														time: 3500,
@@ -856,13 +868,13 @@ function addPayment() {
 												});
 											}).catch(function onError(err) {
 												//stop loading icon
-												$("#cover-spin").fadeOut(250, function() {
+												$("#cover-spin").fadeOut(250, function () {
 													$(this).hide();
 												});
 												//error notification
 												$.gritter.add({
 													title: 'Error Stage 4-111c',
-													text: err.code+" : "+err.message,
+													text: err.code + " : " + err.message,
 													image: './img/bell.png',
 													sticky: false,
 													time: 3500,
@@ -870,35 +882,35 @@ function addPayment() {
 												});
 											}).catch(function onError(err) {
 												//stop loading icon
-												$("#cover-spin").fadeOut(250, function() {
+												$("#cover-spin").fadeOut(250, function () {
 													$(this).hide();
 												});
 												//error notification
 												$.gritter.add({
 													title: 'Error Stage 4-111c',
-													text: err.code+" : "+err.message,
+													text: err.code + " : " + err.message,
 													image: './img/bell.png',
 													sticky: false,
 													time: 3500,
 													class_name: 'gritter-custom'
 												});
 											});;
-										} else {									
+										} else {
 											bondWaitDue = 0;
 											//set bond wait due
 											paymentRef.update({
-												"bondWaitDue" : bondWaitDue
+												"bondWaitDue": bondWaitDue
 											}).then(function onSuccess(res) {
 												stage5();
 											}).catch(function onError(err) {
 												//stop loading icon
-												$("#cover-spin").fadeOut(250, function() {
+												$("#cover-spin").fadeOut(250, function () {
 													$(this).hide();
 												});
 												//error notification
 												$.gritter.add({
 													title: 'Error Stage 4-111d',
-													text: err.code+" : "+err.message,
+													text: err.code + " : " + err.message,
 													image: './img/bell.png',
 													sticky: false,
 													time: 3500,
@@ -908,13 +920,13 @@ function addPayment() {
 										}
 									}).catch(function onError(err) {
 										//stop loading icon
-										$("#cover-spin").fadeOut(250, function() {
+										$("#cover-spin").fadeOut(250, function () {
 											$(this).hide();
 										});
 										//error notification
 										$.gritter.add({
 											title: 'Error Stage 4-111b',
-											text: err.code+" : "+err.message,
+											text: err.code + " : " + err.message,
 											image: './img/bell.png',
 											sticky: false,
 											time: 3500,
@@ -923,13 +935,13 @@ function addPayment() {
 									});
 								}).catch(function onError(err) {
 									//stop loading icon
-									$("#cover-spin").fadeOut(250, function() {
+									$("#cover-spin").fadeOut(250, function () {
 										$(this).hide();
 									});
 									//error notification
 									$.gritter.add({
 										title: 'Error Stage 4-111a',
-										text: err.code+" : "+err.message,
+										text: err.code + " : " + err.message,
 										image: './img/bell.png',
 										sticky: false,
 										time: 3500,
@@ -938,13 +950,13 @@ function addPayment() {
 								})
 							}).catch(function onError(err) {
 								//stop loading icon
-								$("#cover-spin").fadeOut(250, function() {
+								$("#cover-spin").fadeOut(250, function () {
 									$(this).hide();
 								});
 								//error notification
 								$.gritter.add({
 									title: 'Error Stage 4-111a',
-									text: err.code+" : "+err.message,
+									text: err.code + " : " + err.message,
 									image: './img/bell.png',
 									sticky: false,
 									time: 3500,
@@ -953,23 +965,25 @@ function addPayment() {
 							})
 						} else {
 							paymentRef.push({
-								"date":paymentDate,
-								"desc":"Rental Payment",
-								"invoice":null,
-								"payment":paymentAmount,
-								"refnumber":refNumberHtml,
-								"list":"ledgerList"
+								"date": paymentDate,
+								"desc": "Rental Payment",
+								"adjst_details": adjst_details,
+								"adjst_date": adjst_date,
+								"invoice": null,
+								"payment": paymentAmount,
+								"refnumber": refNumberHtml,
+								"list": "ledgerList"
 							}).then(function onSuccess(res) {
 								stage5();
 							}).catch(function onError(err) {
 								//stop loading icon
-								$("#cover-spin").fadeOut(250, function() {
+								$("#cover-spin").fadeOut(250, function () {
 									$(this).hide();
 								});
 								//error notification
 								$.gritter.add({
 									title: 'Error Stage 4-112',
-									text: err.code+" : "+err.message,
+									text: err.code + " : " + err.message,
 									image: './img/bell.png',
 									sticky: false,
 									time: 3500,
@@ -981,38 +995,40 @@ function addPayment() {
 						bondWaitDue -= paymentAmount;
 						//set bond wait due
 						paymentRef.update({
-							"bondWaitDue" : bondWaitDue
+							"bondWaitDue": bondWaitDue
 						}).then(function onSuccess(res) {
 							paymentRef.push({
-								"date":paymentDate,
-								"desc":"Bond Money Deposit",
-								"invoice":null,
-								"payment":paymentAmount,
-								"refnumber":refNumberHtml,
-								"list":"bondList"
+								"date": paymentDate,
+								"desc": "Bond Money Deposit",
+								"invoice": null,
+								"payment": paymentAmount,
+								"refnumber": refNumberHtml,
+								"list": "bondList"
 							}).then(function onSuccess(res) {
 								paymentRef.push({
-									"date":paymentDate,
-									"desc":paymentDetailsFull,
-									"invoice":null,
-									"payment":paymentAmount,
-									"refnumber":refNumberHtml,
-									"list":"ledgerList"
-								}).then(function onSuccess(res){
+									"date": paymentDate,
+									"desc": paymentDetailsFull,
+									"adjst_details": adjst_details,
+									"adjst_date": adjst_date,
+									"invoice": null,
+									"payment": paymentAmount,
+									"refnumber": refNumberHtml,
+									"list": "ledgerList"
+								}).then(function onSuccess(res) {
 									fpayRef.update({
 										"bond-balance": 0,
 										"payment": 1
 									}).then(function onSuccess(res) {
-									stage5();
+										stage5();
 									}).catch(function onError(err) {
 										//stop loading icon
-										$("#cover-spin").fadeOut(250, function() {
+										$("#cover-spin").fadeOut(250, function () {
 											$(this).hide();
 										});
 										//error notification
 										$.gritter.add({
 											title: 'Error Stage 4-12c',
-											text: err.code+" : "+err.message,
+											text: err.code + " : " + err.message,
 											image: './img/bell.png',
 											sticky: false,
 											time: 3500,
@@ -1021,13 +1037,13 @@ function addPayment() {
 									});
 								}).catch(function onError(err) {
 									//stop loading icon
-									$("#cover-spin").fadeOut(250, function() {
+									$("#cover-spin").fadeOut(250, function () {
 										$(this).hide();
 									});
 									//error notification
 									$.gritter.add({
 										title: 'Error Stage 4-12b',
-										text: err.code+" : "+err.message,
+										text: err.code + " : " + err.message,
 										image: './img/bell.png',
 										sticky: false,
 										time: 3500,
@@ -1036,13 +1052,13 @@ function addPayment() {
 								});
 							}).catch(function onError(err) {
 								//stop loading icon
-								$("#cover-spin").fadeOut(250, function() {
+								$("#cover-spin").fadeOut(250, function () {
 									$(this).hide();
 								});
 								//error notification
 								$.gritter.add({
 									title: 'Error Stage 4-12a',
-									text: err.code+" : "+err.message,
+									text: err.code + " : " + err.message,
 									image: './img/bell.png',
 									sticky: false,
 									time: 3500,
@@ -1051,13 +1067,13 @@ function addPayment() {
 							});
 						}).catch(function onError(err) {
 							//stop loading icon
-							$("#cover-spin").fadeOut(250, function() {
+							$("#cover-spin").fadeOut(250, function () {
 								$(this).hide();
 							});
 							//error notification
 							$.gritter.add({
 								title: 'Error Stage 4-12a',
-								text: err.code+" : "+err.message,
+								text: err.code + " : " + err.message,
 								image: './img/bell.png',
 								sticky: false,
 								time: 3500,
@@ -1067,53 +1083,55 @@ function addPayment() {
 					}
 				} else if (paymentDetails == "transfer") { //bond money transfer
 					if (bondWaitDue > 0) {
-						if (bondWaitDue-paymentAmount < 0) {
+						if (bondWaitDue - paymentAmount < 0) {
 							if (bondWaitDue != 0) {
-								var bondLeft = paymentAmount-bondWaitDue;
+								var bondLeft = paymentAmount - bondWaitDue;
 								paymentRef.push({
-									"date":paymentDate,
-									"desc":"Bond Money Deposit",
-									"invoice":null,
-									"payment":bondWaitDue,
-									"refnumber":refNumberHtml,
-									"list":"bondList"
+									"date": paymentDate,
+									"desc": "Bond Money Deposit",
+									"invoice": null,
+									"payment": bondWaitDue,
+									"refnumber": refNumberHtml,
+									"list": "bondList"
 								}).then(function onSuccess(res) {
 									paymentRef.push({
-										"date":paymentDate,
-										"desc":"Bond Money Payment",
-										"invoice":null,
-										"payment":bondWaitDue,
-										"refnumber":refNumberHtml,
-										"list":"ledgerList"
-									}).then(function onSuccess(res){
+										"date": paymentDate,
+										"desc": "Bond Money Payment",
+										"invoice": null,
+										"payment": bondWaitDue,
+										"refnumber": refNumberHtml,
+										"list": "ledgerList"
+									}).then(function onSuccess(res) {
 										fpayRef.update({
 											"bond-balance": bondLeft,
 											"payment": 1
 										}).then(function onSuccess(res) {
 											if (bondLeft != 0) {
 												paymentRef.push({
-													"date":paymentDate,
-													"desc":"Rental Payment",
-													"invoice":null,
-													"payment":bondLeft,
-													"refnumber":refNumberHtml,
-													"list":"ledgerList"
+													"date": paymentDate,
+													"adjst_details": adjst_details,
+													"adjst_date": adjst_date,
+													"desc": "Rental Payment",
+													"invoice": null,
+													"payment": bondLeft,
+													"refnumber": refNumberHtml,
+													"list": "ledgerList"
 												}).then(function onSuccess(res) {
 													bondWaitDue = 0;
 													//set bond wait due
 													paymentRef.update({
-														"bondWaitDue" : bondWaitDue
+														"bondWaitDue": bondWaitDue
 													}).then(function onSuccess(res) {
 														stage5();
 													}).catch(function onError(err) {
 														//stop loading icon
-														$("#cover-spin").fadeOut(250, function() {
+														$("#cover-spin").fadeOut(250, function () {
 															$(this).hide();
 														});
 														//error notification
 														$.gritter.add({
 															title: 'Error Stage 4-2111d',
-															text: err.code+" : "+err.message,
+															text: err.code + " : " + err.message,
 															image: './img/bell.png',
 															sticky: false,
 															time: 3500,
@@ -1122,13 +1140,13 @@ function addPayment() {
 													});
 												}).catch(function onError(err) {
 													//stop loading icon
-													$("#cover-spin").fadeOut(250, function() {
+													$("#cover-spin").fadeOut(250, function () {
 														$(this).hide();
 													});
 													//error notification
 													$.gritter.add({
 														title: 'Error Stage 4-2111c',
-														text: err.code+" : "+err.message,
+														text: err.code + " : " + err.message,
 														image: './img/bell.png',
 														sticky: false,
 														time: 3500,
@@ -1136,93 +1154,95 @@ function addPayment() {
 													});
 												}).catch(function onError(err) {
 													//stop loading icon
-													$("#cover-spin").fadeOut(250, function() {
+													$("#cover-spin").fadeOut(250, function () {
 														$(this).hide();
 													});
 													//error notification
 													$.gritter.add({
 														title: 'Error Stage 4-2111c',
-														text: err.code+" : "+err.message,
+														text: err.code + " : " + err.message,
 														image: './img/bell.png',
 														sticky: false,
 														time: 3500,
 														class_name: 'gritter-custom'
 													});
 												})
-											
-										} else {
-											bondWaitDue = 0;
-											//set bond wait due
-											paymentRef.update({
-												"bondWaitDue" : bondWaitDue
-											}).then(function onSuccess(res) {
-												stage5();
-											}).catch(function onError(err) {
-												//stop loading icon
-												$("#cover-spin").fadeOut(250, function() {
-													$(this).hide();
+
+											} else {
+												bondWaitDue = 0;
+												//set bond wait due
+												paymentRef.update({
+													"bondWaitDue": bondWaitDue
+												}).then(function onSuccess(res) {
+													stage5();
+												}).catch(function onError(err) {
+													//stop loading icon
+													$("#cover-spin").fadeOut(250, function () {
+														$(this).hide();
+													});
+													//error notification
+													$.gritter.add({
+														title: 'Error Stage 4-2111d',
+														text: err.code + " : " + err.message,
+														image: './img/bell.png',
+														sticky: false,
+														time: 3500,
+														class_name: 'gritter-custom'
+													});
 												});
-												//error notification
-												$.gritter.add({
-													title: 'Error Stage 4-2111d',
-													text: err.code+" : "+err.message,
-													image: './img/bell.png',
-													sticky: false,
-													time: 3500,
-													class_name: 'gritter-custom'
-												});
+											}
+										}).catch(function onError(err) {
+											//stop loading icon
+											$("#cover-spin").fadeOut(250, function () {
+												$(this).hide();
 											});
-										}
+											//error notification
+											$.gritter.add({
+												title: 'Error Stage 4-2111b',
+												text: err.code + " : " + err.message,
+												image: './img/bell.png',
+												sticky: false,
+												time: 3500,
+												class_name: 'gritter-custom'
+											});
+										});
 									}).catch(function onError(err) {
 										//stop loading icon
-										$("#cover-spin").fadeOut(250, function() {
+										$("#cover-spin").fadeOut(250, function () {
 											$(this).hide();
 										});
 										//error notification
 										$.gritter.add({
-											title: 'Error Stage 4-2111b',
-											text: err.code+" : "+err.message,
+											title: 'Error Stage 4-2111a',
+											text: err.code + " : " + err.message,
 											image: './img/bell.png',
 											sticky: false,
 											time: 3500,
 											class_name: 'gritter-custom'
 										});
 									});
-								}).catch(function onError(err) {
-									//stop loading icon
-									$("#cover-spin").fadeOut(250, function() {
-										$(this).hide();
-									});
-									//error notification
-									$.gritter.add({
-										title: 'Error Stage 4-2111a',
-										text: err.code+" : "+err.message,
-										image: './img/bell.png',
-										sticky: false,
-										time: 3500,
-										class_name: 'gritter-custom'
-									});
-								});
-							})
+								})
 							} else {
 								paymentRef.push({
-									"date":paymentDate,
-									"desc":"Rental Payment",
-									"invoice":null,
-									"payment":paymentAmount,
-									"refnumber":refNumberHtml,
-									"list":"ledgerList"
+									"date": paymentDate,
+									"adjst_details": adjst_details,
+									"adjst_date": adjst_date,
+									"desc": "Rental Payment",
+									"invoice": null,
+									"payment": paymentAmount,
+									"refnumber": refNumberHtml,
+									"list": "ledgerList"
 								}).then(function onSuccess(res) {
 									stage5();
 								}).catch(function onError(err) {
 									//stop loading icon
-									$("#cover-spin").fadeOut(250, function() {
+									$("#cover-spin").fadeOut(250, function () {
 										$(this).hide();
 									});
 									//error notification
 									$.gritter.add({
 										title: 'Error Stage 4-2112',
-										text: err.code+" : "+err.message,
+										text: err.code + " : " + err.message,
 										image: './img/bell.png',
 										sticky: false,
 										time: 3500,
@@ -1234,38 +1254,38 @@ function addPayment() {
 							bondWaitDue -= paymentAmount;
 							//set bond wait due
 							paymentRef.update({
-								"bondWaitDue" : bondWaitDue
+								"bondWaitDue": bondWaitDue
 							}).then(function onSuccess(res) {
 								paymentRef.push({
-									"date":paymentDate,
-									"desc":"Bond Money Deposit",
-									"invoice":null,
-									"payment":paymentAmount,
-									"refnumber":refNumberHtml,
-									"list":"bondList"
+									"date": paymentDate,
+									"desc": "Bond Money Deposit",
+									"invoice": null,
+									"payment": paymentAmount,
+									"refnumber": refNumberHtml,
+									"list": "bondList"
 								}).then(function onSuccess(res) {
 									paymentRef.push({
-										"date":paymentDate,
-										"desc":"Bond Money Payment",
-										"invoice":null,
-										"payment":paymentAmount,
-										"refnumber":refNumberHtml,
-										"list":"ledgerList"
-									}).then(function onSuccess(res){
+										"date": paymentDate,
+										"desc": "Bond Money Payment",
+										"invoice": null,
+										"payment": paymentAmount,
+										"refnumber": refNumberHtml,
+										"list": "ledgerList"
+									}).then(function onSuccess(res) {
 										fpayRef.update({
 											"bond-balance": 0,
 											"payment": 1
 										}).then(function onSuccess(res) {
-										stage5();
+											stage5();
 										}).catch(function onError(err) {
 											//stop loading icon
-											$("#cover-spin").fadeOut(250, function() {
+											$("#cover-spin").fadeOut(250, function () {
 												$(this).hide();
 											});
 											//error notification
 											$.gritter.add({
 												title: 'Error Stage 4-212c',
-												text: err.code+" : "+err.message,
+												text: err.code + " : " + err.message,
 												image: './img/bell.png',
 												sticky: false,
 												time: 3500,
@@ -1274,13 +1294,13 @@ function addPayment() {
 										});
 									}).catch(function onError(err) {
 										//stop loading icon
-										$("#cover-spin").fadeOut(250, function() {
+										$("#cover-spin").fadeOut(250, function () {
 											$(this).hide();
 										});
 										//error notification
 										$.gritter.add({
 											title: 'Error Stage 4-212b',
-											text: err.code+" : "+err.message,
+											text: err.code + " : " + err.message,
 											image: './img/bell.png',
 											sticky: false,
 											time: 3500,
@@ -1289,13 +1309,13 @@ function addPayment() {
 									});
 								}).catch(function onError(err) {
 									//stop loading icon
-									$("#cover-spin").fadeOut(250, function() {
+									$("#cover-spin").fadeOut(250, function () {
 										$(this).hide();
 									});
 									//error notification
 									$.gritter.add({
 										title: 'Error Stage 4-212a',
-										text: err.code+" : "+err.message,
+										text: err.code + " : " + err.message,
 										image: './img/bell.png',
 										sticky: false,
 										time: 3500,
@@ -1304,13 +1324,13 @@ function addPayment() {
 								});
 							}).catch(function onError(err) {
 								//stop loading icon
-								$("#cover-spin").fadeOut(250, function() {
+								$("#cover-spin").fadeOut(250, function () {
 									$(this).hide();
 								});
 								//error notification
 								$.gritter.add({
 									title: 'Error Stage 4-212a',
-									text: err.code+" : "+err.message,
+									text: err.code + " : " + err.message,
 									image: './img/bell.png',
 									sticky: false,
 									time: 3500,
@@ -1320,31 +1340,35 @@ function addPayment() {
 						}
 					} else {
 						paymentRef.push({
-							"date":paymentDate,
-							"desc":paymentDetailsFull,
-							"invoice":paymentAmount,
-							"payment":null,
-							"refnumber":refNumberHtml,
-							"list":"bondList"
+							"date": paymentDate,
+							"adjst_details": adjst_details,
+							"adjst_date": adjst_date,
+							"desc": paymentDetailsFull,
+							"invoice": paymentAmount,
+							"payment": null,
+							"refnumber": refNumberHtml,
+							"list": "bondList"
 						}).then(function onSuccess(res) {
 							paymentRef.push({
-								"date":paymentDate,
-								"desc":paymentDetailsFull,
-								"invoice":null,
-								"payment":paymentAmount,
-								"refnumber":refNumberHtml,
-								"list":"ledgerList"
+								"date": paymentDate,
+								"adjst_details": adjst_details,
+								"adjst_date": adjst_date,
+								"desc": paymentDetailsFull,
+								"invoice": null,
+								"payment": paymentAmount,
+								"refnumber": refNumberHtml,
+								"list": "ledgerList"
 							}).then(function onSuccess(res) {
 								stage5();
 							}).catch(function onError(err) {
 								//stop loading icon
-								$("#cover-spin").fadeOut(250, function() {
+								$("#cover-spin").fadeOut(250, function () {
 									$(this).hide();
 								});
 								//error notification
 								$.gritter.add({
 									title: 'Error Stage 4-22b',
-									text: err.code+" : "+err.message,
+									text: err.code + " : " + err.message,
 									image: './img/bell.png',
 									sticky: false,
 									time: 3500,
@@ -1353,13 +1377,13 @@ function addPayment() {
 							});
 						}).catch(function onError(err) {
 							//stop loading icon
-							$("#cover-spin").fadeOut(250, function() {
+							$("#cover-spin").fadeOut(250, function () {
 								$(this).hide();
 							});
 							//error notification
 							$.gritter.add({
 								title: 'Error Stage 4-22a',
-								text: err.code+" : "+err.message,
+								text: err.code + " : " + err.message,
 								image: './img/bell.png',
 								sticky: false,
 								time: 3500,
@@ -1369,53 +1393,59 @@ function addPayment() {
 					}
 				} else if (paymentDetails == "refund") { //bond money refund
 					if (bondWaitDue > 0) {
-						if (bondWaitDue-paymentAmount < 0) {
+						if (bondWaitDue - paymentAmount < 0) {
 							if (bondWaitDue != 0) {
-								var bondLeft = paymentAmount-bondWaitDue;
+								var bondLeft = paymentAmount - bondWaitDue;
 								paymentRef.push({
-									"date":paymentDate,
-									"desc":"Bond Money Deposit",
-									"invoice":null,
-									"payment":bondWaitDue,
-									"refnumber":refNumberHtml,
-									"list":"bondList"
+									"date": paymentDate,
+									"adjst_details": adjst_details,
+									"adjst_date": adjst_date,
+									"desc": "Bond Money Deposit",
+									"invoice": null,
+									"payment": bondWaitDue,
+									"refnumber": refNumberHtml,
+									"list": "bondList"
 								}).then(function onSuccess(res) {
 									paymentRef.push({
-										"date":paymentDate,
-										"desc":"Bond Money Payment",
-										"invoice":null,
-										"payment":bondWaitDue,
-										"refnumber":refNumberHtml,
-										"list":"ledgerList"
-									}).then(function onSuccess(res){
+										"date": paymentDate,
+										"adjst_details": adjst_details,
+										"adjst_date": adjst_date,
+										"desc": "Bond Money Payment",
+										"invoice": null,
+										"payment": bondWaitDue,
+										"refnumber": refNumberHtml,
+										"list": "ledgerList"
+									}).then(function onSuccess(res) {
 										fpayRef.update({
 											"bond-balance": bondLeft,
 											"payment": 1
 										}).then(function onSuccess(res) {
 											if (bondLeft != 0) {
 												paymentRef.push({
-													"date":paymentDate,
-													"desc":"Rental Payment",
-													"invoice":null,
-													"payment":bondLeft,
-													"refnumber":refNumberHtml,
-													"list":"ledgerList"
+													"date": paymentDate,
+													"adjst_details": adjst_details,
+													"adjst_date": adjst_date,
+													"desc": "Rental Payment",
+													"invoice": null,
+													"payment": bondLeft,
+													"refnumber": refNumberHtml,
+													"list": "ledgerList"
 												}).then(function onSuccess(res) {
 													bondWaitDue = 0;
 													//set bond wait due
 													paymentRef.update({
-														"bondWaitDue" : bondWaitDue
+														"bondWaitDue": bondWaitDue
 													}).then(function onSuccess(res) {
 														stage5();
 													}).catch(function onError(err) {
 														//stop loading icon
-														$("#cover-spin").fadeOut(250, function() {
+														$("#cover-spin").fadeOut(250, function () {
 															$(this).hide();
 														});
 														//error notification
 														$.gritter.add({
 															title: 'Error Stage 4-3111d',
-															text: err.code+" : "+err.message,
+															text: err.code + " : " + err.message,
 															image: './img/bell.png',
 															sticky: false,
 															time: 3500,
@@ -1424,13 +1454,13 @@ function addPayment() {
 													});
 												}).catch(function onError(err) {
 													//stop loading icon
-													$("#cover-spin").fadeOut(250, function() {
+													$("#cover-spin").fadeOut(250, function () {
 														$(this).hide();
 													});
 													//error notification
 													$.gritter.add({
 														title: 'Error Stage 4-3111c',
-														text: err.code+" : "+err.message,
+														text: err.code + " : " + err.message,
 														image: './img/bell.png',
 														sticky: false,
 														time: 3500,
@@ -1441,18 +1471,18 @@ function addPayment() {
 												bondWaitDue = 0;
 												//set bond wait due
 												paymentRef.update({
-													"bondWaitDue" : bondWaitDue
+													"bondWaitDue": bondWaitDue
 												}).then(function onSuccess(res) {
 													stage5();
 												}).catch(function onError(err) {
 													//stop loading icon
-													$("#cover-spin").fadeOut(250, function() {
+													$("#cover-spin").fadeOut(250, function () {
 														$(this).hide();
 													});
 													//error notification
 													$.gritter.add({
 														title: 'Error Stage 4-3111d',
-														text: err.code+" : "+err.message,
+														text: err.code + " : " + err.message,
 														image: './img/bell.png',
 														sticky: false,
 														time: 3500,
@@ -1462,13 +1492,13 @@ function addPayment() {
 											}
 										}).catch(function onError(err) {
 											//stop loading icon
-											$("#cover-spin").fadeOut(250, function() {
+											$("#cover-spin").fadeOut(250, function () {
 												$(this).hide();
 											});
 											//error notification
 											$.gritter.add({
 												title: 'Error Stage 4-3111b',
-												text: err.code+" : "+err.message,
+												text: err.code + " : " + err.message,
 												image: './img/bell.png',
 												sticky: false,
 												time: 3500,
@@ -1477,13 +1507,13 @@ function addPayment() {
 										});
 									}).catch(function onError(err) {
 										//stop loading icon
-										$("#cover-spin").fadeOut(250, function() {
+										$("#cover-spin").fadeOut(250, function () {
 											$(this).hide();
 										});
 										//error notification
 										$.gritter.add({
 											title: 'Error Stage 4-3111a',
-											text: err.code+" : "+err.message,
+											text: err.code + " : " + err.message,
 											image: './img/bell.png',
 											sticky: false,
 											time: 3500,
@@ -1491,13 +1521,13 @@ function addPayment() {
 										});
 									}).catch(function onError(err) {
 										//stop loading icon
-										$("#cover-spin").fadeOut(250, function() {
+										$("#cover-spin").fadeOut(250, function () {
 											$(this).hide();
 										});
 										//error notification
 										$.gritter.add({
 											title: 'Error Stage 4-3111a',
-											text: err.code+" : "+err.message,
+											text: err.code + " : " + err.message,
 											image: './img/bell.png',
 											sticky: false,
 											time: 3500,
@@ -1507,23 +1537,25 @@ function addPayment() {
 								})
 							} else {
 								paymentRef.push({
-									"date":paymentDate,
-									"desc":"Rental Payment",
-									"invoice":null,
-									"payment":paymentAmount,
-									"refnumber":refNumberHtml,
-									"list":"ledgerList"
+									"date": paymentDate,
+									"adjst_details": adjst_details,
+									"adjst_date": adjst_date,
+									"desc": "Rental Payment",
+									"invoice": null,
+									"payment": paymentAmount,
+									"refnumber": refNumberHtml,
+									"list": "ledgerList"
 								}).then(function onSuccess(res) {
 									stage5();
 								}).catch(function onError(err) {
 									//stop loading icon
-									$("#cover-spin").fadeOut(250, function() {
+									$("#cover-spin").fadeOut(250, function () {
 										$(this).hide();
 									});
 									//error notification
 									$.gritter.add({
 										title: 'Error Stage 4-3112',
-										text: err.code+" : "+err.message,
+										text: err.code + " : " + err.message,
 										image: './img/bell.png',
 										sticky: false,
 										time: 3500,
@@ -1535,38 +1567,42 @@ function addPayment() {
 							bondWaitDue -= paymentAmount;
 							//set bond wait due
 							paymentRef.update({
-								"bondWaitDue" : bondWaitDue
+								"bondWaitDue": bondWaitDue
 							}).then(function onSuccess(res) {
 								paymentRef.push({
-									"date":paymentDate,
-									"desc":"Bond Money Deposit",
-									"invoice":null,
-									"payment":paymentAmount,
-									"refnumber":refNumberHtml,
-									"list":"bondList"
+									"date": paymentDate,
+									"adjst_details": adjst_details,
+									"adjst_date": adjst_date,
+									"desc": "Bond Money Deposit",
+									"invoice": null,
+									"payment": paymentAmount,
+									"refnumber": refNumberHtml,
+									"list": "bondList"
 								}).then(function onSuccess(res) {
 									paymentRef.push({
-										"date":paymentDate,
-										"desc":"Bond Money Payment",
-										"invoice":null,
-										"payment":paymentAmount,
-										"refnumber":refNumberHtml,
-										"list":"ledgerList"
-									}).then(function onSuccess(res){
+										"date": paymentDate,
+										"adjst_details": adjst_details,
+										"adjst_date": adjst_date,
+										"desc": "Bond Money Payment",
+										"invoice": null,
+										"payment": paymentAmount,
+										"refnumber": refNumberHtml,
+										"list": "ledgerList"
+									}).then(function onSuccess(res) {
 										fpayRef.update({
 											"bond-balance": 0,
 											"payment": 1
 										}).then(function onSuccess(res) {
-										stage5();
+											stage5();
 										}).catch(function onError(err) {
 											//stop loading icon
-											$("#cover-spin").fadeOut(250, function() {
+											$("#cover-spin").fadeOut(250, function () {
 												$(this).hide();
 											});
 											//error notification
 											$.gritter.add({
 												title: 'Error Stage 4-312c',
-												text: err.code+" : "+err.message,
+												text: err.code + " : " + err.message,
 												image: './img/bell.png',
 												sticky: false,
 												time: 3500,
@@ -1575,13 +1611,13 @@ function addPayment() {
 										});
 									}).catch(function onError(err) {
 										//stop loading icon
-										$("#cover-spin").fadeOut(250, function() {
+										$("#cover-spin").fadeOut(250, function () {
 											$(this).hide();
 										});
 										//error notification
 										$.gritter.add({
 											title: 'Error Stage 4-312b',
-											text: err.code+" : "+err.message,
+											text: err.code + " : " + err.message,
 											image: './img/bell.png',
 											sticky: false,
 											time: 3500,
@@ -1590,13 +1626,13 @@ function addPayment() {
 									});
 								}).catch(function onError(err) {
 									//stop loading icon
-									$("#cover-spin").fadeOut(250, function() {
+									$("#cover-spin").fadeOut(250, function () {
 										$(this).hide();
 									});
 									//error notification
 									$.gritter.add({
 										title: 'Error Stage 4-312a',
-										text: err.code+" : "+err.message,
+										text: err.code + " : " + err.message,
 										image: './img/bell.png',
 										sticky: false,
 										time: 3500,
@@ -1605,13 +1641,13 @@ function addPayment() {
 								});
 							}).catch(function onError(err) {
 								//stop loading icon
-								$("#cover-spin").fadeOut(250, function() {
+								$("#cover-spin").fadeOut(250, function () {
 									$(this).hide();
 								});
 								//error notification
 								$.gritter.add({
 									title: 'Error Stage 4-312a',
-									text: err.code+" : "+err.message,
+									text: err.code + " : " + err.message,
 									image: './img/bell.png',
 									sticky: false,
 									time: 3500,
@@ -1621,39 +1657,43 @@ function addPayment() {
 						}
 					} else {
 						paymentRef.push({
-							"date":paymentDate,
-							"desc":paymentDetailsFull,
-							"invoice":paymentAmount,
-							"payment":null,
-							"refnumber":refNumberHtml,
-							"list":"bondList"
+							"date": paymentDate,
+							"adjst_details": adjst_details,
+							"adjst_date": adjst_date,
+							"desc": paymentDetailsFull,
+							"invoice": paymentAmount,
+							"payment": null,
+							"refnumber": refNumberHtml,
+							"list": "bondList"
 						}).then(function onSuccess(res) {
 							paymentRef.push({
-								"date":paymentDate,
-								"desc":paymentDetailsFull,
-								"invoice":null,
-								"payment":paymentAmount,
-								"refnumber":refNumberHtml,
-								"list":"ledgerList"
+								"date": paymentDate,
+								"adjst_details": adjst_details,
+								"adjst_date": adjst_date,
+								"desc": paymentDetailsFull,
+								"invoice": null,
+								"payment": paymentAmount,
+								"refnumber": refNumberHtml,
+								"list": "ledgerList"
 							}).then(function onSuccess(res) {
 								paymentRef.push({
-									"date":paymentDate,
-									"desc":"Bond Money Withdraw",
-									"invoice":paymentAmount,
-									"payment":null,
-									"refnumber":refNumberHtml,
-									"list":"ledgerList"
+									"date": paymentDate,
+									"desc": "Bond Money Withdraw",
+									"invoice": paymentAmount,
+									"payment": null,
+									"refnumber": refNumberHtml,
+									"list": "ledgerList"
 								}).then(function onSuccess(res) {
 									stage5();
 								}).catch(function onError(err) {
 									//stop loading icon
-									$("#cover-spin").fadeOut(250, function() {
+									$("#cover-spin").fadeOut(250, function () {
 										$(this).hide();
 									});
 									//error notification
 									$.gritter.add({
 										title: 'Error Stage 4-32c',
-										text: err.code+" : "+err.message,
+										text: err.code + " : " + err.message,
 										image: './img/bell.png',
 										sticky: false,
 										time: 3500,
@@ -1662,13 +1702,13 @@ function addPayment() {
 								});
 							}).catch(function onError(err) {
 								//stop loading icon
-								$("#cover-spin").fadeOut(250, function() {
+								$("#cover-spin").fadeOut(250, function () {
 									$(this).hide();
 								});
 								//error notification
 								$.gritter.add({
 									title: 'Error Stage 4-32b',
-									text: err.code+" : "+err.message,
+									text: err.code + " : " + err.message,
 									image: './img/bell.png',
 									sticky: false,
 									time: 3500,
@@ -1677,13 +1717,13 @@ function addPayment() {
 							});
 						}).catch(function onError(err) {
 							//stop loading icon
-							$("#cover-spin").fadeOut(250, function() {
+							$("#cover-spin").fadeOut(250, function () {
 								$(this).hide();
 							});
 							//error notification
 							$.gritter.add({
 								title: 'Error Stage 4-32a',
-								text: err.code+" : "+err.message,
+								text: err.code + " : " + err.message,
 								image: './img/bell.png',
 								sticky: false,
 								time: 3500,
@@ -1693,53 +1733,55 @@ function addPayment() {
 					}
 				} else { //other payment
 					if (bondWaitDue > 0) {
-						if (bondWaitDue-paymentAmount < 0) {
+						if (bondWaitDue - paymentAmount < 0) {
 							if (bondWaitDue != 0) {
-								var bondLeft = paymentAmount-bondWaitDue;
+								var bondLeft = paymentAmount - bondWaitDue;
 								paymentRef.push({
-									"date":paymentDate,
-									"desc":"Bond Money Deposit",
-									"invoice":null,
-									"payment":bondWaitDue,
-									"refnumber":refNumberHtml,
-									"list":"bondList"
+									"date": paymentDate,
+									"desc": "Bond Money Deposit",
+									"invoice": null,
+									"payment": bondWaitDue,
+									"refnumber": refNumberHtml,
+									"list": "bondList"
 								}).then(function onSuccess(res) {
 									paymentRef.push({
-										"date":paymentDate,
-										"desc":"Bond Money Payment",
-										"invoice":null,
-										"payment":bondWaitDue,
-										"refnumber":refNumberHtml,
-										"list":"ledgerList"
-									}).then(function onSuccess(res){
+										"date": paymentDate,
+										"desc": "Bond Money Payment",
+										"invoice": null,
+										"payment": bondWaitDue,
+										"refnumber": refNumberHtml,
+										"list": "ledgerList"
+									}).then(function onSuccess(res) {
 										fpayRef.update({
 											"bond-balance": bondLeft,
 											"payment": 1
 										}).then(function onSuccess(res) {
 											if (bondLeft != 0) {
 												paymentRef.push({
-													"date":paymentDate,
-													"desc":"Rental Payment",
-													"invoice":null,
-													"payment":bondLeft,
-													"refnumber":refNumberHtml,
-													"list":"ledgerList"
+													"date": paymentDate,
+													"adjst_details": adjst_details,
+													"adjst_date": adjst_date,
+													"desc": "Rental Payment",
+													"invoice": null,
+													"payment": bondLeft,
+													"refnumber": refNumberHtml,
+													"list": "ledgerList"
 												}).then(function onSuccess(res) {
 													bondWaitDue = 0;
 													//set bond wait due
 													paymentRef.update({
-														"bondWaitDue" : bondWaitDue
+														"bondWaitDue": bondWaitDue
 													}).then(function onSuccess(res) {
 														stage5();
 													}).catch(function onError(err) {
 														//stop loading icon
-														$("#cover-spin").fadeOut(250, function() {
+														$("#cover-spin").fadeOut(250, function () {
 															$(this).hide();
 														});
 														//error notification
 														$.gritter.add({
 															title: 'Error Stage 4-4111d',
-															text: err.code+" : "+err.message,
+															text: err.code + " : " + err.message,
 															image: './img/bell.png',
 															sticky: false,
 															time: 3500,
@@ -1748,13 +1790,13 @@ function addPayment() {
 													});
 												}).catch(function onError(err) {
 													//stop loading icon
-													$("#cover-spin").fadeOut(250, function() {
+													$("#cover-spin").fadeOut(250, function () {
 														$(this).hide();
 													});
 													//error notification
 													$.gritter.add({
 														title: 'Error Stage 4-4111c',
-														text: err.code+" : "+err.message,
+														text: err.code + " : " + err.message,
 														image: './img/bell.png',
 														sticky: false,
 														time: 3500,
@@ -1765,18 +1807,18 @@ function addPayment() {
 												bondWaitDue = 0;
 												//set bond wait due
 												paymentRef.update({
-													"bondWaitDue" : bondWaitDue
+													"bondWaitDue": bondWaitDue
 												}).then(function onSuccess(res) {
 													stage5();
 												}).catch(function onError(err) {
 													//stop loading icon
-													$("#cover-spin").fadeOut(250, function() {
+													$("#cover-spin").fadeOut(250, function () {
 														$(this).hide();
 													});
 													//error notification
 													$.gritter.add({
 														title: 'Error Stage 4-4111d',
-														text: err.code+" : "+err.message,
+														text: err.code + " : " + err.message,
 														image: './img/bell.png',
 														sticky: false,
 														time: 3500,
@@ -1786,13 +1828,13 @@ function addPayment() {
 											}
 										}).catch(function onError(err) {
 											//stop loading icon
-											$("#cover-spin").fadeOut(250, function() {
+											$("#cover-spin").fadeOut(250, function () {
 												$(this).hide();
 											});
 											//error notification
 											$.gritter.add({
 												title: 'Error Stage 4-4111b',
-												text: err.code+" : "+err.message,
+												text: err.code + " : " + err.message,
 												image: './img/bell.png',
 												sticky: false,
 												time: 3500,
@@ -1801,13 +1843,13 @@ function addPayment() {
 										});
 									}).catch(function onError(err) {
 										//stop loading icon
-										$("#cover-spin").fadeOut(250, function() {
+										$("#cover-spin").fadeOut(250, function () {
 											$(this).hide();
 										});
 										//error notification
 										$.gritter.add({
 											title: 'Error Stage 4-4111a',
-											text: err.code+" : "+err.message,
+											text: err.code + " : " + err.message,
 											image: './img/bell.png',
 											sticky: false,
 											time: 3500,
@@ -1815,13 +1857,13 @@ function addPayment() {
 										});
 									}).catch(function onError(err) {
 										//stop loading icon
-										$("#cover-spin").fadeOut(250, function() {
+										$("#cover-spin").fadeOut(250, function () {
 											$(this).hide();
 										});
 										//error notification
 										$.gritter.add({
 											title: 'Error Stage 4-4111a',
-											text: err.code+" : "+err.message,
+											text: err.code + " : " + err.message,
 											image: './img/bell.png',
 											sticky: false,
 											time: 3500,
@@ -1831,23 +1873,25 @@ function addPayment() {
 								})
 							} else {
 								paymentRef.push({
-									"date":paymentDate,
-									"desc":"Rental Payment",
-									"invoice":null,
-									"payment":paymentAmount,
-									"refnumber":refNumberHtml,
-									"list":"ledgerList"
+									"date": paymentDate,
+									"adjst_details": adjst_details,
+									"adjst_date": adjst_date,
+									"desc": "Rental Payment",
+									"invoice": null,
+									"payment": paymentAmount,
+									"refnumber": refNumberHtml,
+									"list": "ledgerList"
 								}).then(function onSuccess(res) {
 									stage5();
 								}).catch(function onError(err) {
 									//stop loading icon
-									$("#cover-spin").fadeOut(250, function() {
+									$("#cover-spin").fadeOut(250, function () {
 										$(this).hide();
 									});
 									//error notification
 									$.gritter.add({
 										title: 'Error Stage 4-4112',
-										text: err.code+" : "+err.message,
+										text: err.code + " : " + err.message,
 										image: './img/bell.png',
 										sticky: false,
 										time: 3500,
@@ -1859,38 +1903,38 @@ function addPayment() {
 							bondWaitDue -= paymentAmount;
 							//set bond wait due
 							paymentRef.update({
-								"bondWaitDue" : bondWaitDue
+								"bondWaitDue": bondWaitDue
 							}).then(function onSuccess(res) {
 								paymentRef.push({
-									"date":paymentDate,
-									"desc":"Bond Money Deposit",
-									"invoice":null,
-									"payment":paymentAmount,
-									"refnumber":refNumberHtml,
-									"list":"bondList"
+									"date": paymentDate,
+									"desc": "Bond Money Deposit",
+									"invoice": null,
+									"payment": paymentAmount,
+									"refnumber": refNumberHtml,
+									"list": "bondList"
 								}).then(function onSuccess(res) {
 									paymentRef.push({
-										"date":paymentDate,
-										"desc":"Bond Money Payment",
-										"invoice":null,
-										"payment":paymentAmount,
-										"refnumber":refNumberHtml,
-										"list":"ledgerList"
-									}).then(function onSuccess(res){
+										"date": paymentDate,
+										"desc": "Bond Money Payment",
+										"invoice": null,
+										"payment": paymentAmount,
+										"refnumber": refNumberHtml,
+										"list": "ledgerList"
+									}).then(function onSuccess(res) {
 										fpayRef.update({
 											"bond-balance": 0,
 											"payment": 1
 										}).then(function onSuccess(res) {
-										stage5();
+											stage5();
 										}).catch(function onError(err) {
 											//stop loading icon
-											$("#cover-spin").fadeOut(250, function() {
+											$("#cover-spin").fadeOut(250, function () {
 												$(this).hide();
 											});
 											//error notification
 											$.gritter.add({
 												title: 'Error Stage 4-412c',
-												text: err.code+" : "+err.message,
+												text: err.code + " : " + err.message,
 												image: './img/bell.png',
 												sticky: false,
 												time: 3500,
@@ -1899,13 +1943,13 @@ function addPayment() {
 										});
 									}).catch(function onError(err) {
 										//stop loading icon
-										$("#cover-spin").fadeOut(250, function() {
+										$("#cover-spin").fadeOut(250, function () {
 											$(this).hide();
 										});
 										//error notification
 										$.gritter.add({
 											title: 'Error Stage 4-412b',
-											text: err.code+" : "+err.message,
+											text: err.code + " : " + err.message,
 											image: './img/bell.png',
 											sticky: false,
 											time: 3500,
@@ -1914,13 +1958,13 @@ function addPayment() {
 									});
 								}).catch(function onError(err) {
 									//stop loading icon
-									$("#cover-spin").fadeOut(250, function() {
+									$("#cover-spin").fadeOut(250, function () {
 										$(this).hide();
 									});
 									//error notification
 									$.gritter.add({
 										title: 'Error Stage 4-412a',
-										text: err.code+" : "+err.message,
+										text: err.code + " : " + err.message,
 										image: './img/bell.png',
 										sticky: false,
 										time: 3500,
@@ -1929,13 +1973,13 @@ function addPayment() {
 								});
 							}).catch(function onError(err) {
 								//stop loading icon
-								$("#cover-spin").fadeOut(250, function() {
+								$("#cover-spin").fadeOut(250, function () {
 									$(this).hide();
 								});
 								//error notification
 								$.gritter.add({
 									title: 'Error Stage 4-412a',
-									text: err.code+" : "+err.message,
+									text: err.code + " : " + err.message,
 									image: './img/bell.png',
 									sticky: false,
 									time: 3500,
@@ -1945,23 +1989,25 @@ function addPayment() {
 						}
 					} else {
 						paymentRef.push({
-							"date":paymentDate,
-							"desc":paymentDetailsFull,
-							"invoice":null,
-							"payment":paymentAmount,
-							"refnumber":refNumberHtml,
-							"list":"ledgerList"
+							"date": paymentDate,
+							"adjst_details": adjst_details,
+							"adjst_date": adjst_date,
+							"desc": paymentDetailsFull,
+							"invoice": null,
+							"payment": paymentAmount,
+							"refnumber": refNumberHtml,
+							"list": "ledgerList"
 						}).then(function onSuccess(res) {
 							stage5();
 						}).catch(function onError(err) {
 							//stop loading icon
-							$("#cover-spin").fadeOut(250, function() {
+							$("#cover-spin").fadeOut(250, function () {
 								$(this).hide();
 							});
 							//error notification
 							$.gritter.add({
 								title: 'Error Stage 4-42',
-								text: err.code+" : "+err.message,
+								text: err.code + " : " + err.message,
 								image: './img/bell.png',
 								sticky: false,
 								time: 3500,
@@ -2071,10 +2117,10 @@ function addPayment() {
 			});
 		});
 	}
-	
+
 	function stage5() {
 		//stop loading icon
-		$("#cover-spin").fadeOut(250, function() {
+		$("#cover-spin").fadeOut(250, function () {
 			$(this).hide();
 		});
 		resetPaymentForm();
@@ -2087,30 +2133,39 @@ function addPayment() {
 			time: 3500,
 			class_name: 'gritter-custom'
 		});
+		window.location = 'tenant_details.html?' + id + "?" + refNumberHtml + "#ledger";
 	}
-		
+
 }
 
 //delete booking in table
-function deleteBooking(refNumber,tenantID){
-	$('#approveD').html("Are you sure to delete "+refNumber+" ?");
+function deleteBooking(refNumber, tenantID) {
+	$('#approveD').html("Are you sure to delete " + refNumber + " ?");
 	$('#approveD3').val(refNumber);
 	$('#approveD2').val(tenantID);
 	$("#rApproveModal").modal();
 }
 
 //collect booking in table
-function collectBooking(refNumber,tenantID){
-	$('#collectD').html("Are you sure to collect "+refNumber+" ?");
+function collectBooking(refNumber, tenantID) {
+	$('#collectD').html("Are you sure to collect " + refNumber + " ?");
 	$('#collectD').val(refNumber);
 	$('#collectD2').val(tenantID);
 	$("#cApproveModal").modal();
 }
 
+//collect booking in table
+function collectEndBooking(refNumber, tenantID) {
+	$('#collectED').html("Are you sure to collect " + refNumber + " ?");
+	$('#collectED3').val(refNumber);
+	$('#collectED2').val(tenantID);
+	$("#cEApproveModal").modal();
+}
+
 //send email from key collection
-function mailTenantKey(tenantID,roomID){
+function mailTenantKey(tenantID, roomID) {
 	//start loading icon
-	$("#cover-spin").fadeIn(250, function() {
+	$("#cover-spin").fadeIn(250, function () {
 		$(this).removeClass("hide");
 	})
 	/*
@@ -2172,16 +2227,16 @@ function mailTenantKey(tenantID,roomID){
 	});
 	*/
 	//stop loading
-	$("#cover-spin").fadeOut(250, function() {
+	$("#cover-spin").fadeOut(250, function () {
 		$(this).hide();
 	})
 	return false;
 }
 
 // send email
-function sendEmail(tenantID,roomID,total,propAddr1){
+function sendEmail(tenantID, roomID, total, propAddr1) {
 	//start loading icon
-	$("#cover-spin").fadeIn(250, function() {
+	$("#cover-spin").fadeIn(250, function () {
 		$(this).removeClass("hide");
 	})
 	/*
@@ -2233,21 +2288,21 @@ function sendEmail(tenantID,roomID,total,propAddr1){
 		}
 	});
 	*/
-	$("#cover-spin").fadeOut(250, function() {
+	$("#cover-spin").fadeOut(250, function () {
 		$(this).hide();
 	})
 	return false;
 }
 
-function editKeyCollectDateModal(keyDate,tenantID,tenantRef,notes) {
+function editKeyCollectDateModal(keyDate, tenantID, tenantRef, notes) {
 
 	$("#editKeyDateModal").modal();
 	$("#keyDate").val(keyDate);
 	var year = keyDate.split("/")[2]
 	var month = keyDate.split("/")[0]
 	var day = keyDate.split("/")[1]
-	
-	var ddd = new Date(year,month,day);
+
+	var ddd = new Date(year, month, day);
 	$('#keyDatePicker').datepicker('setStartDate', ddd);
 	$('#keyDatePicker').datepicker('setDate', ddd);
 	$("#notes").val(notes);
@@ -2256,244 +2311,365 @@ function editKeyCollectDateModal(keyDate,tenantID,tenantRef,notes) {
 
 }
 
+var table7;
+
+function editColDate(tenantID, roomID, keyColDate) {
+
+	$("#tenantRef").html(table7.cell(table7.row("#" + tenantID), 0).data());
+	$("#tenantName").html(table7.cell(table7.row("#" + tenantID), 1).data());
+	$("#keyColDate").val(keyColDate);
+	$("#tenantID").val(tenantID);
+	$("#tenantRoomID").val(roomID);
+
+	$("#editKeyModal").modal();
+
+}
+
+function updateKeyCol() {
+
+	var dbRef = firebase.database().ref("endingContract");
+	var tenantID = $("#tenantID").val();
+	var tenantRoomID = $("#tenantRoomID").val();
+	var keyCollectDate = reformatDate2($("#keyColDate").val());
+
+	dbRef.child(tenantID + "/" + tenantRoomID).update({
+		"keyCollectDate": keyCollectDate,
+	}).then(function onSuccess(res) {
+		//stop loading icon
+		$("#cover-spin").fadeOut(250, function () {
+			$(this).hide();
+		});
+		//success notification
+		$.gritter.add({
+			title: 'Key Collection Date Updated',
+			text: 'Key collection date was successfully updated',
+			image: './img/bell.png',
+			sticky: false,
+			time: 3500,
+			class_name: 'gritter-custom'
+		});
+	}).catch(function onError(err) {
+		//stop loading icon
+		$("#cover-spin").fadeOut(250, function () {
+			$(this).hide();
+		});
+		//error notification
+		$.gritter.add({
+			title: 'Error Updating Key Collection Date',
+			text: err.code + " : " + err.message,
+			image: './img/bell.png',
+			sticky: false,
+			time: 3500,
+			class_name: 'gritter-custom'
+		});
+	});
 
 
+}
 
-
-$(document).ready(function() {
+$(document).ready(function () {
 	//get data from database
-	tenant={}
-	tenantdata={}
-	paymentBal={}
-	paymentRec={}
-	contractdata={}
-	overdue={}
-	booking={}
-	refPayment=[]
+	tenant = {}
+	tenantdata = {}
+	paymentBal = {}
+	paymentRec = {}
+	contractdata = {}
+	overdue = {}
+	booking = {}
+	refPayment = []
 
 	//boolean variable if there is a change
 	tenantChange = false
 	changeContract = false
 	paymentChange = false
-	
+
 	//firebase ref
 	var trRef = firebase.database().ref("tenant-room");
 	var tenantRef = firebase.database().ref().child("tenant");
 	var contractRef = firebase.database().ref().child("newContract");
-	var paymentRef =firebase.database().ref().child("payment");
+	var paymentRef = firebase.database().ref().child("payment");
 	var overdueRef = firebase.database().ref().child("overdue");
 	var bookingRef = firebase.database().ref().child("booking-tenant");
 	var getToday = Date.today().toString("MM/dd/yyyy");
 	var recurringRef = firebase.database().ref().child("recurringPay")
 
 	//fill list with database object
-	contractRef.on('child_added', function(snapshot){
+	contractRef.on('child_added', function (snapshot) {
 		var id = snapshot.key
-		contractRef.child(id).once('child_added', function(snapshot){
+		contractRef.child(id).once('child_added', function (snapshot) {
 			var room_id = snapshot.key
-			contractRef.child(id+"/"+room_id).on('child_added', function(snapshot){
+			contractRef.child(id + "/" + room_id).on('child_added', function (snapshot) {
 				var contract_id = snapshot.key
-				if (contract_id!="historyperiod" && contract_id!="status"){
-					contractdata[id]=snapshot.val()
+				if (contract_id != "historyperiod" && contract_id != "status") {
+					contractdata[id] = snapshot.val()
 				}
 			})
 		})
-		contractRef.child(id).on('child_changed', function(snapshot){
+		contractRef.child(id).on('child_changed', function (snapshot) {
 			var row = table3.row(id);
 			row.remove();
 			var room_id = snapshot.key
 			changeContract = true
-			contractRef.child(id+"/"+room_id).on('child_changed', function(snapshot){
+			contractRef.child(id + "/" + room_id).on('child_changed', function (snapshot) {
 				var contract_id = snapshot.key
-				if (contract_id!="historyperiod" && contract_id!="status"){
-					contract[id]=snapshot.val()
+				if (contract_id != "historyperiod" && contract_id != "status") {
+					contract[id] = snapshot.val()
 				}
 			})
 		})
 
 	})
-	paymentRef.on('child_added', function(snapshot){
+	paymentRef.on('child_added', function (snapshot) {
 		var id = snapshot.key
-		paymentRef.child(id).on('child_added', function(snapshot){
-			var child_id=snapshot.key
-			if (child_id=="balance"){
-				paymentBal[id]=snapshot.val()
+		paymentRef.child(id).on('child_added', function (snapshot) {
+			var child_id = snapshot.key
+			if (child_id == "balance") {
+				paymentBal[id] = snapshot.val()
 				refPayment.push(id)
-			}else if(child_id=="recurring"){
-				paymentRec[id]=snapshot.val()
+			} else if (child_id == "recurring") {
+				paymentRec[id] = snapshot.val()
 			}
 		})
-		paymentRef.child(id).on("child_changed", function(snapshot){
+		paymentRef.child(id).on("child_changed", function (snapshot) {
 			paymentChange = true
-			var row = table2.row('#over'+id);
+			var row = table2.row('#over' + id);
 			row.remove();
-			if (snapshot.key=="balance"){
-				paymentBal[id]={"balance":snapshot.val()}
-			}else if(snapshot.key=="recurring"){
-				paymentRec[id]={"recurring":snapshot.val()}
+			if (snapshot.key == "balance") {
+				paymentBal[id] = {
+					"balance": snapshot.val()
+				}
+			} else if (snapshot.key == "recurring") {
+				paymentRec[id] = {
+					"recurring": snapshot.val()
+				}
 			}
 		})
 	})
-	tenantRef.on('child_added',function(snapshot){
+	tenantRef.on('child_added', function (snapshot) {
 		var id = snapshot.key
-		tenantRef.child(id).once("value", function(snapshot){
-			if(snapshot.key!="counter"){
-			tenantdata[id]=snapshot.val()
-		}
+		tenantRef.child(id).once("value", function (snapshot) {
+			if (snapshot.key != "counter") {
+				tenantdata[id] = snapshot.val()
+			}
 		})
 	})
-	bookingRef.on('child_added', function(snapshot) {
-		var tenantID = snapshot.key;	
-		bookingRef.child(tenantID).once('child_added', function(snapshot) {
+	bookingRef.on('child_added', function (snapshot) {
+		var tenantID = snapshot.key;
+		bookingRef.child(tenantID).once('child_added', function (snapshot) {
 			//get starting date , building address , status occupy , ref id
-			if (tenantID!="total_tenant"){
-				booking[tenantID]=snapshot.val()
+			if (tenantID != "total_tenant") {
+				booking[tenantID] = snapshot.val()
 			}
 		});
-		bookingRef.child(tenantID).on('child_changed', function(snapshot) {
+		bookingRef.child(tenantID).on('child_changed', function (snapshot) {
 			tenantChange = true
-			booking[tenantID]=snapshot.val()
-			var row = table6.row('#key'+tenantID);
+			booking[tenantID] = snapshot.val()
+			var row = table6.row('#key' + tenantID);
 			row.remove();
 		});
-		bookingRef.child(tenantID).on('child_removed', function(snapshot) {
+		bookingRef.child(tenantID).on('child_removed', function (snapshot) {
 			//get ref ID
-			var refN=snapshot.child("ref_number").val().split(" ");
-			var refNumber=refN[0]+refN[1]+refN[2];
+			var refN = snapshot.child("ref_number").val().split(" ");
+			var refNumber = refN[0] + refN[1] + refN[2];
 			// remove row changed
-			var row = table1.row('#booking'+refNumber);
+			var row = table1.row('#booking' + refNumber);
 			row.remove();
 		});
 	});
-	trRef.on('child_added', function(snapshot) {
-		var tenantID = snapshot.key;	
-		trRef.child(tenantID).once('child_added', function(snapshot) {
+	trRef.on('child_added', function (snapshot) {
+		var tenantID = snapshot.key;
+		trRef.child(tenantID).once('child_added', function (snapshot) {
 			//get starting date , building address , status occupy , ref id
-			if (tenantID!="total_tenant"){
-				tenant[tenantID]=snapshot.val()
+			if (tenantID != "total_tenant") {
+				tenant[tenantID] = snapshot.val()
 			}
 		});
-		trRef.child(tenantID).on('child_changed', function(snapshot) {
+		trRef.child(tenantID).on('child_changed', function (snapshot) {
 			tenantChange = true
-			tenant[tenantID]=snapshot.val()
-			var row = table6.row('#key'+tenantID);
+			tenant[tenantID] = snapshot.val()
+			var row = table6.row('#key' + tenantID);
 			row.remove();
 		});
-		trRef.child(tenantID).on('child_removed', function(snapshot) {
+		trRef.child(tenantID).on('child_removed', function (snapshot) {
 			//get ref ID
-			var refN=snapshot.child("ref_number").val().split(" ");
-			var refNumber=refN[0]+refN[1]+refN[2];
+			var refN = snapshot.child("ref_number").val().split(" ");
+			var refNumber = refN[0] + refN[1] + refN[2];
 			// remove row changed
-			var row = table1.row('#booking'+refNumber);
+			var row = table1.row('#booking' + refNumber);
 			row.remove();
 		});
 	});
-	overdueRef.on('child_added', function(snapshot){
-		var tenantID = snapshot.key;	
-		overdue[tenantID]=snapshot.val()
-		
+	overdueRef.on('child_added', function (snapshot) {
+		var tenantID = snapshot.key;
+		overdue[tenantID] = snapshot.val()
+
 	})
 
 	//table
 	//Booking list
 	var table1 = $('#booking-list').DataTable({
-		"aLengthMenu": [[3, 6, -1], [3, 6, "All"]],
+		"aLengthMenu": [
+			[3, 6, -1],
+			[3, 6, "All"]
+		],
 		"iDisplayLength": 3,
 		"order": [],
-		"columnDefs": [
-		{
-			targets: -1,
-			orderable:false
-		},
-		{
-			targets: 0,
-			width: "20%",
-			orderable:false
-		},
-		{
-			targets: 1,
-			className: 'dt-body-left',
-			width:"20%"
-		}
-		]
-	})
-
-	//overdue
-	var table2 = $('#overdue-list').DataTable({
-		"aLengthMenu": [[3, 6, -1], [3, 6, "All"]],
-		"iDisplayLength": 3,
-		"order": [[ 2, "asc" ]],
-		"columnDefs": [
-		{
-			targets: 0,
-			className: 'dt-body-left',
-			width: "30%"
-		},
-		]
-	})
-
-	//almost expired
-	var table3 = $('#aexpired-list').DataTable({
-		"aLengthMenu": [[3, 6, -1], [3, 6, "All"]],
-		"iDisplayLength": 3,
-		"order": [[ 2, "asc" ]],
-		"columnDefs": [
-		{
-			targets: 0,
-			width: "20%"
-		},
-		{
-			targets: 1,
-			width: "20%"
-		}
-		]
-	})
-
-	//imcomplete tenant
-	var table4 = $('#incomplete-list').DataTable({
-		"aLengthMenu": [[3, 6, -1], [3, 6, "All"]],
-		"iDisplayLength": 3,
-		"order": [[ 0, "asc" ]],
-		"columnDefs": [
-		{
-			targets: 0,
-			width: "30%"
-		},
+		"columnDefs": [{
+				targets: -1,
+				orderable: false
+			},
+			{
+				targets: 0,
+				width: "20%",
+				orderable: false
+			},
+			{
+				targets: 1,
+				className: 'dt-body-left',
+				width: "20%"
+			}
 		]
 	})
 
 	//key list
 	var table6 = $('#keyC-list').DataTable({
-		"aLengthMenu": [[3, 6, -1], [3, 6, "All"]],
+		"aLengthMenu": [
+			[3, 6, -1],
+			[3, 6, "All"]
+		],
 		"iDisplayLength": 3,
-		"order": [[2,"desc"]],
-		"columnDefs": [
-		{
-			targets: 0,
-			width: "20%"
-		},
-		{
-			targets: -1,
-			width: "10%"
-		},
-		{
-			targets: 1,
-			width: "20%"
-		},
+		"order": [
+			[2, "desc"]
+		],
+		"columnDefs": [{
+				targets: 0,
+				width: "20%"
+			},
+			{
+				targets: -1,
+				width: "10%",
+				orderable: false
+			},
+			{
+				targets: 1,
+				width: "20%"
+			}
 		]
 	})
 
+	//overdue
+	var table2 = $('#overdue-list').DataTable({
+		"aLengthMenu": [
+			[3, 6, -1],
+			[3, 6, "All"]
+		],
+		"iDisplayLength": 3,
+		"order": [
+			[2, "asc"]
+		],
+		"columnDefs": [{
+			targets: 0,
+			className: 'dt-body-left',
+			width: "30%"
+		}]
+	})
+
+	//almost expired
+	var table3 = $('#aexpired-list').DataTable({
+		"aLengthMenu": [
+			[3, 6, -1],
+			[3, 6, "All"]
+		],
+		"iDisplayLength": 3,
+		"order": [
+			[2, "asc"]
+		],
+		"columnDefs": [{
+				targets: 0,
+				width: "20%"
+			},
+			{
+				targets: 1,
+				width: "20%"
+			},
+			{
+				targets: -1,
+				orderable: false
+			}
+		]
+	})
+
+	//maintenance
+	var table5 = $('#maintenance-list').DataTable({
+		"aLengthMenu": [
+			[3, 6, -1],
+			[3, 6, "All"]
+		],
+		"iDisplayLength": 3,
+		"order": [
+			[0, "asc"]
+		],
+		"columnDefs": [{
+			targets: 0,
+			width: "30%"
+		}]
+	})
+
+	//key list
+	table7 = $('#contract-end').DataTable({
+		"aLengthMenu": [
+			[3, 6, -1],
+			[3, 6, "All"]
+		],
+		"iDisplayLength": 3,
+		"order": [
+			[2, "desc"]
+		],
+		"columnDefs": [{
+				targets: 0,
+				width: "20%"
+			},
+			{
+				targets: -1,
+				width: "10%",
+				orderable: false
+			},
+			{
+				targets: 1,
+				width: "20%"
+			}
+		]
+	})
+
+	//incomplete tenant
+	var table4 = $('#incomplete-list').DataTable({
+		"aLengthMenu": [
+			[3, 6, -1],
+			[3, 6, "All"]
+		],
+		"iDisplayLength": 3,
+		"order": [
+			[0, "asc"]
+		],
+		"columnDefs": [{
+			targets: 0,
+			width: "30%"
+		}]
+	})
+
+
+
 
 	setTimeout(() => {
-		bookingTable(); 
+		bookingTable();
 		overdueTable();
 		keyTable();
 		expiredTable();
 		autocompleteFunction();
 	}, 4000);
-	
+
 	setTimeout(() => {
-		bookingTable(); 
+		bookingTable();
 		overdueTable();
 		keyTable();
 		expiredTable();
@@ -2501,7 +2677,7 @@ $(document).ready(function() {
 	}, 10000);
 
 	setTimeout(() => {
-		bookingTable(); 
+		bookingTable();
 		overdueTable();
 		keyTable();
 		expiredTable();
@@ -2509,25 +2685,23 @@ $(document).ready(function() {
 	}, 20000);
 
 	setInterval(() => {
-		if (tenantChange==true){
+		if (tenantChange == true) {
 			keyTable()
 			autocompleteFunction()
-			tenantChange=false
-		}
-		else if(changeContract==true){
+			tenantChange = false
+		} else if (changeContract == true) {
 			expiredTable()
-			changeContract=false
-		}
-		else if(paymentChange==true){
+			changeContract = false
+		} else if (paymentChange == true) {
 			overdueTable()
-			paymentChange=false
+			paymentChange = false
 		}
 	}, 60000);
 
 	//function
-	function bookingTable(){
+	function bookingTable() {
 		var paymentRef = firebase.database().ref("payment");
-		listApproveT=[];
+		listApproveT = [];
 		setTimeout(() => {
 			table1.clear();
 			// console.log(tenant)
@@ -2536,171 +2710,171 @@ $(document).ready(function() {
 			// console.log(paymentRec)
 			// console.log(contractdata)
 			// console.log(overdue)
-			if (tenant!={} && tenantdata!={}){
-				for (i in tenant){
-					if(!(refPayment.includes(i))){
-						if (tenant[i].stat_occupy=="approved"){
-							refNumFormat=tenant[i].ref_number
-							refN=refNumFormat.split(" ")
-							refNumber=refN[0]+refN[1]+refN[2]
-							tenantName=shortenString(tenantdata[i].full_name,8)
-							statingDate=tenant[i].start_date
-							propAddr=shortenString(tenant[i].prop_addr,10)
-							
+			if (tenant != {} && tenantdata != {}) {
+				for (i in tenant) {
+					if (!(refPayment.includes(i))) {
+						if (tenant[i].stat_occupy == "approved") {
+							refNumFormat = tenant[i].ref_number
+							refN = refNumFormat.split(" ")
+							refNumber = refN[0] + refN[1] + refN[2]
+							tenantName = shortenString(tenantdata[i].full_name, 8)
+							statingDate = tenant[i].start_date
+							propAddr = shortenString(tenant[i].prop_addr, 10)
+
 							// untuk sort , datanya dimasukan ke list
 							newObj = {
-								"statOccupy":"approved",
-								"refNum":refNumber,
-								"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",reformatDate(statingDate),propAddr,"<i class='fa fa-check'  style='color:#83E53A'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"','"+i+"')><i class='fa fa-times'></i></button>"],
-								"tenant_id":i,
-								"start_date":statingDate
+								"statOccupy": "approved",
+								"refNum": refNumber,
+								"content": [refNumFormat, "<a href='tenant_approve.html?id=" + refNumber + "' class='pull-left'>" + tenantName + "</a>", reformatDate(statingDate), propAddr, "<i class='fa fa-check'  style='color:#83E53A'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking" + refNumber + "','" + i + "')><i class='fa fa-times'></i></button>"],
+								"tenant_id": i,
+								"start_date": statingDate
 							}
 							listApproveT.push(newObj);
 						}
 						//jika status = booking
-						if(tenant[i].stat_occupy=="booking") {
+						if (tenant[i].stat_occupy == "booking") {
 							// untuk sort , datanya dimasukan ke list
-							refNumFormat=tenant[i].ref_number
-							refN=refNumFormat.split(" ")
-							refNumber=refN[0]+refN[1]+refN[2]
-							tenantName=shortenString(tenantdata[i].full_name,8);
-							statingDate=tenant[i].start_date
-							propAddr=shortenString(tenant[i].prop_addr,10)
+							refNumFormat = tenant[i].ref_number
+							refN = refNumFormat.split(" ")
+							refNumber = refN[0] + refN[1] + refN[2]
+							tenantName = shortenString(tenantdata[i].full_name, 8);
+							statingDate = tenant[i].start_date
+							propAddr = shortenString(tenant[i].prop_addr, 10)
 							newObj = {
-								"statOccupy":"booking",
-								"refNum":refNumber,
-								"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",reformatDate(statingDate),propAddr,"<i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"','"+i+"')><i class='fa fa-times'></i></button>"],
-								"tenant_id":i,
-								"start_date":statingDate
+								"statOccupy": "booking",
+								"refNum": refNumber,
+								"content": [refNumFormat, "<a href='tenant_approve.html?id=" + refNumber + "' class='pull-left'>" + tenantName + "</a>", reformatDate(statingDate), propAddr, "<i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking" + refNumber + "','" + i + "')><i class='fa fa-times'></i></button>"],
+								"tenant_id": i,
+								"start_date": statingDate
 							}
 							listApproveT.push(newObj);
 						}
-					}	
+					}
 				}
 				listApproveT = sortByStatOccupy(listApproveT);
-					//add hasil sort ke datatables
-				for (i=0;i<listApproveT.length;i++) {
+				//add hasil sort ke datatables
+				for (i = 0; i < listApproveT.length; i++) {
 					console.log("in table booking")
-					table1.row.add(listApproveT[i].content).node().id = 'booking'+listApproveT[i].refNum;
+					table1.row.add(listApproveT[i].content).node().id = 'booking' + listApproveT[i].refNum;
 				}
 				table1.draw();
-			}else{
+			} else {
 				setTimeout(() => {
 					// console.log(tenant)
 					// console.log(tenantdata)
 					// console.log(paymentBal)
 					// console.log(paymentRec)
 					// console.log(contractdata)
-					for (i in tenant){
-						if(!(refPayment.includes(i))){
+					for (i in tenant) {
+						if (!(refPayment.includes(i))) {
 							console.log(i)
-							if (tenant[i].stat_occupy=="approved"){
-								refNumFormat=tenant[i].ref_number
-								refN=refNumFormat.split(" ")
-								refNumber=refN[0]+refN[1]+refN[2]
-								tenantName=shortenString(tenantdata[i].full_name,8)
-								statingDate=tenant[i].start_date
-								propAddr=shortenString(tenant[i].prop_addr,10)
-								
+							if (tenant[i].stat_occupy == "approved") {
+								refNumFormat = tenant[i].ref_number
+								refN = refNumFormat.split(" ")
+								refNumber = refN[0] + refN[1] + refN[2]
+								tenantName = shortenString(tenantdata[i].full_name, 8)
+								statingDate = tenant[i].start_date
+								propAddr = shortenString(tenant[i].prop_addr, 10)
+
 								// untuk sort , datanya dimasukan ke list
 								newObj = {
-									"statOccupy":"approved",
-									"refNum":refNumber,
-									"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",reformatDate(statingDate),propAddr,"<i class='fa fa-check'  style='color:#83E53A'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"','"+i+"')><i class='fa fa-times'></i></button>"],
-									"tenant_id":i,
-									"start_date":statingDate
+									"statOccupy": "approved",
+									"refNum": refNumber,
+									"content": [refNumFormat, "<a href='tenant_approve.html?id=" + refNumber + "' class='pull-left'>" + tenantName + "</a>", reformatDate(statingDate), propAddr, "<i class='fa fa-check'  style='color:#83E53A'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking" + refNumber + "','" + i + "')><i class='fa fa-times'></i></button>"],
+									"tenant_id": i,
+									"start_date": statingDate
 								}
 								listApproveT.push(newObj);
 							}
 							//jika status = booking
-							if(tenant[i].stat_occupy=="booking") {
+							if (tenant[i].stat_occupy == "booking") {
 								// untuk sort , datanya dimasukan ke list
-								refNumFormat=tenant[i].ref_number
-								refN=refNumFormat.split(" ")
-								refNumber=refN[0]+refN[1]+refN[2]
-								tenantName=shortenString(tenantdata[i].full_name,8);
-								statingDate=tenant[i].start_date
-								propAddr=shortenString(tenant[i].prop_addr,10)
+								refNumFormat = tenant[i].ref_number
+								refN = refNumFormat.split(" ")
+								refNumber = refN[0] + refN[1] + refN[2]
+								tenantName = shortenString(tenantdata[i].full_name, 8);
+								statingDate = tenant[i].start_date
+								propAddr = shortenString(tenant[i].prop_addr, 10)
 								newObj = {
-									"statOccupy":"booking",
-									"refNum":refNumber,
-									"content":[refNumFormat,"<a href='tenant_approve.html?id="+refNumber+"' class='pull-left'>"+tenantName+"</a>",reformatDate(statingDate),propAddr,"<i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking"+refNumber+"','"+i+"')><i class='fa fa-times'></i></button>"],
-									"tenant_id":i,
-									"start_date":statingDate
+									"statOccupy": "booking",
+									"refNum": refNumber,
+									"content": [refNumFormat, "<a href='tenant_approve.html?id=" + refNumber + "' class='pull-left'>" + tenantName + "</a>", reformatDate(statingDate), propAddr, "<i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking" + refNumber + "','" + i + "')><i class='fa fa-times'></i></button>"],
+									"tenant_id": i,
+									"start_date": statingDate
 								}
 								listApproveT.push(newObj);
 							}
-						}	
+						}
 					}
 					listApproveT = sortByStatOccupy(listApproveT);
-						//add hasil sort ke datatables
-					for (i=0;i<listApproveT.length;i++) {
+					//add hasil sort ke datatables
+					for (i = 0; i < listApproveT.length; i++) {
 						console.log("in table booking")
-						table1.row.add(listApproveT[i].content).node().id = 'booking'+listApproveT[i].refNum;
+						table1.row.add(listApproveT[i].content).node().id = 'booking' + listApproveT[i].refNum;
 					}
 					table1.draw();
 				}, 2000);
 			}
-		}, 4000);	
+		}, 4000);
 	}
 
-	function overdueTable(){
+	function overdueTable() {
 		setTimeout(() => {
 			table2.clear()
-			if (tenant!={} && tenantdata!={} && overdue!={}){
-				for (i in paymentBal){
-					
+			if (tenant != {} && tenantdata != {} && overdue != {}) {
+				for (i in paymentBal) {
+
 					var balance = overdue[i].balance;
 					var payPlan = tenant[i].pay_plan;
 					//validasi jika balance balance !=0
-					if (balance<0 && payPlan == "monthly"){
-						console.log(i)
+					if (balance < 0 && payPlan == "monthly") {
+
 						var refN = tenant[i].ref_number
-						var re_num =tenant[i].ref_number.split(" ").join("")
+						var re_num = tenant[i].ref_number.split(" ").join("")
 						var statOccupy = tenant[i].stat_occupy
 						var overdueDate = overdue[i].date_due
-						if ((statOccupy=="approved") ||(statOccupy=="active")){
-							
+						if ((statOccupy == "approved") || (statOccupy == "active")) {
+
 							console.log("in table overdue")
 							// overdueRef2=firebase.database().ref().child("tenant/"+tenantID);
-							var name = shortenString(tenantdata[i].full_name,10) 
-							table2.row.add(["<a href='tenant_details.html?"+i+"?"+re_num+"' class='pull-left'>"+name+"</a>",refN,reformatDate(overdueDate)]).node().id = 'over'+i;
-							
+							var name = shortenString(tenantdata[i].full_name, 10)
+							table2.row.add(["<a href='tenant_details.html?" + i + "?" + re_num + "' class='pull-left'>" + name + "</a>", refN, reformatDate(overdueDate)]).node().id = 'over' + i;
+
 						}
 					}
 				}
 				table2.draw();
-			}else{
+			} else {
 				setTimeout(() => {
-					for (i in paymentBal){
+					for (i in paymentBal) {
 						var balance = parseInt(paymentBal[i]);
 						var payPlan = tenant[i].pay_plan;
 						//validasi jika balance balance !=0
-						if (balance<0 && payPlan == "monthly"){
+						if (balance < 0 && payPlan == "monthly") {
 							var refN = tenant[i].ref_number
-							var re_num =  tenant[i].ref_number.split(" ").join("")
+							var re_num = tenant[i].ref_number.split(" ").join("")
 							var statOccupy = tenant[i].stat_occupy
 							var recurringD = paymentRec[i]
-							if ((statOccupy=="approved") ||(statOccupy=="active")){
+							if ((statOccupy == "approved") || (statOccupy == "active")) {
 								//mengampil pay plan
 								var pay_plan = tenant[i].pay_plan
-								if(pay_plan=="monthly"){
-									pay_plan=-1;
-								} else if (pay_plan=="semiannually"){
-									pay_plan=-6;
-								} else if (pay_plan=="annually"){
-									pay_plan=-12;
+								if (pay_plan == "monthly") {
+									pay_plan = -1;
+								} else if (pay_plan == "semiannually") {
+									pay_plan = -6;
+								} else if (pay_plan == "annually") {
+									pay_plan = -12;
 								}
-								
+
 								var recurringDate = new Date(recurringD)
 								var overdueDate = recurringDate.addMonths(pay_plan).toString("M/d/yyyy");
 								//validasi dengan tanggal hari ini
-								if (!dateToday_diff(overdueDate)){
+								if (!dateToday_diff(overdueDate)) {
 									console.log("in table overdue")
 									// overdueRef2=firebase.database().ref().child("tenant/"+tenantID);
-									var name = shortenString(tenantdata[i].full_name,10) 
-									table2.row.add(["<a href='tenant_details.html?"+i+"?"+re_num+"' class='pull-left'>"+name+"</a>",refN,reformatDate(overdueDate)]).node().id = 'over'+i;
-									
+									var name = shortenString(tenantdata[i].full_name, 10)
+									table2.row.add(["<a href='tenant_details.html?" + i + "?" + re_num + "' class='pull-left'>" + name + "</a>", refN, reformatDate(overdueDate)]).node().id = 'over' + i;
+
 								}
 							}
 						}
@@ -2708,43 +2882,42 @@ $(document).ready(function() {
 					table2.draw();
 				}, 2000);
 			}
-		},4000);
+		}, 4000);
 	}
-	
-	function expiredTable(){
+
+	function expiredTable() {
 		setTimeout(() => {
 			table3.clear();
-			if (contractdata!={} && tenant!={} && tenantdata!={}){
-				for (j in contractdata){
+			if (contractdata != {} && tenant != {} && tenantdata != {}) {
+				for (j in contractdata) {
 					var endDate = contractdata[j].end_date
-					if ((endDate != "Ongoing") && (date_diff_indays(getToday,endDate) >= 0) && (date_diff_indays(getToday,endDate) <= 31) ) {
-						console.log("in table expired")
+					if ((endDate != "Ongoing") && (date_diff_indays(getToday, endDate) >= 0) && (date_diff_indays(getToday, endDate) <= 31)) {
 						refNumFormat = tenant[j].ref_number
 						ref_num = tenant[j].ref_number.split(" ").join("")
 						tenantName = tenantdata[j].full_name
-						name = shortenString(tenantName,8);
-						table3.row.add(["<a href='tenant_details.html?"+j+"?"+ref_num+"' class='pull-left'>"+name+"</a>",refNumFormat,reformatDate(endDate),"<button class='btn btn-xs btn-primary' title='Send Email' ><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-success' title='Extend' onclick=window.location='tenant_details.html?"+j+"?"+ref_num+"#extend'><i class='fa fa-plus'></i></button> <button class='btn btn-xs btn-danger' title='End Contract' onclick=window.location='tenant_details.html?id="+j+"?"+ref_num+"#end'><i class='fa fa-times'></i></button> <button class='btn btn-xs btn-warning' title='Non Active' onclick=window.location='tenant_details.html?"+j+"?"+ref_num+"#non-active'><i class='fa fa-minus'></i></button>"]).node().id = j;							
+						name = shortenString(tenantName, 8);
+						table3.row.add(["<a href='tenant_details.html?" + j + "?" + ref_num + "' class='pull-left'>" + name + "</a>", refNumFormat, reformatDate(endDate), "<button class='btn btn-xs btn-primary' title='Send Email' ><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-success' title='Extend' onclick=window.location='tenant_details.html?" + j + "?" + ref_num + "#extend'><i class='fa fa-plus'></i></button> <button class='btn btn-xs btn-danger' title='End Contract' onclick=window.location='tenant_details.html?id=" + j + "?" + ref_num + "#end'><i class='fa fa-times'></i></button> <button class='btn btn-xs btn-warning' title='Non Active' onclick=window.location='tenant_details.html?" + j + "?" + ref_num + "#non-active'><i class='fa fa-minus'></i></button>"]).node().id = j;
 					}
 				}
 				table3.draw();
-				$("#cover-spin").fadeOut(250, function() {
+				$("#cover-spin").fadeOut(250, function () {
 					$(this).hide();
 				})
-			}else{
+			} else {
 				setTimeout(() => {
-					for (j in contractdata){
-						if ((endDate != "Ongoing") && (date_diff_indays(getToday,endDate) >= 0) && (date_diff_indays(getToday,endDate) <= 31) ) {
+					for (j in contractdata) {
+						if ((endDate != "Ongoing") && (date_diff_indays(getToday, endDate) >= 0) && (date_diff_indays(getToday, endDate) <= 31)) {
 							console.log("in table expired")
 							refNumFormat = tenant[j].ref_number
 							ref_num = tenant[j].ref_number.split(" ").join("")
 							tenantName = tenantdata[j].full_name
-							name = shortenString(tenantName,8);
-							table3.row.add(["<a href='tenant_details.html?"+j+"?"+re_num+"' class='pull-left'>"+name+"</a>",refNumFormat,reformatDate(endDate),"<button class='btn btn-xs btn-primary' title='Send Email' ><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-success' title='Extend' onclick=window.location='tenant_details.html?"+j+"?"+ref_num+"#extend'><i class='fa fa-plus'></i></button> <button class='btn btn-xs btn-danger' title='End Contract' onclick=window.location='tenant_details.html?id="+j+"?="+ref_num+"#end'><i class='fa fa-times'></i></button> <button class='btn btn-xs btn-warning' title='Non Active' onclick=window.location='tenant_details.html?"+j+"?="+ref_num+"#non-active'><i class='fa fa-minus'></i></button>"]).node().id = j;			
-							
+							name = shortenString(tenantName, 8);
+							table3.row.add(["<a href='tenant_details.html?" + j + "?" + re_num + "' class='pull-left'>" + name + "</a>", refNumFormat, reformatDate(endDate), "<button class='btn btn-xs btn-primary' title='Send Email' ><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-success' title='Extend' onclick=window.location='tenant_details.html?" + j + "?" + ref_num + "#extend'><i class='fa fa-plus'></i></button> <button class='btn btn-xs btn-danger' title='End Contract' onclick=window.location='tenant_details.html?id=" + j + "?=" + ref_num + "#end'><i class='fa fa-times'></i></button> <button class='btn btn-xs btn-warning' title='Non Active' onclick=window.location='tenant_details.html?" + j + "?=" + ref_num + "#non-active'><i class='fa fa-minus'></i></button>"]).node().id = j;
+
 						}
 					}
 					table3.draw();
-					$("#cover-spin").fadeOut(250, function() {
+					$("#cover-spin").fadeOut(250, function () {
 						$(this).hide();
 					})
 				}, 2000);
@@ -2752,67 +2925,67 @@ $(document).ready(function() {
 		}, 4000);
 	}
 
-	function keyTable(){
+	function keyTable() {
 		setTimeout(() => {
 			table6.clear()
-			if (tenant!={} && tenantdata!={}){
-				for (i in booking){
-					
+			if (tenant != {} && tenantdata != {}) {
+				for (i in booking) {
+
 					var statingDate = tenant[i].start_date
 					var keyDate = tenant[i].key_date
 					var statOccupy = tenant[i].stat_occupy
 					var refN = tenant[i].ref_number
 					ref_num = tenant[i].ref_number.split(" ").join("")
 					var note = tenant[i].notes
-					var noteIcon=""
-					var note1=""
-					if(note==null){
-						note1=""
-						noteIcon=""
+					var noteIcon = ""
+					var note1 = ""
+					if (note == null) {
+						note1 = ""
+						noteIcon = ""
 					} else {
-						note=note.replace("\n", " ");
-						note1=note
-						noteIcon = "<button class='btn btn-xs btn-danger tip' data-position='top-center' data-tip='"+note+"'>"+"<i class='fa fa-comments-o'></i>"+"</button>"
+						note = note.replace("\n", " ");
+						note1 = note
+						noteIcon = "<button class='btn btn-xs btn-danger tip' data-position='top-center' data-tip='" + note + "'>" + "<i class='fa fa-comments-o'></i>" + "</button>"
 					}
-					var refN1= refN.split(" ");
-					var refNumber = refN1[0]+refN1[1]+refN1[2];
-					if ((statOccupy=="approved") ||(statOccupy=="active")){
+					var refN1 = refN.split(" ");
+					var refNumber = refN1[0] + refN1[1] + refN1[2];
+					if ((statOccupy == "approved") || (statOccupy == "active")) {
 						console.log("in table key")
 						var name = tenantdata[i].full_name
-						name = shortenString(name,8);
-						table6.row.add(["<a href='tenant_details.html?"+i+"?"+ref_num+"' class='pull-left'>"+name+"</a>",refN,statingDate,"<a href='#' ondblclick='editKeyCollectDateModal(\""+keyDate+"\",\""+i+"\",\""+refNumber+"\",\""+note1+"\")'>"+keyDate+" "+noteIcon+"</a>","<button class='btn btn-xs btn-success' title='Mail Tenant' onclick=mailTenantKey('"+i+"','"+refNumber+"')><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-primary' title='Collected' onclick=collectBooking('"+refNumber+"','"+i+"')><i class='fa fa-check'></i></button>"]).node().id = "key"+i;
-						
+						name = shortenString(name, 8);
+						table6.row.add(["<a href='tenant_details.html?" + i + "?" + ref_num + "' class='pull-left'>" + name + "</a>", refN, statingDate, "<a href='#' ondblclick='editKeyCollectDateModal(\"" + keyDate + "\",\"" + i + "\",\"" + refNumber + "\",\"" + note1 + "\")'>" + keyDate + " " + noteIcon + "</a>", "<button class='btn btn-xs btn-success' title='Mail Tenant' onclick=mailTenantKey('" + i + "','" + refNumber + "')><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-primary' title='Collected' onclick=collectBooking('" + refNumber + "','" + i + "')><i class='fa fa-check'></i></button>"]).node().id = "key" + i;
+
 						$(".tip").tip();
 					}
 				}
 				table6.draw();
-			}else{
+			} else {
 				setTimeout(() => {
-					for (i in booking){
+					for (i in booking) {
 						var statingDate = tenant[i].start_date
 						var keyDate = tenant[i].key_date
 						var statOccupy = tenant[i].stat_occupy
 						var refN = tenant[i].ref_number
 						ref_num = tenant[i].ref_number.split(" ").join("")
 						var note = tenant[i].notes
-						var noteIcon=""
-						var note1=""
-						if(note==null){
-							note1=""
-							noteIcon=""
+						var noteIcon = ""
+						var note1 = ""
+						if (note == null) {
+							note1 = ""
+							noteIcon = ""
 						} else {
-							note=note.replace("\n", " ");
-							note1=note
-							noteIcon = "<button class='btn btn-xs btn-danger tip' data-position='top-center' data-tip='"+note+"'>"+"<i class='fa fa-comments-o'></i>"+"</button>"
+							note = note.replace("\n", " ");
+							note1 = note
+							noteIcon = "<button class='btn btn-xs btn-danger tip' data-position='top-center' data-tip='" + note + "'>" + "<i class='fa fa-comments-o'></i>" + "</button>"
 						}
-						var refN1= refN.split(" ");
-						var refNumber = refN1[0]+refN1[1]+refN1[2];
-						if ((statOccupy=="approved") ||(statOccupy=="active")){
+						var refN1 = refN.split(" ");
+						var refNumber = refN1[0] + refN1[1] + refN1[2];
+						if ((statOccupy == "approved") || (statOccupy == "active")) {
 							console.log("in table key")
 							var name = tenantdata[i].full_name
-							name = shortenString(name,8);
-							table6.row.add(["<a href='tenant_details.html?"+i+"?"+ref_num+"' class='pull-left'>"+name+"</a>",refN,statingDate,"<a href='#' ondblclick='editKeyCollectDateModal(\""+keyDate+"\",\""+i+"\",\""+refNumber+"\",\""+note1+"\")'>"+keyDate+" "+noteIcon+"</a>","<button class='btn btn-xs btn-success' title='Mail Tenant' onclick=mailTenantKey('"+i+"','"+refNumber+"')><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-primary' title='Collected' onclick=collectBooking('"+refNumber+"','"+i+"')><i class='fa fa-check'></i></button>"]).node().id = "key"+i;
-							
+							name = shortenString(name, 8);
+							table6.row.add(["<a href='tenant_details.html?" + i + "?" + ref_num + "' class='pull-left'>" + name + "</a>", refN, statingDate, "<a href='#' ondblclick='editKeyCollectDateModal(\"" + keyDate + "\",\"" + i + "\",\"" + refNumber + "\",\"" + note1 + "\")'>" + keyDate + " " + noteIcon + "</a>", "<button class='btn btn-xs btn-success' title='Mail Tenant' onclick=mailTenantKey('" + i + "','" + refNumber + "')><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-primary' title='Collected' onclick=collectBooking('" + refNumber + "','" + i + "')><i class='fa fa-check'></i></button>"]).node().id = "key" + i;
+
 							$(".tip").tip();
 						}
 					}
@@ -2823,32 +2996,32 @@ $(document).ready(function() {
 	}
 
 
-	function autocompleteFunction(){
+	function autocompleteFunction() {
 		setTimeout(() => {
 			tenantNames = [];
-			if (tenant!={} && tenantdata!={}){
-				for (i in tenant){
-					var statOccupy=tenant[i].stat_occupy
+			if (tenant != {} && tenantdata != {}) {
+				for (i in tenant) {
+					var statOccupy = tenant[i].stat_occupy
 					var refN = tenant[i].ref_number
-					var refN1= refN.split(" ");
-					var refNumber=refN1[0]+refN1[1]+refN1[2];
+					var refN1 = refN.split(" ");
+					var refNumber = refN1[0] + refN1[1] + refN1[2];
 					// mengambil data tenant yang status nya approved atau active
-					if ((statOccupy=="approved") ||(statOccupy=="active")){
-						var full_name=tenantdata[i].full_name
+					if ((statOccupy == "approved") || (statOccupy == "active")) {
+						var full_name = tenantdata[i].full_name
 						newObj = {
-							"label":full_name +' ('+refN+')',
-							"tenantid":i,
-							"refnumber":refNumber
+							"label": full_name + ' (' + refN + ')',
+							"tenantid": i,
+							"refnumber": refNumber
 						}
 						tenantNames.push(newObj);
 						//start invoice tenant autocomplete
 						$("#invoiceTenantName").autocomplete({
-							source: function(request, response) {
+							source: function (request, response) {
 								var results = $.ui.autocomplete.filter(tenantNames, request.term);
 								response(results.slice(0, 10));
 							},
-							select: function(event, ui) {
-								$("#invoiceTenantName").val(ui.item.label.split("(")[0].slice(0,-1));
+							select: function (event, ui) {
+								$("#invoiceTenantName").val(ui.item.label.split("(")[0].slice(0, -1));
 								$("#invoiceTenantID").val(ui.item.tenantid);
 								$("#invoiceTenantRef").val(ui.item.refnumber);
 								return false;
@@ -2856,12 +3029,12 @@ $(document).ready(function() {
 						});
 						//start payment tenant autocomplete
 						$("#paymentTenantName").autocomplete({
-							source: function(request, response) {
+							source: function (request, response) {
 								var results = $.ui.autocomplete.filter(tenantNames, request.term);
 								response(results.slice(0, 10));
 							},
-							select: function(event, ui) {
-								$("#paymentTenantName").val(ui.item.label.split("(")[0].slice(0,-1));
+							select: function (event, ui) {
+								$("#paymentTenantName").val(ui.item.label.split("(")[0].slice(0, -1));
 								$("#paymentTenantID").val(ui.item.tenantid);
 								$("#paymentTenantRef").val(ui.item.refnumber);
 								return false;
@@ -2871,10 +3044,11 @@ $(document).ready(function() {
 				}
 
 			}
-			
+
 			//sort array ascending based on name
-			tenantNames.sort(function(a, b){
-				var nameA=a.label.toLowerCase(), nameB=b.label.toLowerCase();
+			tenantNames.sort(function (a, b) {
+				var nameA = a.label.toLowerCase(),
+					nameB = b.label.toLowerCase();
 				if (nameA < nameB) //sort string ascending
 					return -1;
 				if (nameA > nameB)
@@ -2884,35 +3058,35 @@ $(document).ready(function() {
 		}, 4000);
 	}
 
-	
+
 	function editKeyCollectDate() {
 
 		var keyDate = $("#keyDate").val();
 		var notes = $("#notes").val();
-		noteIcon = "<button class='btn btn-xs btn-danger tip' data-position='top-center' data-tip='"+notes+"'>"+"<i class='fa fa-comments-o'></i>"+"</button>"
-		if(notes==""){
-			notes=null;
+		noteIcon = "<button class='btn btn-xs btn-danger tip' data-position='top-center' data-tip='" + notes + "'>" + "<i class='fa fa-comments-o'></i>" + "</button>"
+		if (notes == "") {
+			notes = null;
 		}
 		var keyTenantID = $("#keyTenantID").val();
 		var refNumber = $("#keyTenantRef").val()
 		var re_num = $("#keyTenantRef").val().split(" ").join("")
-		var keyTenantRef = $("#keyTenantRef").val().substring(0,7);
-		var keyDateRef = firebase.database().ref("tenant-room/"+keyTenantID+"/"+keyTenantRef);
+		var keyTenantRef = $("#keyTenantRef").val().substring(0, 7);
+		var keyDateRef = firebase.database().ref("tenant-room/" + keyTenantID + "/" + keyTenantRef);
 		var name = tenantdata[keyTenantID].full_name
 		var statingDate = tenant[keyTenantID].start_date
-		name = shortenString(name,8);
-		var row = table6.row('#key'+keyTenantID);
+		name = shortenString(name, 8);
+		var row = table6.row('#key' + keyTenantID);
 		row.remove();
-		if (notes!=null){
-			table6.row.add(["<a href='tenant_details.html?"+keyTenantID+"?"+re_num+"' class='pull-left'>"+name+"</a>",refNumber,statingDate,"<a href='#' ondblclick='editKeyCollectDateModal(\""+keyDate+"\",\""+keyTenantID+"\",\""+refNumber+"\",\""+notes+"\")'>"+keyDate+" "+noteIcon+"</a>","<button class='btn btn-xs btn-success' title='Mail Tenant' onclick=mailTenantKey('"+i+"','"+refNumber+"')><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-primary' title='Collected' onclick=collectedKey('"+i+"','"+refNumber+"')><i class='fa fa-check'></i></button>"]).node().id = "key"+keyTenantID;
+		if (notes != null) {
+			table6.row.add(["<a href='tenant_details.html?" + keyTenantID + "?" + re_num + "' class='pull-left'>" + name + "</a>", refNumber, statingDate, "<a href='#' ondblclick='editKeyCollectDateModal(\"" + keyDate + "\",\"" + keyTenantID + "\",\"" + refNumber + "\",\"" + notes + "\")'>" + keyDate + " " + noteIcon + "</a>", "<button class='btn btn-xs btn-success' title='Mail Tenant' onclick=mailTenantKey('" + i + "','" + refNumber + "')><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-primary' title='Collected' onclick=collectedKey('" + i + "','" + refNumber + "')><i class='fa fa-check'></i></button>"]).node().id = "key" + keyTenantID;
 			table6.draw();
-		}else {
-			table6.row.add(["<a href='tenant_details.html?"+keyTenantID+"?"+re_num+"' class='pull-left'>"+name+"</a>",refNumber,statingDate,"<a href='#' ondblclick='editKeyCollectDateModal(\""+keyDate+"\",\""+keyTenantID+"\",\""+refNumber+"\",\""+notes+"\")'>"+keyDate+"</a>","<button class='btn btn-xs btn-success' title='Mail Tenant' onclick=mailTenantKey('"+i+"','"+refNumber+"')><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-primary' title='Collected' onclick=collectedKey('"+i+"','"+refNumber+"')><i class='fa fa-check'></i></button>"]).node().id = "key"+keyTenantID;
+		} else {
+			table6.row.add(["<a href='tenant_details.html?" + keyTenantID + "?" + re_num + "' class='pull-left'>" + name + "</a>", refNumber, statingDate, "<a href='#' ondblclick='editKeyCollectDateModal(\"" + keyDate + "\",\"" + keyTenantID + "\",\"" + refNumber + "\",\"" + notes + "\")'>" + keyDate + "</a>", "<button class='btn btn-xs btn-success' title='Mail Tenant' onclick=mailTenantKey('" + i + "','" + refNumber + "')><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-primary' title='Collected' onclick=collectedKey('" + i + "','" + refNumber + "')><i class='fa fa-check'></i></button>"]).node().id = "key" + keyTenantID;
 			table6.draw();
 		}
 		keyDateRef.update({
-			"key_date":keyDate,
-			"notes":notes
+			"key_date": keyDate,
+			"notes": notes
 		}).then(function onSuccess(res) {
 			//success notification
 			$.gritter.add({
@@ -2924,55 +3098,136 @@ $(document).ready(function() {
 				class_name: 'gritter-custom'
 			});
 			//stop loading icon
-			$("#cover-spin").fadeOut(250, function() {
+			$("#cover-spin").fadeOut(250, function () {
 				$(this).hide();
 			});
 		}).catch(function onError(err) {
 			//error notification
 			$.gritter.add({
 				title: 'Error Edit Key Collection Date',
-				text: err.code+" : "+err.message,
+				text: err.code + " : " + err.message,
 				image: './img/bell.png',
 				sticky: false,
 				time: 3500,
 				class_name: 'gritter-custom'
 			});
 			//stop loading icon
-			$("#cover-spin").fadeOut(250, function() {
+			$("#cover-spin").fadeOut(250, function () {
 				$(this).hide();
 			});
 		});
-	
+
 	}
-	
-	
+
+
 	//start invoice tenant autocomplete
 	$("#invoiceTenantName").autocomplete({
-		source: function(request, response) {
+		source: function (request, response) {
 			var results = $.ui.autocomplete.filter(tenantNames, request.term);
 			response(results.slice(0, 10));
 		},
-		select: function(event, ui) {
-			$("#invoiceTenantName").val(ui.item.label.split("(")[0].slice(0,-1));
+		select: function (event, ui) {
+			$("#invoiceTenantName").val(ui.item.label.split("(")[0].slice(0, -1));
 			$("#invoiceTenantID").val(ui.item.tenantid);
 			$("#invoiceTenantRef").val(ui.item.refnumber);
-			$("#invoiceTenantName").attr("disabled",true);
+			$("#invoiceTenantName").attr("disabled", true);
 			return false;
 		}
 	});
 	//start payment tenant autocomplete
 	$("#paymentTenantName").autocomplete({
-		source: function(request, response) {
+		source: function (request, response) {
 			var results = $.ui.autocomplete.filter(tenantNames, request.term);
 			response(results.slice(0, 10));
 		},
-		select: function(event, ui) {
-			$("#paymentTenantName").val(ui.item.label.split("(")[0].slice(0,-1));
+		select: function (event, ui) {
+			$("#paymentTenantName").val(ui.item.label.split("(")[0].slice(0, -1));
 			$("#paymentTenantID").val(ui.item.tenantid);
 			$("#paymentTenantRef").val(ui.item.refnumber);
-			$("#paymentTenantName").attr("disabled",true);
+			$("#paymentTenantName").attr("disabled", true);
 			return false;
 		}
+	});
+
+	$("#editKeyModal").draggable({
+		handle: ".modal-header"
+	});
+
+	$('#keyColDateDP').datepicker({
+		format: "d-M-yy",
+		autoclose: true
+	});
+
+	$("#editKeyForm").validate({
+		submitHandler: function () {
+			//start loading icon
+			$("#cover-spin").fadeIn(250, function () {
+				$(this).show();
+			});
+			updateKeyCol();
+		}
+	})
+
+	$("#updateKeyDate").click(function () {
+		$("#editKeyForm").submit();
+	})
+
+	// ENDING CONTRACT TABLE
+	var tempMem = [];
+	var endingContractRef = firebase.database().ref("endingContract");
+	endingContractRef.on('value', function (snapshot) {
+		var count = snapshot.numChildren();
+
+		endingContractRef.on('child_added', function (snapshot2) {
+			var tenantID = snapshot2.key;
+			endingContractRef.child(tenantID).on('child_added', function (snapshot3) {
+				var tenant = JSON.parse(JSON.stringify(snapshot3));
+				tenant.roomID = snapshot3.key;
+				if (tenant.refNumber == undefined) {
+					tenant.refNumber = null;
+				}
+				tenant.name = null;
+				tenant.endContractDate = reformatDate(tenant.endContractDate);
+				if (tenant.keyCollectDate == undefined) {
+					tenant.keyCollectDate = tenant.endContractDate;
+				} else {
+					tenant.keyCollectDate = reformatDate(tenant.keyCollectDate);
+				}
+				tenant.bno = tenant.roomID.substring(1, 3);
+				tenant.tID = tenantID;
+
+				firebase.database().ref("HistoryRoom/" + parseInt(tenant.bno) + "/" + tenant.roomID).child(tenant.tID + "/tenant").once('value', function (snapshot4) {
+					tenant.name = snapshot4.child("full_name").val();
+
+					firebase.database().ref("tenant").child(tenant.tID).once('value', function (snapshot6) {
+						if (tenant.name == null) {
+							tenant.name = snapshot6.child("full_name").val();
+						}
+
+						tempMem.push(tenant);
+
+						if (tempMem.length == count) {
+							for (i = 0; i < tempMem.length; i++) {
+								console.log(tempMem[i].tID, "in table ending")
+								table7.row.add(["<a href='tenant_details.html?" + tempMem[i].tID + "?" + tempMem[i].refNumber.split(" ").join("") + "' class='pull-left'>" + shortenString(tempMem[i].name, 8) + "</a>", tempMem[i].refNumber, tempMem[i].endContractDate, "<span ondblclick=editColDate('" + tempMem[i].tID + "','" + tempMem[i].roomID + "','" + tempMem[i].keyCollectDate + "') style='cursor: pointer;'>" + tempMem[i].keyCollectDate + "</span>", "<button class='btn btn-xs btn-success' title='Mail Tenant'><i class='fa fa-envelope'></i></button> <button class='btn btn-xs btn-primary' title='Collected' onclick=collectEndBooking('" + tempMem[i].refNumber.split(" ").join("") + "','" + tempMem[i].tID + "')><i class='fa fa-check'></i></button>"]).node().id = tempMem[i].tID;
+							}
+							table7.draw();
+							//stop loading icon
+							$("#cover-spin").fadeOut(250, function () {
+								$(this).hide();
+							});
+						}
+					});
+				});
+			});
+			endingContractRef.child(tenantID).on('child_changed', function (snapshot3) {
+				var keyColDate = reformatDate(snapshot3.child("keyCollectDate").val());
+				if (table7.cell(table7.row("#" + tenantID), 3).data() != keyColDate) {
+					table7.cell(table7.row("#" + tenantID), 3).data("<span ondblclick=editColDate('" + tenantID + "','" + snapshot3.key + "','" + keyColDate + "') style='cursor: pointer;'>" + keyColDate + "</span>");
+					table7.draw();
+				}
+			});
+		});
 	});
 
 	//start key datepicker
@@ -2991,124 +3246,217 @@ $(document).ready(function() {
 		format: "d-M-yy",
 		autoclose: true
 	})
-	
+
 	$("#invoiceDate").val(reformatDate(getTodayDate()));
 	$("#paymentDate").val(reformatDate(getTodayDate()));
 
 
 
-	$("#collectApprove").click(function() {
+	$("#collectApprove").click(function () {
 		startPageLoad();
 		var refNumber = $("#collectD").val();
 		var tenantID = $("#collectD2").val();
-		
+
 		var bookingRef = firebase.database().ref().child("booking-tenant");
 
-		bookingRef.child(tenantID).remove(
-		).then(function onSuccess(res) {
-			var row = table6.row("key"+tenantID);
+		bookingRef.child(tenantID).remove().then(function onSuccess(res) {
+			var row = table6.row("key" + tenantID);
 			row.remove();
 			table6.draw(false);
-			addNotification("Key Collected","Key successfully collected.");
+			addNotification("Key Collected", "Key successfully collected.");
 			stopPageLoad();
 			setTimeout(() => {
-				window.location='home.html';
+				window.location = 'home.html';
 			}, 1000);
-			}).catch(function onError(err) {
-				addNotification("Error Remove Booking",err.code+" : "+err.message);
-				});
+		}).catch(function onError(err) {
+			addNotification("Error Remove Booking", err.code + " : " + err.message);
+		});
 	});
-				
+
+	// $("#collectEApprove").click(function () {
+	// 	startPageLoad();
+	// 	var refNumber = $("#collectED3").val();
+	// 	var tenantID = $("#collectED2").val();
+	// 	var room_id = refNumber.split(" ").join("").substring(0,7)
+
+	// 	var ending = firebase.database().ref().child("endingContract");
+	// 	var payment = firebase.database().ref().child("payment")
+	// 	var overdue = firebase.database().ref().child("overdue")
+
+	// 	ending.child(tenantID+"/"+room_id).on("value", function (snapshot) {
+	// 		var endContractDate = snapshot.child("endContractDate").val()
+	// 		var lastInvoiceAmount = snapshot.child("lastInvoiceAmount").val()
+	// 		var penaltyPrice = snapshot.child("penaltyPriceAmount").val()
+	// 		var overPayment = snapshot.child("overPayment").val()
+	// 		var totalCharge = snapshot.child("totalCharge").val()
+	// 		console.log(endContractDate)
+	// 		payment.child(tenantID).push({
+	// 			"date": endContractDate,
+	// 			"desc": "Rental Due",
+	// 			"invoice": lastInvoiceAmount,
+	// 			"payment": null,
+	// 			"refnumber": refNumber,
+	// 			"list": "ledgerList"
+	// 		}).then(function onSuccess(res){
+	// 			if (penaltyPrice>0){
+	// 				payment.child(tenantID).push({
+	// 					"date": endContractDate,
+	// 					"desc": "Penalty Due",
+	// 					"invoice": penaltyPrice,
+	// 					"payment": null,
+	// 					"refnumber": refNumber,
+	// 					"list": "ledgerList"
+	// 				})
+	// 			}
+	// 				if(overPayment>0){
+	// 					payment.child(tenantID).push({
+	// 						"date": endContractDate,
+	// 						"desc": "Over Payment Due",
+	// 						"invoice": overPayment,
+	// 						"payment": null,
+	// 						"refnumber": refNumber,
+	// 						"list": "ledgerList"
+	// 					})
+	// 				}
+	// 				if(totalCharge>0){
+	// 					payment.child(tenantID).push({
+	// 						"date": endContractDate,
+	// 						"desc": "Total Charge Due",
+	// 						"invoice": totalCharge,
+	// 						"payment": null,
+	// 						"refnumber": refNumber,
+	// 						"list": "ledgerList"
+	// 					})
+	// 				}
+	// 				overdue.child(tenantID).on("value", function(snapshot){
+	// 					var balance = snapshot.child("balance").val()
+	// 					overdue.child(tenantID).update({
+	// 						"balance": balance-lastInvoiceAmount-penaltyPrice-overPayment-totalCharge
+	// 					}).then(function onSuccess(res){
+	// 						ending.child(tenantID).remove().then(function onSuccess(res) {
+	// 							var row = table7.row(tenantID);
+	// 							row.remove();
+	// 							table7.draw(false);
+	// 							addNotification("Key Collected", "Key successfully collected.");
+	// 							stopPageLoad();
+	// 							setTimeout(() => {
+	// 								window.location = 'tenant_details.html?' + tenantID + "?" + refNumber + "#ledger";
+	// 							}, 1000);
+	// 						}).catch(function onError(err) {
+	// 							addNotification("Error Remove Booking", err.code + " : " + err.message);
+	// 						});
+	// 					}).catch(function onError(err) {
+	// 						addNotification("Error Remove Booking", err.code + " : " + err.message);
+	// 					});
+	// 				})
+	// 			}).catch(function onError(err) {
+	// 				addNotification("Error Remove Booking", err.code + " : " + err.message);
+	// 			});
+	// 		}).catch(function onError(err) {
+	// 			addNotification("Error Remove Booking", err.code + " : " + err.message);
+	// 		});
+			
+
+	// 	})
+
+		
+
+		
+	
+
 	//remove approve modal add listener
-	$("#removeApprove").click(function() {
+	$("#removeApprove").click(function () {
 		startPageLoad();
 		var refNumber = $("#approveD3").val()
-		var build_id = parseInt($("#approveD3").val().split("booking")[1].substring(1,3)).toString()
+		var build_id = parseInt($("#approveD3").val().split("booking")[1].substring(1, 3)).toString()
+		var buildId = $("#approveD3").val().split("booking")[1].substring(1, 3)
+		var floor_id = $("#approveD3").val().split("booking")[1].substring(3, 5)
+		var room_id = $("#approveD3").val().split("booking")[1].substring(0, 7)
 		var tenantID = $("#approveD2").val();
-		
+
 		var tenantRef = firebase.database().ref("tenant");
 		var trRef = firebase.database().ref("tenant-room");
 		var contractRef = firebase.database().ref("newContract");
 		var dataRoom = firebase.database().ref("dataRoom")
 		var fpay = firebase.database().ref("first-payment")
+		var updateLastRef = firebase.database().ref("property/residential/building_no:" + buildId + "/floor:" + floor_id + "/ID:" + room_id);
 
-		fpay.child(tenantID).remove(
-			).then(function onSuccess(res) {
-			dataRoom.child(build_id+"/"+tenantID).remove(
-				).then(function onSuccess(res) {
-				contractRef.child(tenantID).remove(
-				).then(function onSuccess(res) {
-					tenantRef.child(tenantID).remove(
-					).then(function onSuccess(res) {
-						trRef.child(tenantID).remove(
-						).then(function onSuccess(res) {
-							trRef.once("value", function(snapshot) {
+		updateLastRef.update({
+			availdate: Date.today().toString("MM/dd/yyyy")
+		})
+
+		fpay.child(tenantID).remove().then(function onSuccess(res) {
+			dataRoom.child(build_id + "/" + tenantID).remove().then(function onSuccess(res) {
+				contractRef.child(tenantID).remove().then(function onSuccess(res) {
+					tenantRef.child(tenantID).remove().then(function onSuccess(res) {
+						trRef.child(tenantID).remove().then(function onSuccess(res) {
+							trRef.once("value", function (snapshot) {
 								var tenantCount = parseInt(snapshot.child("total_tenant").val()) - 1;
 								trRef.update({
-									total_tenant : tenantCount
+									total_tenant: tenantCount
 								}).then(function onSuccess(res) {
-									var row = table1.row('#'+refNumber);
+									var row = table1.row('#' + refNumber);
 									row.remove();
 									table1.draw(false);
-									addNotification("Booking removed","Booking successfully removed.");
+									addNotification("Booking removed", "Booking successfully removed.");
 									stopPageLoad();
 								}).catch(function onError(err) {
-									addNotification("Error Remove Booking",err.code+" : "+err.message);
+									addNotification("Error Remove Booking", err.code + " : " + err.message);
 								});
 							});
 						}).catch(function onError(err) {
-							addNotification("Error Remove Booking",err.code+" : "+err.message);
+							addNotification("Error Remove Booking", err.code + " : " + err.message);
 						});
 					}).catch(function onError(err) {
-						addNotification("Error Remove Booking",err.code+" : "+err.message);
+						addNotification("Error Remove Booking", err.code + " : " + err.message);
 					});
 				}).catch(function onError(err) {
-					addNotification("Error Remove Booking",err.code+" : "+err.message);
+					addNotification("Error Remove Booking", err.code + " : " + err.message);
 				});
 			}).catch(function onError(err) {
-				addNotification("Error Remove Booking",err.code+" : "+err.message);
+				addNotification("Error Remove Booking", err.code + " : " + err.message);
 			});
 		}).catch(function onError(err) {
-			addNotification("Error Remove Booking",err.code+" : "+err.message);
+			addNotification("Error Remove Booking", err.code + " : " + err.message);
 		});
 	});
-	
+
 	//invoice add button listener
-	$("#invoiceb").on('click', function() {
+	$("#invoiceb").on('click', function () {
 		$("#addInvoiceModal").modal();
 	})
 	//invoice amount listener
-	$("#invoiceAmount").on('keyup change', function() {
+	$("#invoiceAmount").on('keyup change', function () {
 		$("#invoiceAmount").val(get_moneydot($("#invoiceAmount").val()));
 	})
-	
+
 	//invoice modal add listener
-	$("#addInvoiceButton").click(function() {
+	$("#addInvoiceButton").click(function () {
 		$("#addInvoiceForm").submit();
 	})
 	//invoice add form validation
 	$("#addInvoiceForm").validate({
-		submitHandler: function() {
+		submitHandler: function () {
 			$('#addInvoiceModal').modal('hide');
-			$("#cover-spin").fadeIn(250, function() {
+			$("#cover-spin").fadeIn(250, function () {
 				$(this).show();
 			})
-			if ($('#invoiceTenantID').val()!="" && $('#invoiceTenantRef').val()!=""){
+			if ($('#invoiceTenantID').val() != "" && $('#invoiceTenantRef').val() != "") {
 				addInvoice();
 			}
 		}
 	})
 	//payment add button listener
-	$("#paymentb").on('click', function() {
+	$("#paymentb").on('click', function () {
 		$("#addPaymentModal").modal();
 	})
 	//payment bond checkbox listener
-	$("input[type=checkbox][name=paymentBond]").on('change', function() {
+	$("input[type=checkbox][name=paymentBond]").on('change', function () {
 		if (this.checked) {
-			$("#paymentDetailsOtherBlock").fadeOut(250, function() {
+			$("#paymentDetailsOtherBlock").fadeOut(250, function () {
 				$(this).hide();
 			})
-			$("#paymentDetailsAdjustBlock").fadeOut(250, function() {
+			$("#paymentDetailsAdjustBlock").fadeOut(250, function () {
 				$(this).hide();
 			})
 			removeOptions(document.getElementById("paymentDetails"));
@@ -3125,10 +3473,10 @@ $(document).ready(function() {
 			document.getElementById("paymentDetails").appendChild(optionElement2);
 			document.getElementById("paymentDetails").appendChild(optionElement3);
 		} else {
-			$("#paymentDetailsOtherBlock").fadeOut(250, function() {
+			$("#paymentDetailsOtherBlock").fadeOut(250, function () {
 				$(this).hide();
 			})
-			$("#paymentDetailsAdjustBlock").fadeOut(250, function() {
+			$("#paymentDetailsAdjustBlock").fadeOut(250, function () {
 				$(this).hide();
 			})
 			removeOptions(document.getElementById("paymentDetails"));
@@ -3154,27 +3502,27 @@ $(document).ready(function() {
 		}
 	})
 	//payment amount listener
-	$("#paymentAmount").on('keyup change', function() {
+	$("#paymentAmount").on('keyup change', function () {
 		$("#paymentAmount").val(get_moneydot($("#paymentAmount").val()));
 	})
 	//payment modal details listener
-	$("#paymentDetails").on('change', function() {
+	$("#paymentDetails").on('change', function () {
 		if ($(this).find("option:selected").attr("value") == "otherpay") {
-			$("#paymentDetailsAdjustBlock").fadeOut(250, function() {
+			$("#paymentDetailsAdjustBlock").fadeOut(250, function () {
 				$(this).hide();
-				$("#paymentDetailsOtherBlock").fadeIn(250, function() {
+				$("#paymentDetailsOtherBlock").fadeIn(250, function () {
 					$(this).show();
 				});
 			});
-		}  else if ($(this).find("option:selected").attr("value") == "adjustpay") {
-			$("#paymentDetailsOtherBlock").fadeOut(250, function() {
+		} else if ($(this).find("option:selected").attr("value") == "adjustpay") {
+			$("#paymentDetailsOtherBlock").fadeOut(250, function () {
 				$(this).hide();
-				$("#paymentDetailsAdjustBlock").fadeIn(250, function() {
+				$("#paymentDetailsAdjustBlock").fadeIn(250, function () {
 					$(this).show();
 				});
 			});
-		}else {
-			$("#paymentDetailsOtherBlock,#paymentDetailsAdjustBlock").fadeOut(250, function() {
+		} else {
+			$("#paymentDetailsOtherBlock,#paymentDetailsAdjustBlock").fadeOut(250, function () {
 				$(this).hide();
 			});
 		}
@@ -3196,42 +3544,42 @@ $(document).ready(function() {
 	$("#rApproveModal").draggable({
 		handle: ".modal-header"
 	});
-	
+
 
 	//payment modal add listener
-	$("#addPaymentButton").click(function() {
+	$("#addPaymentButton").click(function () {
 		$("#addPaymentForm").submit();
 	})
 	//payment add form validation
 	$("#addPaymentForm").validate({
-		submitHandler: function() {
+		submitHandler: function () {
 			$('#addPaymentModal').modal('hide');
-			$("#cover-spin").fadeIn(250, function() {
+			$("#cover-spin").fadeIn(250, function () {
 				$(this).show();
 			})
-			if ($('#paymentTenantID').val()!="" && $('#paymentTenantRef').val()!=""){
+			if ($('#paymentTenantID').val() != "" && $('#paymentTenantRef').val() != "") {
 				addPayment();
 			}
 		}
 	})
-	
+
 	//start key datepicker
 	$('#keyDatePicker').datepicker({
 		autoclose: true
 	})
 	//key date modal edit listener
-	$("#editKeyDateButton").click(function() {
+	$("#editKeyDateButton").click(function () {
 		$("#editKeyDateForm").submit();
 	})
 	//key date edit form validation
 	$("#editKeyDateForm").validate({
-		submitHandler: function() {
+		submitHandler: function () {
 			$('#editKeyDateModal').modal('hide');
-			$("#cover-spin").fadeIn(250, function() {
+			$("#cover-spin").fadeIn(250, function () {
 				$(this).show();
 			});
 			editKeyCollectDate();
 		}
 	})
-	
+
 })

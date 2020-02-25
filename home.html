@@ -322,6 +322,32 @@
 											</div>
                                         </div>
 									</div>
+									<!-- Contract Ending Widget -->
+									<div class="col-md-6">
+										<div class="widget pages-widget">
+											<div class="widget-head br-green">
+												<h3><i class="fa fa-user"></i> Contract Ending</h3>
+											</div>
+											<div class="widget-body no-padd">
+												<div class="table-responsive">
+													<!-- Table with icon and details -->
+													<table id="contract-end" class="table table-hover">
+														<thead>
+															<tr>
+																<th>Name</th>
+																<th>Ref Number</th>
+																<th>Ending Date</th>
+																<th>Key Date</th>
+																<th>Control</th>
+															</tr>
+														</thead>
+														<tbody>
+														</tbody>												
+													</table>
+												</div>
+											</div>
+										</div>
+                                    </div>
 									<!-- Incomplete Tenant Widget -->
 									<div class="col-md-6">
 										<div class="widget pages-widget">
@@ -567,6 +593,28 @@
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
 						<button id="collectApprove" type="button" class="btn btn-danger btn-sm" data-dismiss="modal" aria-hidden="true">Collect</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- modal collect approve-->
+		<div id="cEApproveModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color:#ED4747">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title" style="color:#FFF">Collected Key</h4>
+					</div>
+					<div class="modal-body">
+					<!-- body -->
+						<span id="collectED"></span>
+						<input type="hidden" id="collectED2" name="collectED2" value="">
+						<input type="hidden" id="collectED3" name="collectED3" value="">
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="collectEApprove" type="button" class="btn btn-danger btn-sm" data-dismiss="modal" aria-hidden="true">Collect</button>
 					</div>
 				</div>
 			</div>
@@ -829,6 +877,52 @@
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
 						<button id="extendButton" type="button" class="btn btn-success btn-sm">Extend</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Edit Key Col. Date Modal-->
+		<div id="editKeyModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color:#EB6C3A">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title" style="color:#FFF">End Contract</h4>
+					</div>
+					<div class="modal-body">
+						<form id="editKeyForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+							<div class="form-group">
+								<label for="tenantRef" class="control-label col-lg-4">Ref. Number</label>
+								<div class="col-lg-8">
+									<div class="checkbox">
+										<span id="tenantRef" name="tenantRef"></span>
+										<input id="tenantID" name="tenantID" type="hidden" value="" readonly>
+										<input id="tenantRoomID" name="tenantRoomID" type="hidden" value="" readonly>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="tenantName" class="control-label col-lg-4">Name</label>
+								<div class="col-lg-8">
+									<div class="checkbox">
+										<span id="tenantName" name="tenantName"></span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="keyColDate" class="control-label col-lg-4">Key Col. Date</label>
+								<div class="col-lg-4">
+									<div id="keyColDateDP" class="input-group date">
+										<input id="keyColDate" name="keyColDate" type="text" class="form-control" placeholder="Pick Date" required>
+										<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+									</div>
+								</div>	
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="updateKeyDate" type="button" class="btn btn-warning btn-sm" data-dismiss="modal" aria-hidden="true">Update</button>
 					</div>
 				</div>
 			</div>

@@ -188,8 +188,12 @@ $(document).ready(function() {
         .draw();
 
     rec={}
+    tenant={}
+
     //firebase ref
-	var recu = firebase.database().ref("recurringPay");
+    var recu = firebase.database().ref("recurringPay");
+    var tenantRoom = firebase.database().ref("tenant-room")
+    var history = firebase.database().ref("HistoryRoom")
        
     recu.on('child_added',function(snapshot){
 		var id = snapshot.key
@@ -200,14 +204,38 @@ $(document).ready(function() {
 		})
     })
 
+    tenantRoom.on('child_added', function(snapshot){
+        var id = snapshot.key
+        tenantRoom.child(id).on('child_added', function(snapshot){
+            var room_id = snapshot.key
+            tenantRoom.child(id+"/"+room_id).on("value", function(snapshot){
+                tenant[id]=snapshot.val()
+            })
+        })
+    })
+
+    history.on("child_added", function(snapshot){
+        var build_id = snapshot.key
+        history.child(build_id).on('child_added', function(snapshot){
+            var room_id = snapshot.key
+            history.child(build_id+"/"+room_id).on('child_added', function(snapshot){
+                var tenant_id = snapshot.key
+                history.child(build_id+"/"+room_id+"/"+tenant_id+"/tenant-room").on('value', function(snapshot){
+                    tenant[tenant_id]=snapshot.val()
+                    
+                })
+            })
+        })
+    })
+
     setTimeout(() => {
         console.log(rec)
         if(rec!={}){
-            
+            console.log(tenant)
 
             for (i in rec){
-               
-                table.row.add(["<a href='tenant_details.html?"+i+"#ledger' class='pull-left'>"+i+"</a>",rec[i].prevRecurringDate,rec[i].payment,rec[i].payPlan,rec[i].rent,"<button id='editbutt' class='btn btn-xs btn-success' title='Edit' onclick=editTransModal("+toStr(i)+","+toStr(rec[i].payPlan)+","+toStr(spaceDelete(rec[i].payment))+","+toStr(rec[i].rent)+","+toStr(rec[i].prevRecurringDate)+")><i class='fa fa-pencil'></i></button>"]).node().id = 'rec'+i;
+                console.log(i)
+                table.row.add(["<a href='tenant_details.html?"+i+"?"+tenant[i].ref_number.split(" ").join("")+"#ledger' class='pull-left'>"+i+"</a>",rec[i].prevRecurringDate,rec[i].payment,rec[i].payPlan,rec[i].rent,"<button id='editbutt' class='btn btn-xs btn-success' title='Edit' onclick=editTransModal("+toStr(i)+","+toStr(rec[i].payPlan)+","+toStr(spaceDelete(rec[i].payment))+","+toStr(rec[i].rent)+","+toStr(rec[i].prevRecurringDate)+")><i class='fa fa-pencil'></i></button>"]).node().id = 'rec'+i;
                
                
            }
@@ -215,7 +243,7 @@ $(document).ready(function() {
         }else{
             setTimeout(() => {
                 for (i in rec){
-                    table.row.add(["<a href='tenant_details.html?id="+i+"#ledger' class='pull-left'>"+i+"</a>",rec[i].prevRecurringDate,rec[i].payment,rec[i].payPlan,rec[i].rent,"<button id='editbutt' class='btn btn-xs btn-success' title='Edit' onclick=editTransModal("+toStr(i)+","+toStr(rec[i].payPlan)+","+toStr(spaceDelete(rec[i].payment))+","+toStr(rec[i].rent)+","+toStr(rec[i].prevRecurringDate)+")><i class='fa fa-pencil'></i></button>"]).node().id = 'rec'+i;
+                    table.row.add(["<a href='tenant_details.html?id="+i+"?"+tenant[i].ref_number.split(" ").join("")+"#ledger' class='pull-left'>"+i+"</a>",rec[i].prevRecurringDate,rec[i].payment,rec[i].payPlan,rec[i].rent,"<button id='editbutt' class='btn btn-xs btn-success' title='Edit' onclick=editTransModal("+toStr(i)+","+toStr(rec[i].payPlan)+","+toStr(spaceDelete(rec[i].payment))+","+toStr(rec[i].rent)+","+toStr(rec[i].prevRecurringDate)+")><i class='fa fa-pencil'></i></button>"]).node().id = 'rec'+i;
                
                    
                }

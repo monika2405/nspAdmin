@@ -17,28 +17,44 @@ var recurringPay = firebase.database().ref("recurringPay")
 var overdue = firebase.database().ref("overdue")
 var overdueBackup = firebase.database().ref("overdueBackup")
 var endingContract = firebase.database().ref("endingContract")
+var property = firebase.database().ref("property/residential")
+var contractLedger = firebase.database().ref("contractLedger")
 
-// function reformatDate2(inputDate) {
-// 	months=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Aug","Sep","Oct","Nov","Des","Dec","May"];
-// 	months2=["01","02","03","04","05","06","07","08","09","10","11","12","12","05"];
-// 	inputBroke=inputDate.split("-");
-// 	inputDay=inputBroke[0];
-// 	inputMonth=inputBroke[1];
-// 	inputYear=inputBroke[2];
-// 	if (parseInt(inputDay) < 10) {
-// 		outputDay = inputDay;
-// 	} else {
-// 		outputDay = inputDay;
-// 	}
-// 	for (var i=0;i<months.length;i++) {
-// 		if (inputMonth == months[i]) {
-// 			outputMonth = months2[i];
-// 			break
-// 		}
-// 	}
-// 	outputYear = inputYear;
-// 	return (outputMonth+"/"+outputDay+"/"+outputYear);
-// }
+function reformatDate2(inputDate) {
+	months=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Aug","Sep","Oct","Nov","Des","Dec","May"];
+	months2=["01","02","03","04","05","06","07","08","09","10","11","12","12","05"];
+	inputBroke=inputDate.split("-");
+	inputDay=inputBroke[0];
+	inputMonth=inputBroke[1];
+	inputYear=inputBroke[2];
+	if (parseInt(inputDay) < 10) {
+		outputDay = inputDay;
+	} else {
+		outputDay = inputDay;
+	}
+	for (var i=0;i<months.length;i++) {
+		if (inputMonth == months[i]) {
+			outputMonth = months2[i];
+			break
+		}
+	}
+	outputYear = "20"+inputYear;
+	return (outputMonth+"/"+outputDay+"/"+outputYear);
+}
+
+function reformatDate(inputDate) {
+	
+	months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+	inputBroke=inputDate.split("/");
+	inputDay=parseInt(inputBroke[1]);
+	inputMonth=parseInt(inputBroke[0]);
+	inputYear=inputBroke[2];
+	outputDay=inputDay;
+	outputMonth=months[inputMonth-1];
+	outputYear="20"+inputYear.split("")[2]+inputYear.split("")[3];
+	return (outputDay+"-"+outputMonth+"-"+outputYear);
+	
+}
 
 //========================================Buat Child First Payment=====================================
 // firstPayment.remove()
@@ -67,12 +83,12 @@ var endingContract = firebase.database().ref("endingContract")
 // contractRef.on('child_added', function(snapshot){
 //     var t_id = snapshot.key
 //     var numbContr = 1;
-    
+
 //     contractRef.child(t_id).on('child_added', function(snapshot){
 //         var historyperiod = snapshot.child("historyperiod").val();
 //         var status = snapshot.child("status").val();
 //         var ref_id = snapshot.key
-        
+
 //         contractRef.child(t_id+"/"+ref_id).on('child_added', function(snapshot){
 //             var ctrt_length = snapshot.child("ctrt_length").val();
 //             var refNumb = snapshot.child("refNumb").val();
@@ -98,7 +114,7 @@ var endingContract = firebase.database().ref("endingContract")
 //             "status": "active",
 //             "historyperiod":historyperiod
 //         })
-        
+
 //     })
 // })
 //======================================================================================================
@@ -125,7 +141,7 @@ var endingContract = firebase.database().ref("endingContract")
 //                 }
 //             })
 //         })
-        
+
 //     })
 // })
 
@@ -135,7 +151,7 @@ var endingContract = firebase.database().ref("endingContract")
 //     var i =0
 //     payRef.child(t_id).on('value', function(snapshot){
 //         var balance = snapshot.child("balance").val()
-       
+
 //         newPaymentRef.child(t_id).on('value', function(snapshot){
 //             var total = snapshot.child("total_tenant").val();
 //             newPaymentRef.child(t_id).on('child_added', function(snapshot){
@@ -150,7 +166,7 @@ var endingContract = firebase.database().ref("endingContract")
 //                     }
 //                     if (i==total){
 //                         // list[id]=last_date.toString("MM/dd/yyyy")
-                        
+
 //                         if (pay_date>last_date || balance==0){
 //                             // console.log("else",last_date.toString("MM/dd/yyyy"))
 //                             list[t_id]={
@@ -162,7 +178,7 @@ var endingContract = firebase.database().ref("endingContract")
 //                                 "date":last_date.toString("MM/dd/yyyy"),
 //                                 "pay":"not pay"
 //                             }
-                           
+
 //                         }                
 //                     }               
 //                 }           
@@ -174,7 +190,7 @@ var endingContract = firebase.database().ref("endingContract")
 //     console.log(list)
 //     console.log(contract)
 //     for (i in list){
-       
+
 //                     recurringRef.child(i).update({
 //                         "prevRecurringDate": list[i].date.toString("MM/dd/yyyy"),
 //                         "payPlan": contract[i].payPlan,
@@ -182,7 +198,7 @@ var endingContract = firebase.database().ref("endingContract")
 //                         "payment": list[i].pay
 //                     })
 //                 }
-          
+
 // }, 10000);
 //======================================================================================================
 
@@ -243,7 +259,7 @@ var endingContract = firebase.database().ref("endingContract")
 //                 //     if (adjst_detail=="Rental Due" || adjst_detail=="Rental due" ||adjst_detail=="rental Due" || adjst_detail=="rental due"){
 //                 //         virtual.child(tenant_id+"/"+month+":"+year).remove()
 //                 //     }
-                    
+
 //                 // }
 //             })
 //         }
@@ -306,7 +322,7 @@ var endingContract = firebase.database().ref("endingContract")
 //         var payment = snapshot.child('payment').val()
 //         var prevRecurringDate = snapshot.child('prevRecurringDate').val()
 //         var rent = snapshot.child('rent').val()
-       
+
 //         newRecurring.child(tenant_id+"/rental").set({
 //             "payPlan": payPlan,
 //             "payment": payment,
@@ -363,7 +379,7 @@ var endingContract = firebase.database().ref("endingContract")
 //             console.log(snapshot.key)
 //         }
 //         console.log(snapshot.key)
-       
+
 //     })
 // })
 //===============================================================================================      
@@ -375,7 +391,7 @@ var endingContract = firebase.database().ref("endingContract")
 //         var tenant_id = snapshot.key
 //         reportAcc.child(build_id.toString()+"/"+tenant_id).on('child_added', function(snapshot){
 //             var inputDate = snapshot.child("inputDate").val()
-            
+
 //             if(inputDate =="01/11/2020" ){
 //                 console.log(tenant_id,inputDate)
 //             }else{
@@ -389,7 +405,7 @@ var endingContract = firebase.database().ref("endingContract")
 
 //==================Push Bond Money + Rent Money ke Report dari tenant ID======================
 // for (let index = 737; index <= 756; index++) {
-    
+
 //     trRef.child("t_"+index).once('child_added', function(snapshot) {
 //         var bond = snapshot.child("rent_bond").val();
 //         var rent = snapshot.child("rent_price").val();
@@ -440,7 +456,7 @@ var endingContract = firebase.database().ref("endingContract")
 //                 var rent = snapshot.child("rent").val()
 //                 var last_date = new Date(snapshot.child("prevRecurringDate").val())
 //                 var prevRecurringDate = new Date(snapshot.child("prevRecurringDate").val()).toString("MM")
-                
+
 //                 if (prevRecurringDate=="01"){
 //                     if(payPlan=="monthly"){
 //                         console.log(tenant_id)
@@ -484,34 +500,40 @@ var endingContract = firebase.database().ref("endingContract")
 //             var build_no = refNumb.substring(1,3)
 //             recurringPay.child(tenant_id+"/rental").on('value', function(snapshot){
 //                 var payPlan=snapshot.child("payPlan").val()
-//                 var rent = snapshot.child("rent").val()*0.1
-//                 var payment = snapshot.child("payment").val()
+//                 var rent = snapshot.child("rent").val()*0.2
+//                 var paymentChild = snapshot.child("payment").val()
 //                 var prevRecurringDate = new Date(snapshot.child("prevRecurringDate").val()).toString("MM")
-//                 var fineDate =  new Date(snapshot.child("prevRecurringDate").val()).addDays(5).toString("MM/dd/yyyy")
-                
+//                 var fineDate =  new Date(snapshot.child("prevRecurringDate").val()).addDays(10).toString("MM/dd/yyyy")
+
 //                 if (prevRecurringDate=="02"){
 //                     if(payPlan=="monthly"){
-//                         console.log(refNumb,rent, payment,fineDate)
-//                         payment.child(tenant_id).push({
-//                             "date": fineDate,
-//                             "desc": "Fine Due",
-//                             "list": "ledgerList",
-//                             "invoice": rent
-//                         })
-                        
-//                         reportAccount2.child(build_no+"/"+tenant_id).push({
-//                             "date":fineDate,
-//                             "due": rent,
-//                             "inputDate":"02/05/2020",
-//                             "receive":0,
-//                             "refNumb":refNumb
-//                         })
-//                         virtualAccount.child(tenant_id+"/balance").on('value', function(snapshot){
-//                             var prevBalance = parseInt(snapshot.val())
-//                             console.log(tenant_id, prevBalance-rent)
-//                             virtualAccount.child(tenant_id+"/balance").update(prevBalance-rent)
-//                         })
+//                         if (paymentChild == "not pay"){
+//                             console.log(refNumb,rent,fineDate)
+//                             payment.child(tenant_id).push({
+//                                 "date": fineDate,
+//                                 "desc": "Adjustment - Fine Due - 50% on "+fineDate,
+//                                 "list": "ledgerList",
+//                                 "payment": rent
+//                             })
 
+//                             reportAccount2.child(build_no+"/"+tenant_id).push({
+//                                 "date":fineDate,
+//                                 "receive": rent,
+//                                 "inputDate":"02/22/2020",
+//                                 "due":0,
+//                                 "refNumb":refNumb
+//                             })
+//                             virtualAccount.child(tenant_id+"/balance").on('value', function(snapshot){
+//                                 var prevBalance = parseInt(snapshot.val())
+//                                 virtualAccount.child(tenant_id+"/balance").update(prevBalance+rent)
+//                             })
+//                             overdue.child(tenant_id+"/balance").on("value", function(snapshot){
+//                                 var balprev = parseInt(snapshot.val())
+//                                 overdue.child(tenant_id).update({
+//                                     "balance": balprev+rent
+//                                 })
+//                             })
+//                         }
 //                     }
 //                 }
 //             })
@@ -524,7 +546,7 @@ var endingContract = firebase.database().ref("endingContract")
 // dataRoom.on('child_added', function(snapshot){
 //     var buildid = snapshot.key
 //     var build_id = parseInt(buildid).toString()
-        
+
 //     HistoryRoom.child(build_id).on('child_added', function(snapshot){
 //             var room_id = snapshot.key
 //             HistoryRoom.child(build_id+"/"+room_id).on('child_added', function(snapshot){
@@ -642,7 +664,7 @@ var endingContract = firebase.database().ref("endingContract")
 //                 "date": date
 //             })
 //         })
-        
+
 //     })
 // })
 //===========================================================================================
@@ -719,3 +741,202 @@ var endingContract = firebase.database().ref("endingContract")
 //         })
 //     })
 // })
+//=============================================================================================
+
+//=================================Avail Date property=========================================
+// newContract.on("child_added", function (snapshot) {
+//     var tenant_id = snapshot.key
+//     newContract.child(tenant_id).on("child_added", function (snapshot) {
+//         var room_id = snapshot.key
+//         var build_id = snapshot.key.substring(1, 3)
+//         var floor_no = snapshot.key.substring(3, 5)
+//         newContract.child(tenant_id + "/" + room_id).on("value", function (snapshot) {
+//             var historyperiod = snapshot.child("historyperiod").val().toString()
+//             var status = snapshot.child("status").val()
+//             newContract.child(tenant_id + "/" + room_id + "/" + historyperiod).on("value", function (snapshot) {
+
+//                 var endDate = snapshot.child("end_date").val()
+//                 if (endDate == "Ongoing") {
+//                     property.child("building_no:" + build_id + "/floor:" + floor_no + "/ID:" + room_id).update({availdate:"01/01/2050"})
+//                     console.log("Ongoing" + tenant_id)
+//                 } else {
+//                     property.child("building_no:" + build_id + "/floor:" + floor_no + "/ID:" + room_id).update({availdate:endDate})
+//                     console.log("NotOngoing" + tenant_id)
+//                 }
+
+
+
+//             })
+
+//         })
+//     })
+// })
+//=============================================================================================
+
+//=================================Prorata Price push=========================================
+// tenantRoom.on("child_added", function(snapshot){
+//     var tenant_id = snapshot.key
+//     tenantRoom.child(tenant_id).once("child_added", function(snapshot){
+//         var room_id = snapshot.key
+//         tenantRoom.child(tenant_id+"/"+room_id).once("value", function(snapshot){
+//             tenantRoom.child(tenant_id+"/"+room_id).update({
+//                 prorata_price: snapshot.child("rent_price").val()
+//             }).then(function onSuccess(res) {
+//                 console.log(tenant_id,snapshot.child("rent_price").val())
+//             }).catch(function onError(err) {
+//                 console.log(tenant_id,err)
+//             })
+           
+//         })
+//     })
+// })
+//=============================================================================================
+
+//=================================Change rent_price=========================================
+// newContract.on("child_added", function(snapshot){
+//     var tenant_id = snapshot.key
+//     newContract.child(tenant_id).on("child_added", function(snapshot){
+//         var room_id = snapshot.key
+//         newContract.child(tenant_id+"/"+room_id).on("value", function(snapshot){
+//             var historyperiod = snapshot.child("historyperiod").val().toString()
+//             newContract.child(tenant_id+"/"+room_id+"/"+historyperiod).on("value", function(snapshot){
+//                 var rent = parseInt(snapshot.child("rent").val())
+//                 tenantRoom.child(tenant_id+"/"+room_id).update({
+//                     "rent_price":rent
+//                 })
+//             })
+//         })
+//     })
+// })
+//=============================================================================================
+
+//=================================Push Contract Ledger(Rental Due)===========================
+// contractLedger.remove()
+// payment.on("child_added", function(snapshot){
+//     var tenant_id = snapshot.key
+//     payment.child(tenant_id).on("child_added", function(snapshot){
+//         if(snapshot.key!="balance" && snapshot.key!="bondWaitDue" && snapshot.key!="receive" && snapshot.key!="due"){
+//             var key_id = snapshot.key
+//             payment.child(tenant_id+"/"+key_id).on("value", function(snapshot){
+//                 var desc = snapshot.child("desc").val()
+//                 var dueDate = snapshot.child("date").val()
+//                 var date = new Date(snapshot.child("date").val())
+//                 var refN = snapshot.child("refnumber").val()
+//                 var due = snapshot.child("invoice").val()
+//                 if(desc == "Rental Due"){
+//                     newContract.child(tenant_id).on("child_added", function(snapshot){
+//                         var room_id = snapshot.key
+//                         newContract.child(tenant_id+"/"+room_id+"/1").on("value", function(snapshot){
+// 							var end_date2 = snapshot.child("end_date").val().split("/")[0]
+// 							var year = snapshot.child("end_date").val().split("/")[2]
+// 							var end_date = new Date(end_date2+"/01"+"/"+year)
+//                             var payPlan = snapshot.child("payPlan").val()
+//                             if(date<end_date && payPlan == "monthly"){
+//                                 contractLedger.child(tenant_id).push({
+//                                     "desc":desc,
+//                                     "date":dueDate,
+//                                     "ref_number":refN,
+//                                     "due": due
+// 								})
+								
+//                             }
+
+//                         })
+//                     })
+//                 }
+//             })
+//         }
+//     })
+// })
+
+//=============================================================================================
+
+//=================================Push Contract Ledger(Adjustment Due)===========================
+
+// payment.on("child_added", function(snapshot){
+//     var tenant_id = snapshot.key
+//     payment.child(tenant_id).on("child_added", function(snapshot){
+//         if(snapshot.key!="balance" && snapshot.key!="bondWaitDue" && snapshot.key!="receive" && snapshot.key!="due"){
+//             var key_id = snapshot.key
+//             payment.child(tenant_id+"/"+key_id).on("value", function(snapshot){
+//                 var desc = snapshot.child("desc").val()
+//                 var refN = snapshot.child("refnumber").val()
+//                 var due = snapshot.child("payment").val()
+//                 if(desc.split(" ")[0] == "Adjustment"){
+//                     var adjst_detail = snapshot.child("adjst_detail").val()
+//                     var adjst_dateCek = new Date(snapshot.child("adjst_date").val())
+//                     var adjst_date =snapshot.child("adjst_date").val()
+//                     if(adjst_detail=="Rental Due"){
+//                         newContract.child(tenant_id).on("child_added", function(snapshot){
+//                             var room_id = snapshot.key
+//                             newContract.child(tenant_id+"/"+room_id+"/1").on("value", function(snapshot){
+//                                 var end_date = new Date(snapshot.child("end_date").val())
+//                                 var payPlan = snapshot.child("payPlan").val()
+//                                 if(adjst_dateCek<=end_date && payPlan == "monthly"){
+//                                     console.log(tenant_id)
+//                                     contractLedger.child(tenant_id).push({
+//                                         "desc":desc,
+//                                         "date":adjst_date,
+//                                         "ref_number":refN,
+//                                         "payment": due
+//                                     })
+//                                 }
+
+//                             })
+//                         })
+//                     }
+                    
+                    
+//                 }
+//             })
+//         }
+//     })
+// })
+//=============================================================================================
+
+//=================================Push Contract Ledger(Rental Due 2)===========================
+// payment.on("child_added", function(snapshot){
+//     var tenant_id = snapshot.key
+//     payment.child(tenant_id).on("child_added", function(snapshot){
+//         if(snapshot.key!="balance" && snapshot.key!="bondWaitDue" && snapshot.key!="receive" && snapshot.key!="due"){
+//             var key_id = snapshot.key
+//             payment.child(tenant_id+"/"+key_id).on("value", function(snapshot){
+//                 var desc = snapshot.child("desc").val()
+//                 var dueDate = snapshot.child("date").val()
+//                 var date = new Date(snapshot.child("date").val())
+//                 var refN = snapshot.child("refnumber").val()
+//                 var due = snapshot.child("invoice").val()
+//                 if(desc == "Rental Due"){
+//                     newContract.child(tenant_id).on("child_added", function(snapshot){
+//                         var room_id = snapshot.key
+//                         newContract.child(tenant_id+"/"+room_id+"/2").on("value", function(snapshot){
+//                             var end_date =snapshot.child("end_date").val()
+//                             var start_date =snapshot.child("start_date").val()
+//                             var payPlan = snapshot.child("payPlan").val()
+                         
+//                             if(end_date!="Ongoing" && payPlan == "monthly" && end_date != start_date){
+// 								console.log(tenant_id, dueDate)
+//                                 var end_date2 = snapshot.child("end_date").val().split("/")[0]
+// 								var year = snapshot.child("end_date").val().split("/")[2]
+// 								var endDate = new Date(end_date2+"/01/"+year)
+//                                 var startDate = new Date(start_date)
+//                                 if(date>=startDate && date<endDate){
+//                                     console.log(tenant_id, dueDate)
+//                                     contractLedger.child(tenant_id).push({
+//                                     "desc":desc,
+//                                     "date":dueDate,
+//                                     "ref_number":refN,
+//                                     "due": due
+//                                 })
+//                                 }
+                                
+//                             }
+
+//                         })
+//                     })
+//                 }
+//             })
+//         }
+//     })
+// })
+//=============================================================================================
