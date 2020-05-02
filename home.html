@@ -185,6 +185,7 @@
 								<div class="row">
 									<div class="col-md-12">
 										<button id="tagihanVA" class="btn btn-default pull-left" style="margin-bottom:15px; margin-left:5px;" onClick="window.location = 'virtual_account.html';">Tagihan Virtual Account</button>
+										<button id="addMainPop" class="btn btn-rose pull-right" style="margin-bottom:15px; margin-left:5px;"><i class="fa fa-plus"></i> Maintenance</button>
 										<button id="invoiceb" class="btn btn-primary pull-right" style="margin-bottom:15px; margin-left:5px;"><i class="fa fa-plus"></i> Invoice</button>
 										<button id="paymentb" class="btn btn-success pull-right" style="margin-bottom:15px; margin-left:5px;"><i class="fa fa-plus"></i> Transaction</button>
 										<button class="btn btn-rose pull-right" onClick="window.location = 'building_add.html';" style="margin-bottom:15px; margin-left:5px;"><i class="fa fa-plus"></i> Building</button>
@@ -302,17 +303,20 @@
 									<div class="col-md-6">
 										<div class="widget pages-widget">
 											<div class="widget-head br-red">
-												<h3><i class="fa fa-bar-chart-o"></i> Maintenance</h3>
+												<a class="pull-right" href="maintenance.html">See More</a>
+												<h3><i class="fa fa-wrench"></i> Maintenance</h3>
 											</div>
 											<div class="widget-body no-padd">
 												<div class="table-responsive">
 													<table id="maintenance-list" class="table table-hover">
 														<thead>
 															<tr>
+																<th>Location</th>
 																<th>Name</th>
-																<th>Amount</th>
-																<th>Details</th>
-																<th>One Of Recurrent</th>
+																<th>Contact</th>
+																<th>Req. Date</th>
+																<th>Sch. Date</th>
+																<th>PIC</th>
 															</tr>
 														</thead>
 														<tbody>
@@ -326,6 +330,7 @@
 									<div class="col-md-6">
 										<div class="widget pages-widget">
 											<div class="widget-head br-green">
+												<a class="pull-right" href="contract_ending.html">See More</a>
 												<h3><i class="fa fa-user"></i> Contract Ending</h3>
 											</div>
 											<div class="widget-body no-padd">
@@ -677,6 +682,43 @@
 				</div>
 			</div>
 		</div>
+		<!-- modal edit key collection date -->
+		<div id="editMainDateModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color:#F75353">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title" style="color:#FFF"><b>Maintenance Scheduled Date</b></h4>
+					</div>
+					<div class="modal-body">
+						<form id="editMainDateForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+							<div class="form-group">
+								<label for="mainDate" class="control-label col-lg-3">Date</label>
+								<div class="col-lg-5">
+									<div id="mainDatePicker" class="input-group date">
+										<input id="mainDate" name="mainDate" type="text" class="form-control" placeholder="Pick Date" readonly>
+										<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="pic" class="control-label col-lg-3">PIC</label>
+								<div class="col-lg-8">
+									<input id="pic" name="pic" type="text" class="form-control" placeholder="PIC" ></input>
+								</div>
+							</div>
+							
+							<input id="mainTenantID" name="mainTenantID" type="hidden" required>
+							<input id="mainTenantRef" name="mainTenantRef" type="hidden" required>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="editMainDateButton" type="button" class="btn btn-danger btn-sm">Edit</button>
+					</div>
+				</div>
+			</div>
+		</div>
 		<!-- modal Notif-->
 		<div id="notifModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog">
@@ -877,6 +919,65 @@
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
 						<button id="extendButton" type="button" class="btn btn-success btn-sm">Extend</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Add Maintenance Modal-->
+		<div id="addMainModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color:#214747">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title" style="color:#FFF">Add Maintenance</h4>
+					</div>
+					<div class="modal-body">
+						<form id="addMainForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+							<div class="form-group">
+								<label for="tenantName" class="control-label col-lg-4">Name / Ref. Number</label>
+								<div class="col-lg-5">
+									<div class="checkbox">
+										<input id="tenantName" name="tenantName" type="text" class="form-control" placeholder="Tenant name or ref. number" required>
+										<input id="mainTenantID" name="mainTenantID" type="hidden" required>
+										<input id="mainTenantRef" name="mainTenantRef" type="hidden" required>
+										<input id="mainTenantName" name="mainTenantName" type="hidden" required>	
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="reqDate" class="control-label col-lg-4">Request Date</label>
+								<div class="col-lg-4">
+									<div id="reqDateDP" class="input-group date">
+										<input id="reqDate" name="reqDate" type="text" class="form-control" placeholder="Pick Date" readonly required>
+										<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+									</div>
+								</div>	
+							</div>
+							<div class="form-group">
+								<label for="mainType" class="control-label col-lg-4">Maintenance Type</label>
+								<div class="col-lg-4">
+									<select id="mainType" name="mainType" class="form-control" required>
+										<option value="">Select Maintenance</option>
+										<option value="Leak">Leak</option>
+										<option value="New Entry">New Entry</option>
+										<option value="Change Key">Change Key</option>
+										<option value="Other">Other</option>
+									</select>
+								</div>
+							</div>
+							<div id="mainDetailsBlock" class="form-group" style="display: none;">
+								<label for="mainDetails" class="control-label col-lg-4">Details</label>
+								<div class="col-lg-5">
+									<div class="checkbox">
+										<input id="mainDetails" name="mainDetails" type="text" class="form-control" placeholder="Maintenance details" required>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="addMainButton" type="button" class="btn btn-rose btn-sm" aria-hidden="true">Add</button>
 					</div>
 				</div>
 			</div>

@@ -535,10 +535,11 @@
 													
 													</div>
 													<div class="form-group" style="margin:0px -15px;">
-														<div class="col-lg-offset-5 col-lg-8">
+														<div class="col-lg-offset-4 col-lg-10">
 															<button id="extender" type="button" class="btn btn-xs btn-success"><i class="fa fa-plus"></i> Extend</button>
 															<button id="end" type="button" class="btn btn-xs btn-danger" onclick="endContractModal()"><i class="fa fa-times"></i> End Contract</button>
 															<button id="nonactive" type="button" class="btn btn-xs btn-warning" onclick="nonactiveModal()"><i class="fa fa-minus"></i> Non-Active</button>
+															<button id="move" type="button" class="btn btn-xs btn-info" onclick="move()"><i class="fa fa-reply"></i> Move</button>
 														</div>
 														
 													</div>
@@ -912,6 +913,27 @@
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
 						<button id="submitNonActive" type="button" class="btn btn-danger btn-sm" data-dismiss="modal" aria-hidden="true">Non Active</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--Move contract Modal-->
+		<div id="moveModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
+						<h4 class="modal-title">Move</h4>
+					</div>
+					<div class="modal-body">
+					<!-- body -->
+						<span id="moveM"></span>
+						<span id="tenantM"></span>
+						<input type="hidden" id="nonActiveD" name="nonActiveD" value="">
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button id="submitMove" type="button" class="btn btn-danger btn-sm" data-dismiss="modal" aria-hidden="true">Non Active</button>
 					</div>
 				</div>
 			</div>

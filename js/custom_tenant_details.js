@@ -449,6 +449,12 @@ function countTotalBalance() {
 
 }
 
+function move(){
+	var refNumber = $("#tenant_id").html()
+	id = window.location.href.split('?')[1];
+	window.location = 'tenant_add2.html?'+id+"#"+refNumber;
+}
+
 //fungsi untuk Non-Active Tenant
 function nonactiveModal() {
 	var refNumber = $("#tenant_id").html()
@@ -763,7 +769,7 @@ function endContract() {
 			"penaltyPriceAmount": penaltyPriceAmount,
 			"overPayment": overPayment,
 			"totalCharge": totalCharge,
-			"refNumber": refNumb2
+			"refNumber": refNumber
 		}).then(function onSuccess(res) {
 			//stop loading icon
 			$("#cover-spin").fadeOut(250, function () {
@@ -1060,6 +1066,22 @@ function addPayment() {
 		})
 	}
 
+	function checkFine(datePay, dateFine){
+		var datepay = new Date(datePay)
+		var datefine = new Date(dateFine)
+		var firstFine = datefine.addDays(5).toString("MM/dd/yyyy")
+		var secondFine = datefine.addDays(10).toString("MM/dd/yyyy")
+		var thirdFine = datefine.addDays(20).toString("MM/dd/yyyy")
+		var paymentDetails = $("#paymentDetails").val();
+
+		var pay_plan = $("#payment1").html().split(" ")[2]
+		if (pay_plan=="monthly"){
+			if (paymentDetails=="rentpay"){
+				
+			}
+		}
+	}
+
 	function resetPaymentForm() {
 		//reset payment form
 		$('#addPaymentForm').trigger("reset");
@@ -1114,18 +1136,18 @@ function addPayment() {
 	var adjst_date = $("#adjstDate").val()
 	if (paymentDetails == "rentpay") {
 		var paymentDetailsFull = "Rental Payment";
-		recurring.child("rental").update({
-			"payment": "pay"
-		})
+		// recurring.child("rental").update({
+		// 	"payment": "pay"
+		// })
 	} else if (paymentDetails == "finepay") {
 		var paymentDetailsFull = "Fine Payment";
 	} else if (paymentDetails == "bondpay") {
 		var paymentDetailsFull = "Bond Money Payment";
 	} else if (paymentDetails == "transfer") {
 		var paymentDetailsFull = "Bond Money Transfer";
-		recurring.child("rental").update({
-			"payment": "pay"
-		})
+		// recurring.child("rental").update({
+		// 	"payment": "pay"
+		// })
 	} else if (paymentDetails == "refund") {
 		var paymentDetailsFull = "Bond Money Refund";
 	} else if (paymentDetails == "adjustpay") {
@@ -1133,18 +1155,18 @@ function addPayment() {
 		var date = reformatDate2(adjst_date)
 		month = date.split("/")[0]
 		year = date.split("/")[2]
-		if (adjst_details == "Rental Due") {
-			virtual.child(month + ":" + year).remove()
-		}
+		// if (adjst_details == "Rental Due") {
+		// 	virtual.child(month + ":" + year).remove()
+		// }
 
 	} else {
 		var paymentDetailsFull = "Other Payment - " + paymentDetailsOther;
 	}
 
-	checkFirstPayment(id, building_id, refNumberHtml, paymentDate, room_id)
-	setTimeout(() => {
-		stage1()
-	}, 5000);
+	// checkFirstPayment(id, building_id, refNumberHtml, paymentDate, room_id)
+	// setTimeout(() => {
+	// 	stage1()
+	// }, 5000);
 
 
 
@@ -3659,7 +3681,7 @@ $(document).ready(function () {
 	$("#paymentb").on('click', function () {
 		$("#addPaymentModal").modal();
 	})
-	//payment bond checkbox listener
+	//payment bond checkbox listeners
 	$("input[type=checkbox][name=paymentBond]").on('change', function () {
 		if (this.checked) {
 			$("#paymentDetailsOtherBlock").fadeOut(250, function () {
@@ -3756,7 +3778,7 @@ $(document).ready(function () {
 		handle: ".modal-header"
 	});
 	//extend button listener
-	$("#extender").on('click', function () {
+	$("#extender").on('click', function () {3
 		$("#extendModal").modal();
 	})
 
@@ -3985,6 +4007,13 @@ $(document).ready(function () {
 			$(this).show();
 		})
 		nonActive();
+
+	})
+
+	$("#submitMove").click(function () {
+		$('moveModal').modal('hide');
+		
+		move();
 
 	})
 

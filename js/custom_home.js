@@ -168,6 +168,66 @@ function shortenString(yourString, maxLength) {
 	return trimmedString + "..."
 }
 
+function addMaintenance(){
+	var t_id = $("#mainTenantID").val()
+	var ref_numb = $("#mainTenantRef").val()
+	var build_id = ref_numb.substring(1,3)
+	var main_type = $("#mainType").val()
+	var main_detail = $("#mainDetails").val()
+	var name = $("#mainTenantName").val()
+	var req_date =  reformatDate2($("#reqDate").val())
+
+	mainRef = firebase.database().ref("maintenance/"+t_id);
+	tenantRef = firebase.database().ref("tenant/"+t_id)
+	build_Ref = firebase.database().ref("property/residential/building_no:"+build_id);
+
+	build_Ref.once("value", function(snapshot){
+		var prop_addr = snapshot.child("prop_addr").val()
+		tenantRef.once("value", function(snapshot){
+			var contact = snapshot.child("phone_number").val()
+		})
+		mainRef.push({
+			"refNumb" : ref_numb,
+			"main-desc" : main_type+" - "+main_detail,
+			"req_date" : req_date,
+			"main_name":name,
+			"tenant_id":t_id,
+			"build_addr":prop_addr,
+			"sch_date":req_date
+		}).then(function onSuccess(res) {
+			//stop loading icon
+			$("#cover-spin").fadeOut(250, function () {
+				$(this).hide();
+			});
+			//error notification
+			$.gritter.add({
+				title: 'Maintenance Added',
+				text: 'Maintenance was successfully added to the database.',
+				image: './img/bell.png',
+				sticky: false,
+				time: 3500,
+				class_name: 'gritter-custom'
+			});
+		}).catch(function onError(err) {
+			//stop loading icon
+			$("#cover-spin").fadeOut(250, function () {
+				$(this).hide();
+			});
+			//error notification
+			$.gritter.add({
+				title: 'Error Maintenance',
+				text: err.code + " : " + err.message,
+				image: './img/bell.png',
+				sticky: false,
+				time: 3500,
+				class_name: 'gritter-custom'
+			});
+		});
+	})
+
+	
+}
+
 function addInvoice() {
 	var invoiceAmount = parseInt(rem_moneydot($("#invoiceAmount").val()))
 	var refNumberHtml = $("#invoiceTenantRef").val();
@@ -2311,6 +2371,22 @@ function editKeyCollectDateModal(keyDate, tenantID, tenantRef, notes) {
 
 }
 
+function editMainDateModal(mainDate, tenantID, tenantRef) {
+
+	$("#editMainDateModal").modal();
+	$("#mainDate").val(mainDate);
+	var year = mainDate.split("/")[2]
+	var month = mainDate.split("/")[0]
+	var day = mainDate.split("/")[1]
+
+	var ddd = new Date(year, month, day);
+	$('#mainDatePicker').datepicker('setStartDate', ddd);
+	$('#mainDatePicker').datepicker('setDate', ddd);
+	$("#mainTenantID").val(tenantID);
+	$("#mainTenantRef").val(tenantRef);
+
+}
+
 var table7;
 
 function editColDate(tenantID, roomID, keyColDate) {
@@ -2376,7 +2452,9 @@ $(document).ready(function () {
 	contractdata = {}
 	overdue = {}
 	booking = {}
+	main = {}
 	refPayment = []
+
 
 	//boolean variable if there is a change
 	tenantChange = false
@@ -2392,7 +2470,8 @@ $(document).ready(function () {
 	var bookingRef = firebase.database().ref().child("booking-tenant");
 	var getToday = Date.today().toString("MM/dd/yyyy");
 	var recurringRef = firebase.database().ref().child("recurringPay")
-
+	var mainRef = firebase.database().ref().child("maintenance")
+	
 	//fill list with database object
 	contractRef.on('child_added', function (snapshot) {
 		var id = snapshot.key
@@ -2418,6 +2497,13 @@ $(document).ready(function () {
 			})
 		})
 
+	})
+	mainRef.on("child_added", function(snapshot){
+		var id = snapshot.key
+		mainRef.child(id).on("child_added", function(snapshot){
+			var main_id = snapshot.key
+			main[main_id]=snapshot.val()
+		})
 	})
 	paymentRef.on('child_added', function (snapshot) {
 		var id = snapshot.key
@@ -2504,6 +2590,7 @@ $(document).ready(function () {
 		overdue[tenantID] = snapshot.val()
 
 	})
+
 
 	//table
 	//Booking list
@@ -2607,12 +2694,8 @@ $(document).ready(function () {
 		],
 		"iDisplayLength": 3,
 		"order": [
-			[0, "asc"]
-		],
-		"columnDefs": [{
-			targets: 0,
-			width: "30%"
-		}]
+			[4, "desc"]
+		]
 	})
 
 	//key list
@@ -2641,6 +2724,7 @@ $(document).ready(function () {
 		]
 	})
 
+
 	//incomplete tenant
 	var table4 = $('#incomplete-list').DataTable({
 		"aLengthMenu": [
@@ -2666,6 +2750,7 @@ $(document).ready(function () {
 		keyTable();
 		expiredTable();
 		autocompleteFunction();
+		mainTable()
 	}, 4000);
 
 	setTimeout(() => {
@@ -2674,6 +2759,7 @@ $(document).ready(function () {
 		keyTable();
 		expiredTable();
 		autocompleteFunction();
+		mainTable()
 	}, 10000);
 
 	setTimeout(() => {
@@ -2682,6 +2768,7 @@ $(document).ready(function () {
 		keyTable();
 		expiredTable();
 		autocompleteFunction();
+		mainTable()
 	}, 20000);
 
 	setInterval(() => {
@@ -2823,7 +2910,7 @@ $(document).ready(function () {
 			table2.clear()
 			if (tenant != {} && tenantdata != {} && overdue != {}) {
 				for (i in paymentBal) {
-
+					
 					var balance = overdue[i].balance;
 					var payPlan = tenant[i].pay_plan;
 					//validasi jika balance balance !=0
@@ -2995,6 +3082,34 @@ $(document).ready(function () {
 		}, 4000);
 	}
 
+	function mainTable(){
+		setTimeout(() => {
+			table5.clear()
+			if(main != {}){
+				for (i in main){
+					var refNumb = main[i].refNumb
+					var req_date = main[i].req_date
+					var name = main[i].main_name
+					var main_desc = main[i].main_desc
+					var tenant_id = main[i].tenant_id
+					var pic =main[i].pic
+					var contact = tenantdata[tenant_id].cont_mobile
+					var build_addr = tenant[tenant_id].prop_addr
+					var sch_date = main[i].sch_date
+					name = shortenString(name, 8);
+					build_addr = shortenString(build_addr, 8);
+					if (pic == null){
+						table5.row.add([build_addr,"<a href='tenant_details.html?" + tenant_id + "?" + refNumb + "' class='pull-left'>" + name + "</a>", contact, req_date, "<a href='#' onclick='editMainDateModal(\"" + req_date + "\",\"" + i + "\",\"" + refNumber + "\")'>" + req_date +"</a>","-"]).node().id = "main" + i;
+					}else{
+						table5.row.add([build_addr,"<a href='tenant_details.html?" + tenant_id + "?" + refNumb + "' class='pull-left'>" + name + "</a>", contact, req_date, "<a href='#' onclick='editMainDateModal(\"" + req_date + "\",\"" + i + "\",\"" + refNumber + "\")'>" + sch_date +"</a>",pic]).node().id = "main" + i;
+					}
+					table5.draw()
+				}
+			}
+			
+		}, 4000);
+	}
+
 
 	function autocompleteFunction() {
 		setTimeout(() => {
@@ -3119,6 +3234,60 @@ $(document).ready(function () {
 
 	}
 
+	function editMainCollectDate() {
+
+		var mainDate = $("#mainDate").val();
+		var pic = $("#pic").val();
+		var mainTenantID = $("#mainTenantID").val();
+		var refNumber = $("#mainTenantRef").val()
+		
+		var name = main[mainTenantID].main_name
+		var t_id = main[mainTenantID].tenant_id
+		var reqDate = main[mainTenantID].req_date
+		var contact = tenantdata[t_id].cont_mobile
+		var build_addr = tenant[t_id].prop_addr
+		build_addr = shortenString(build_addr, 8);
+		var mainDateRef = firebase.database().ref("maintenance/" + t_id+"/"+mainTenantID);
+		name = shortenString(name, 8);
+		var row = table5.row('#main' + mainTenantID);
+		row.remove();
+		table5.row.add([build_addr,"<a href='tenant_details.html?" + t_id + "?" + refNumber + "' class='pull-left'>" + name + "</a>", contact, reqDate, "<a href='#' onclick='editMainDateModal(\"" + mainDate + "\",\"" + i + "\",\"" + refNumber + "\")'>" + mainDate  +"</a>",pic]).node().id = "main" + mainTenantID;
+		table5.draw();
+		mainDateRef.update({
+			"sch_date": mainDate,
+			"pic":pic
+		}).then(function onSuccess(res) {
+			//success notification
+			$.gritter.add({
+				title: 'Main Collection Date Edited',
+				text: "Main collection date successfully edited",
+				image: './img/bell.png',
+				sticky: false,
+				time: 3500,
+				class_name: 'gritter-custom'
+			});
+			//stop loading icon
+			$("#cover-spin").fadeOut(250, function () {
+				$(this).hide();
+			});
+		}).catch(function onError(err) {
+			//error notification
+			$.gritter.add({
+				title: 'Error Edit Main Collection Date',
+				text: err.code + " : " + err.message,
+				image: './img/bell.png',
+				sticky: false,
+				time: 3500,
+				class_name: 'gritter-custom'
+			});
+			//stop loading icon
+			$("#cover-spin").fadeOut(250, function () {
+				$(this).hide();
+			});
+		});
+
+	}
+
 
 	//start invoice tenant autocomplete
 	$("#invoiceTenantName").autocomplete({
@@ -3146,6 +3315,63 @@ $(document).ready(function () {
 			$("#paymentTenantRef").val(ui.item.refnumber);
 			$("#paymentTenantName").attr("disabled", true);
 			return false;
+		}
+	});
+
+	//start maintenance tenant autocomplete
+	$("#tenantName").autocomplete({
+		source: function (request, response) {
+			var results = $.ui.autocomplete.filter(tenantNames, request.term);
+			response(results.slice(0, 10));
+		},
+		select: function (event, ui) {
+			$("#tenantName").val(ui.item.label.split("(")[0].slice(0, -1));
+			$("#mainTenantID").val(ui.item.tenantid);
+			$("#mainTenantRef").val(ui.item.refnumber);
+			$("#mainTenantName").val(ui.item.label.split(" (")[0]);
+			$("#tenantName").attr("disabled", true);
+			return false;
+		}
+	});
+
+	// MAINTENANCE TABLE
+	$("#addMainPop").click(function() {
+		$("#addMainModal").modal();
+	});
+
+	$("#addMainModal").draggable({
+		handle: ".modal-header"
+	});
+
+	$('#reqDateDP').datepicker({
+		format: "d-M-yy",
+		autoclose: true
+	});
+
+	$("#mainType").change(function() {
+		if ($(this).val() == "Other") {
+			$("#mainDetailsBlock").fadeIn(250, function() {
+				$(this).show();
+			});
+		} else {
+			$("#mainDetailsBlock").fadeOut(250, function() {
+				$(this).hide();
+			});
+		}
+	});
+	
+	$("#addMainButton").click(function() {
+		$("#addMainForm").submit();
+	});
+
+	$("#addMainForm").validate({
+		submitHandler: function() {
+			$('#addMainModal').modal('toggle');
+			//start loading icon
+			$("#cover-spin").fadeIn(250, function() {
+				$(this).show();
+			});
+			addMaintenance();
 		}
 	});
 
@@ -3232,6 +3458,11 @@ $(document).ready(function () {
 
 	//start key datepicker
 	$('#keyDatePicker').datepicker({
+		autoclose: true,
+		minDate: 0,
+	})
+
+	$('#mainDatePicker').datepicker({
 		autoclose: true,
 		minDate: 0,
 	})
@@ -3567,9 +3798,15 @@ $(document).ready(function () {
 	$('#keyDatePicker').datepicker({
 		autoclose: true
 	})
+	$('#mainDatePicker').datepicker({
+		autoclose: true
+	})
 	//key date modal edit listener
 	$("#editKeyDateButton").click(function () {
 		$("#editKeyDateForm").submit();
+	})
+	$("#editMainDateButton").click(function () {
+		$("#editMainDateForm").submit();
 	})
 	//key date edit form validation
 	$("#editKeyDateForm").validate({
@@ -3579,6 +3816,15 @@ $(document).ready(function () {
 				$(this).show();
 			});
 			editKeyCollectDate();
+		}
+	})
+	$("#editMainDateForm").validate({
+		submitHandler: function () {
+			$('#editMainDateModal').modal('hide');
+			$("#cover-spin").fadeIn(250, function () {
+				$(this).show();
+			});
+			editMainCollectDate();
 		}
 	})
 

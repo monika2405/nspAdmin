@@ -1,3 +1,5 @@
+//==========================================function=======================================
+
 function convertCanvasToImage(canvas) {
 	
 	var image = new Image();
@@ -6,6 +8,7 @@ function convertCanvasToImage(canvas) {
 	
 }
 
+//fungsi ubah dari dari angka biasa ke bentuk Rp. xx,-
 function get_fmoney(money) {
 	
 	var rev     = parseInt(money, 10).toString().split('').reverse().join('');
@@ -20,18 +23,22 @@ function get_fmoney(money) {
 	
 }
 
+//fungsi ngilangin titik & Rp dari hasil input
 function rem_fmoney(money) {
 	
 	return parseInt(money.substring(4,money.length-2).split(".").join(""))
 	
 }
 
+
+//fungsi ngilangin titik dari hasil input
 function rem_moneydot(money) {
 	
 	return parseInt(money.split(".").join(""));
 	
 }
 
+//fungsi untuk kasih titik otomatis waktu input
 function get_moneydot(money) {
 	
 	if (isNaN(parseInt(money))) {
@@ -44,6 +51,7 @@ function get_moneydot(money) {
 	
 }
 
+//fungsi utk pembulatan
 function pembulatan(input) {
 	
 	return (Math.round((parseInt(input)/100)))*100;
@@ -59,6 +67,7 @@ function removeOptions(selectbox) {
 	
 }
 
+//fungsi ubah dari bulan/tgl/tahun(4 digit) ke tanggal-bulan(huruf)-tahun(2 digit)
 function reformatDate(inputDate) {
 	
 	months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -73,6 +82,7 @@ function reformatDate(inputDate) {
 	
 }
 
+//fungsi ubah dari tgl-bulan(huruf)-tahun(2 digit) ke bulan/tgl/tahun(4 digit)
 function reformatDate2(inputDate) {
 	
 	months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -97,6 +107,7 @@ function reformatDate2(inputDate) {
 	
 }
 
+//fungsi ubah dari bulan/tgl/tahun ke tanggal-bulan(huruf)-tahun(2 digit)
 function reformatDate3(inputDate) {
 	
 	months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -111,6 +122,7 @@ function reformatDate3(inputDate) {
 	
 }
 
+//fungsi ubah dari tanggal-bulan(huruf)-tahun(4 digit) ke bulan/tgl/tahun(4 digit)
 function reformatBirth(inputDate) {
 	
 	months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -125,6 +137,7 @@ function reformatBirth(inputDate) {
 	
 }
 
+//fungsi ubah dari tanggal-bulan(huruf)-tahun ke bulan/tgl/tahun utk datepicker
 function reformatDate4(inputDate) {
 	
 	inputBroke=inputDate.split("/");
@@ -135,6 +148,7 @@ function reformatDate4(inputDate) {
 	
 }
 
+//fungsi ubah dari bulan/tgl/tahun(4 digit) ke tanggal-bulan(huruf)-tahun(4 digit)
 function reformatDate5(inputDate) {
 	
 	months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -159,6 +173,7 @@ function reformatDate5(inputDate) {
 	
 }
 
+//fungsi utk tau jarak hari
 function date_diff_indays(d1, d2) {
 	
 	var diff = Date.parse(d2) - Date.parse(d1);
@@ -172,7 +187,10 @@ function getFileExtension(filename) {
 	return filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
 	
 }
+//==============================================================================================
 
+//fungsi yg dipake cuma di halaman ini
+//utk disable input
 function lockForm() {
 	
 	//lock submit buttons
@@ -184,6 +202,7 @@ function lockForm() {
 	
 }
 
+//utk enable input lagi
 function unlockForm() {
 	
 	//unlock submit buttons
@@ -195,76 +214,81 @@ function unlockForm() {
 	
 }
 
+//utk upload ke database
 function uploadDB() {
 	
 	//start loading icon
 	$("#cover-spin").fadeIn(250, function() {
 		$(this).show();
 	});
+
 	lockForm();
+
+	//ambil no building yang dipilih
 	var tenantID;
 	var build_id = $("#propnumb").html().substring(10,12)
+
 	//listen value to reach threshold
 	$("#thresholdCounter").change(function() {
 		if ($(this).val() == "6") { //wait until finish uploading
 			
-		// 	//send email
-		// 	var ref = $("#roomid").html()+$("#tenantno").html();
-		// 	var ref = ref.split(" ")[0]+ref.split(" ")[1]+ref.split(" ")[2];
-		// 	var noLantai = String(ref.charAt(3))+String(ref.charAt(4));
-		// 	var noKamar = String(ref.charAt(5))+String(ref.charAt(6));
-		// 	//send email
-		// 	var message = "Dear "+$("#afname").val()+",<br>"+"Terima kasih telah melakukan pemesanan kamar di NSP \n\n\nNoPemesanan : "+ref+"<br>Alamat : "+$("#propaddr_st").html()+", "+$("#propaddr_ct").html()+" "+$("#propaddr_pv").html()+" "+$("#propaddr_zp").html()+"<br>No. Kamar : "+noKamar+"<br>Lantai : "+noLantai+"<br>Starting Date : "+$("#edate").val()+"\n\nPemesanan saudara/i akan segera kami proses paling lambat 3 hari kerja.</a>";
-		// 	//set to firebase
-		// 	var sendEmail = firebase.database().ref().child("sendEmail");
-		// 	sendEmail.set({
-		// 		'subject' : "Konfirmasi Pemesanan Kamar",
-		// 		'to' : $("#email").val(),
-		// 		'message' : message,
-		// 	});
-		// 	//membangunkan heroku
-		// 	var xhr0 = new XMLHttpRequest();
-		// 	xhr0.open('GET', "https://sendemailgokost.herokuapp.com/", true);
-		// 	xhr0.send();
-		// 	xhr0.onreadystatechange = processRequest;
-		// 	 //kondisi ketika webhook selesai di buka
-		// 	function processRequest(e) {
-		// 		if (xhr0.readyState == 4) {
-		// 			//mengirim email
-		// 			var xhr = new XMLHttpRequest();
-		// 			xhr.open('GET', "https://sendemailgokost.herokuapp.com/webhook", true);
-		// 			xhr.send();
+			//send email
+			var ref = $("#roomid").html()+$("#tenantno").html();
+			var ref = ref.split(" ")[0]+ref.split(" ")[1]+ref.split(" ")[2];
+			var noLantai = String(ref.charAt(3))+String(ref.charAt(4));
+			var noKamar = String(ref.charAt(5))+String(ref.charAt(6));
+			//send email
+			var message = "Dear "+$("#afname").val()+",<br>"+"Terima kasih telah melakukan pemesanan kamar di NSP \n\n\nNoPemesanan : "+ref+"<br>Alamat : "+$("#propaddr_st").html()+", "+$("#propaddr_ct").html()+" "+$("#propaddr_pv").html()+" "+$("#propaddr_zp").html()+"<br>No. Kamar : "+noKamar+"<br>Lantai : "+noLantai+"<br>Starting Date : "+$("#edate").val()+"\n\nPemesanan saudara/i akan segera kami proses paling lambat 3 hari kerja.</a>";
+			//set to firebase
+			var sendEmail = firebase.database().ref().child("sendEmail");
+			sendEmail.set({
+				'subject' : "Konfirmasi Pemesanan Kamar",
+				'to' : $("#email").val(),
+				'message' : message,
+			});
+			//membangunkan heroku
+			var xhr0 = new XMLHttpRequest();
+			xhr0.open('GET', "https://sendemailgokost.herokuapp.com/", true);
+			xhr0.send();
+			xhr0.onreadystatechange = processRequest;
+			 //kondisi ketika webhook selesai di buka
+			function processRequest(e) {
+				if (xhr0.readyState == 4) {
+					//mengirim email
+					var xhr = new XMLHttpRequest();
+					xhr.open('GET', "https://sendemailgokost.herokuapp.com/webhook", true);
+					xhr.send();
 				 
-		// 			xhr.onreadystatechange = processRequest;
-		// 			 //kondisi ketika webhook selesai di buka
-		// 			function processRequest(e) {
-		// 				if (xhr.readyState == 4) {
-		// 					//stop loading
-		// 					$("#cover-spin").fadeOut(250, function() {
-		// 						$(this).hide();
-		// 					})
-		// 					//stop threshold listener
-		// 					$("#thresholdCounter").off();
-		// 					//success notification
-		// 					$.gritter.add({
-		// 						title: 'Tenant Added',
-		// 						text: 'Tenant was successfully added to the database.',
-		// 						image: './img/bell.png',
-		// 						sticky: false,
-		// 						time: 3500,
-		// 						class_name: 'gritter-custom'
-		// 					});
-		// 					//stop loading icon
-		// 					$("#loadingUpload").fadeOut(250, function() {
-		// 						$(this).hide();
-		// 					});
-		// 					setTimeout(function() {
-		// 						window.location="home.html";
-		// 					}, 1200);
-		// 				}
-		// 			}
-		// 		}
-		// 	}
+					xhr.onreadystatechange = processRequest;
+					 //kondisi ketika webhook selesai di buka
+					function processRequest(e) {
+						if (xhr.readyState == 4) {
+							//stop loading
+							$("#cover-spin").fadeOut(250, function() {
+								$(this).hide();
+							})
+							//stop threshold listener
+							$("#thresholdCounter").off();
+							//success notification
+							$.gritter.add({
+								title: 'Tenant Added',
+								text: 'Tenant was successfully added to the database.',
+								image: './img/bell.png',
+								sticky: false,
+								time: 3500,
+								class_name: 'gritter-custom'
+							});
+							//stop loading icon
+							$("#loadingUpload").fadeOut(250, function() {
+								$(this).hide();
+							});
+							setTimeout(function() {
+								window.location="home.html";
+							}, 1200);
+						}
+					}
+				}
+			}
 		
 			//stop loading
 			$("#cover-spin").fadeOut(250, function() {
@@ -297,10 +321,12 @@ function uploadDB() {
 	
 	
 	dbRefTenant.once('value', function(snapshot) {
-		if (snapshot.hasChildren()) { //tenant list filledj
+		if (snapshot.hasChildren()) { //tenant list filled
 			var currCount = snapshot.child("counter").val();
 			var nextCount = parseInt(currCount)+1;
 			tenantID = "t_"+nextCount;
+
+			//update counter di tenant
 			dbRefTenant.update({
 				counter : nextCount
 			});
@@ -311,11 +337,14 @@ function uploadDB() {
 			});
 		}
 		
-		fpayRef = firebase.database().ref().child("first-payment/"+tenantID)
-		dataRoom = firebase.database().ref().child("dataRoom/"+build_id+"/"+tenantID)
-		var ed_date=""
+		var fpayRef = firebase.database().ref().child("first-payment/"+tenantID)
+		var dataRoom = firebase.database().ref().child("dataRoom/"+build_id+"/"+tenantID)
 		var contract = firebase.database().ref().child("newContract/"+tenantID+"/"+$("#myRoomID").val()+"");
+		var ed_date=""
 		var sd_date = new Date(reformatDate2($("#edate").val()))
+
+		//set child contract
+		//kalau tgl start date kurang dari 15 maka end date contract akan -1 dari lama kontrak
 		if (sd_date.toString("dd") <= 15){
 			ed_date = sd_date.addMonths(parseInt($("#ctoption").val())-1).toString("M/d/yyyy")
 			contract.child("1").set({
@@ -327,7 +356,185 @@ function uploadDB() {
 				"start_date":reformatDate2($("#edate").val()),
 				"payPlan":$("#payplan").val(),
 				"rent":rem_fmoney($("#fprice").html())
-			})
+			}).then(function onSuccess(res) {
+				//update history period & status ke active
+				contract.update({
+					"historyperiod":1,
+					"status": "active"
+				}).then(function onSuccess(res) {
+					//set first payment ke 0 sama nomnal bond payment yg harus dibayar
+					fpayRef.set({
+						"payment":0,
+						"bond-balance":rem_fmoney($("#prfprice").html())
+					}).then(function onSuccess(res) {
+						//set dataRoom t_id:there
+						dataRoom.set("there").then(function onSuccess(res) {
+								//update last ref yang ngisi di ruangan tsb jadi no ref yg di add
+								dbRefTenant.child(tenantID).set({
+									full_name : $("#afname").val(),
+									birth_date : reformatDate5($("#bdate").val()),
+									occupation : $("#occupy").val(),
+									id_type1 : $("#idtype1").val(),
+									id_number1 : $("#idno1").val(),
+									id_photo1 : "empty",
+									id_type2 : $("#idtype2").val(),
+									id_number2 : $("#idno2").val(),
+									id_photo2 : "empty",
+									kk_photo : "empty",
+									tn_photo : "empty",
+									perm_addr : $("#aadstreet").val()+", "+$("#aadcity").val()+", "+$("#aadprov").val()+" "+$("#aadzip").val(),
+									prev_addr : $("#paddress").val(),
+									los_prev : $("#rlosy").val()+","+$("#rlosm").val(),
+									rfl_prev : $("#rreason").val(),
+									email : $("#email").val(),
+									cont_home : $("#aphome").val(),
+									cont_mobile : $("#apmobile").val(),
+									references : {
+										reference_1 : {
+											full_name : $("#r1fname").val(),
+											relation : $("#r1rel").val(),
+											address : $("#r1adstreet").val()+", "+$("#r1adcity").val()+", "+$("#r1adprov").val()+" "+$("#r1adzip").val(),
+											contact : $("#r1p").val()
+										},
+										reference_2 : {
+											full_name : $("#r2fname").val(),
+											relation : $("#r2rel").val(),
+											address : $("#r2adstreet").val()+", "+$("#r2adcity").val()+", "+$("#r2adprov").val()+" "+$("#r2adzip").val(),
+											contact : $("#r2p").val()
+										}
+									}
+								}).then(function onSuccess(res) {
+									$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
+									$("#thresholdCounter").trigger("change");
+								}).catch(function onError(err) {
+									//error notification
+									$.gritter.add({
+										title: 'Error Ref Tenant',
+										text: err.code+" : "+err.message,
+										image: './img/bell.png',
+										sticky: false,
+										time: 3500,
+										class_name: 'gritter-custom'
+									});
+									unlockForm();
+									//stop loading icon
+									$("#cover-spin").fadeOut(250, function() {
+										$(this).hide();
+									});
+								});
+								var d = new Date();
+								//upload to DB (tenant-room)
+								dbRefTenantRoom.once('value', function(snapshot) {
+									var totalTenant = parseInt(snapshot.child("total_tenant").val()) + 1;
+									dbRefTenantRoom.update({
+										total_tenant : totalTenant
+									}).then(function onSuccess(res) {
+										dbRefTenantRoom.child(tenantID+"/"+$("#myRoomID").val()).set({
+											ref_number : $("#roomid").html()+$("#tenantno").html(),
+											build_no : $("#propnumb").html().substring(10,12),
+											prop_addr : $("#propaddr_st").html()+", "+$("#propaddr_ct").html()+" "+$("#propaddr_pv").html()+" "+$("#propaddr_zp").html(),
+											apply_date : (parseInt(d.getMonth())+1)+"/"+d.getDate()+"/"+d.getFullYear(),
+											start_date : reformatDate2($("#edate").val()),
+											key_date : reformatDate2($("#edate").val()),
+											ctrt_opt : $("#ctoption").val(),
+											pay_plan : $("#payplan").val(),
+											adjst_pay : $("#payadjt").val(),
+											adjst_bond : $("#bondadjt").val(),
+											prorata_price : rem_fmoney($("#prfprice").html()),
+											stat_approve : "waiting",
+											stat_process : "continue",
+											key_collection : {
+												pick_est : "date",
+												pick_act : "date",
+												key_rtrn : "date"
+											},
+											stat_occupy : "booking",
+											stat_chrg_f : "0",
+											stat_chrg_n : "0",
+											rent_price	: rem_fmoney($("#fprice").html()),
+											rent_bond	: rem_fmoney($("#fbond").html())
+										}).then(function onSuccess(res) {
+											$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
+											$("#thresholdCounter").trigger("change");
+										}).catch(function onError(err) {
+											//error notification
+											$.gritter.add({
+												title: 'Error Ref Tenant-Room',
+												text: err.code+" : "+err.message,
+												image: './img/bell.png',
+												sticky: false,
+												time: 3500,
+												class_name: 'gritter-custom'
+											});
+											unlockForm();
+											//stop loading icon
+											$("#cover-spin").fadeOut(250, function() {
+												$(this).hide();
+											});
+										});
+									}).catch(function onError(err) {
+										//error notification
+										$.gritter.add({
+											title: 'Error Ref Tenant-Room',
+											text: err.code+" : "+err.message,
+											image: './img/bell.png',
+											sticky: false,
+											time: 3500,
+											class_name: 'gritter-custom'
+										});
+										unlockForm();
+										//stop loading icon
+										$("#cover-spin").fadeOut(250, function() {
+											$(this).hide();
+										});
+									});
+								});
+							}).catch(function onError(err) {
+								//error notification kl set tenant data ga berhasil
+								$.gritter.add({
+									title: 'Error Input Tenant Data',
+									text: err.code + " : " + err.message,
+									image: './img/bell.png',
+									sticky: false,
+									time: 3500,
+									class_name: 'gritter-custom'
+								});
+							});
+						
+					}).catch(function onError(err) {
+						//error notification kl data Room ga berhasil di set
+						$.gritter.add({
+							title: 'Error Input Data Room',
+							text: err.code + " : " + err.message,
+							image: './img/bell.png',
+							sticky: false,
+							time: 3500,
+							class_name: 'gritter-custom'
+						});
+					});
+				}).catch(function onError(err) {
+					//error notification kl history ga berhasil
+					$.gritter.add({
+						title: 'Error Update history period',
+						text: err.code + " : " + err.message,
+						image: './img/bell.png',
+						sticky: false,
+						time: 3500,
+						class_name: 'gritter-custom'
+					});
+				});
+			}).catch(function onError(err) {
+				//error notification kalau contract ga berhasil di input
+				$.gritter.add({
+					title: 'Error Input Contract',
+					text: err.code + " : " + err.message,
+					image: './img/bell.png',
+					sticky: false,
+					time: 3500,
+					class_name: 'gritter-custom'
+				});
+			});
+		//kalau lebih dari 15 maka end contract berada di bulan sesuai lama kontrak yg dipilih
 		}else{
 			ed_date = sd_date.addMonths(parseInt($("#ctoption").val())).toString("M/d/yyyy")
 			contract.child("1").set({
@@ -339,146 +546,186 @@ function uploadDB() {
 				"start_date":reformatDate2($("#edate").val()),
 				"payPlan":$("#payplan").val(),
 				"rent":rem_fmoney($("#fprice").html())
-			})
-		}
-		
-		
-		contract.update({
-			"historyperiod":1,
-			"status": "active"
-		})
-		
-		fpayRef.set({
-			"payment":0,
-			"bond-balance":rem_fmoney($("#prfprice").html())
-		})
-		dataRoom.set("there")
-		//update last ref
-		const updateLastRef = firebase.database().ref("property/residential/building_no:"+$("#propnumb").html().split(" ")[1].split(")")[0]+"/floor:"+$("#floornumb").val()+"/ID:"+$("#myRoomID").val());
-		updateLastRef.update({
-			"last_ref":$("#refnumb").val(),
-			"availdate": ed_date
-		});
-		
-		dbRefTenant.child(tenantID).set({
-			full_name : $("#afname").val(),
-			birth_date : reformatDate5($("#bdate").val()),
-			occupation : $("#occupy").val(),
-			id_type1 : $("#idtype1").val(),
-			id_number1 : $("#idno1").val(),
-			id_photo1 : "empty",
-			id_type2 : $("#idtype2").val(),
-			id_number2 : $("#idno2").val(),
-			id_photo2 : "empty",
-			kk_photo : "empty",
-			tn_photo : "empty",
-			perm_addr : $("#aadstreet").val()+", "+$("#aadcity").val()+", "+$("#aadprov").val()+" "+$("#aadzip").val(),
-			prev_addr : $("#paddress").val(),
-			los_prev : $("#rlosy").val()+","+$("#rlosm").val(),
-			rfl_prev : $("#rreason").val(),
-			email : $("#email").val(),
-			cont_home : $("#aphome").val(),
-			cont_mobile : $("#apmobile").val(),
-			references : {
-				reference_1 : {
-					full_name : $("#r1fname").val(),
-					relation : $("#r1rel").val(),
-					address : $("#r1adstreet").val()+", "+$("#r1adcity").val()+", "+$("#r1adprov").val()+" "+$("#r1adzip").val(),
-					contact : $("#r1p").val()
-				},
-				reference_2 : {
-					full_name : $("#r2fname").val(),
-					relation : $("#r2rel").val(),
-					address : $("#r2adstreet").val()+", "+$("#r2adcity").val()+", "+$("#r2adprov").val()+" "+$("#r2adzip").val(),
-					contact : $("#r2p").val()
-				}
-			}
-		}).then(function onSuccess(res) {
-			$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
-			$("#thresholdCounter").trigger("change");
-		}).catch(function onError(err) {
-			//error notification
-			$.gritter.add({
-				title: 'Error Ref Tenant',
-				text: err.code+" : "+err.message,
-				image: './img/bell.png',
-				sticky: false,
-				time: 3500,
-				class_name: 'gritter-custom'
-			});
-			unlockForm();
-			//stop loading icon
-			$("#cover-spin").fadeOut(250, function() {
-				$(this).hide();
-			});
-		});
-		var d = new Date();
-		//upload to DB (tenant-room)
-		dbRefTenantRoom.once('value', function(snapshot) {
-			var totalTenant = parseInt(snapshot.child("total_tenant").val()) + 1;
-			dbRefTenantRoom.update({
-				total_tenant : totalTenant
 			}).then(function onSuccess(res) {
-				dbRefTenantRoom.child(tenantID+"/"+$("#myRoomID").val()).set({
-					ref_number : $("#roomid").html()+$("#tenantno").html(),
-					build_no : $("#propnumb").html().substring(10,12),
-					prop_addr : $("#propaddr_st").html()+", "+$("#propaddr_ct").html()+" "+$("#propaddr_pv").html()+" "+$("#propaddr_zp").html(),
-					apply_date : (parseInt(d.getMonth())+1)+"/"+d.getDate()+"/"+d.getFullYear(),
-					start_date : reformatDate2($("#edate").val()),
-					key_date : reformatDate2($("#edate").val()),
-					ctrt_opt : $("#ctoption").val(),
-					pay_plan : $("#payplan").val(),
-					adjst_pay : $("#payadjt").val(),
-					adjst_bond : $("#bondadjt").val(),
-					prorata_price : rem_fmoney($("#prfprice").html()),
-					stat_approve : "waiting",
-					stat_process : "continue",
-					key_collection : {
-						pick_est : "date",
-						pick_act : "date",
-						key_rtrn : "date"
-					},
-					stat_occupy : "booking",
-					stat_chrg_f : "0",
-					stat_chrg_n : "0",
-					rent_price	: rem_fmoney($("#fprice").html()),
-					rent_bond	: rem_fmoney($("#fbond").html())
+				//update history period & status ke active
+				contract.update({
+					"historyperiod":1,
+					"status": "active"
 				}).then(function onSuccess(res) {
-					$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
-					$("#thresholdCounter").trigger("change");
+					//set first payment ke 0 sama nomnal bond payment yg harus dibayar
+					fpayRef.set({
+						"payment":0,
+						"bond-balance":rem_fmoney($("#prfprice").html())
+					}).then(function onSuccess(res) {
+						//set dataRoom t_id:there
+						dataRoom.set("there").then(function onSuccess(res) {
+								//update last ref yang ngisi di ruangan tsb jadi no ref yg di add
+								dbRefTenant.child(tenantID).set({
+									full_name : $("#afname").val(),
+									birth_date : reformatDate5($("#bdate").val()),
+									occupation : $("#occupy").val(),
+									id_type1 : $("#idtype1").val(),
+									id_number1 : $("#idno1").val(),
+									id_photo1 : "empty",
+									id_type2 : $("#idtype2").val(),
+									id_number2 : $("#idno2").val(),
+									id_photo2 : "empty",
+									kk_photo : "empty",
+									tn_photo : "empty",
+									perm_addr : $("#aadstreet").val()+", "+$("#aadcity").val()+", "+$("#aadprov").val()+" "+$("#aadzip").val(),
+									prev_addr : $("#paddress").val(),
+									los_prev : $("#rlosy").val()+","+$("#rlosm").val(),
+									rfl_prev : $("#rreason").val(),
+									email : $("#email").val(),
+									cont_home : $("#aphome").val(),
+									cont_mobile : $("#apmobile").val(),
+									references : {
+										reference_1 : {
+											full_name : $("#r1fname").val(),
+											relation : $("#r1rel").val(),
+											address : $("#r1adstreet").val()+", "+$("#r1adcity").val()+", "+$("#r1adprov").val()+" "+$("#r1adzip").val(),
+											contact : $("#r1p").val()
+										},
+										reference_2 : {
+											full_name : $("#r2fname").val(),
+											relation : $("#r2rel").val(),
+											address : $("#r2adstreet").val()+", "+$("#r2adcity").val()+", "+$("#r2adprov").val()+" "+$("#r2adzip").val(),
+											contact : $("#r2p").val()
+										}
+									}
+								}).then(function onSuccess(res) {
+									$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
+									$("#thresholdCounter").trigger("change");
+								}).catch(function onError(err) {
+									//error notification
+									$.gritter.add({
+										title: 'Error Ref Tenant',
+										text: err.code+" : "+err.message,
+										image: './img/bell.png',
+										sticky: false,
+										time: 3500,
+										class_name: 'gritter-custom'
+									});
+									unlockForm();
+									//stop loading icon
+									$("#cover-spin").fadeOut(250, function() {
+										$(this).hide();
+									});
+								});
+								var d = new Date();
+								//upload to DB (tenant-room)
+								dbRefTenantRoom.once('value', function(snapshot) {
+									var totalTenant = parseInt(snapshot.child("total_tenant").val()) + 1;
+									dbRefTenantRoom.update({
+										total_tenant : totalTenant
+									}).then(function onSuccess(res) {
+										dbRefTenantRoom.child(tenantID+"/"+$("#myRoomID").val()).set({
+											ref_number : $("#roomid").html()+$("#tenantno").html(),
+											build_no : $("#propnumb").html().substring(10,12),
+											prop_addr : $("#propaddr_st").html()+", "+$("#propaddr_ct").html()+" "+$("#propaddr_pv").html()+" "+$("#propaddr_zp").html(),
+											apply_date : (parseInt(d.getMonth())+1)+"/"+d.getDate()+"/"+d.getFullYear(),
+											start_date : reformatDate2($("#edate").val()),
+											key_date : reformatDate2($("#edate").val()),
+											ctrt_opt : $("#ctoption").val(),
+											pay_plan : $("#payplan").val(),
+											adjst_pay : $("#payadjt").val(),
+											adjst_bond : $("#bondadjt").val(),
+											prorata_price : rem_fmoney($("#prfprice").html()),
+											stat_approve : "waiting",
+											stat_process : "continue",
+											key_collection : {
+												pick_est : "date",
+												pick_act : "date",
+												key_rtrn : "date"
+											},
+											stat_occupy : "booking",
+											stat_chrg_f : "0",
+											stat_chrg_n : "0",
+											rent_price	: rem_fmoney($("#fprice").html()),
+											rent_bond	: rem_fmoney($("#fbond").html())
+										}).then(function onSuccess(res) {
+											$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
+											$("#thresholdCounter").trigger("change");
+										}).catch(function onError(err) {
+											//error notification
+											$.gritter.add({
+												title: 'Error Ref Tenant-Room',
+												text: err.code+" : "+err.message,
+												image: './img/bell.png',
+												sticky: false,
+												time: 3500,
+												class_name: 'gritter-custom'
+											});
+											unlockForm();
+											//stop loading icon
+											$("#cover-spin").fadeOut(250, function() {
+												$(this).hide();
+											});
+										});
+									}).catch(function onError(err) {
+										//error notification
+										$.gritter.add({
+											title: 'Error Ref Tenant-Room',
+											text: err.code+" : "+err.message,
+											image: './img/bell.png',
+											sticky: false,
+											time: 3500,
+											class_name: 'gritter-custom'
+										});
+										unlockForm();
+										//stop loading icon
+										$("#cover-spin").fadeOut(250, function() {
+											$(this).hide();
+										});
+									});
+								});
+							}).catch(function onError(err) {
+								//error notification kl set tenant data ga berhasil
+								$.gritter.add({
+									title: 'Error Input Tenant Data',
+									text: err.code + " : " + err.message,
+									image: './img/bell.png',
+									sticky: false,
+									time: 3500,
+									class_name: 'gritter-custom'
+								});
+							});
+						
+					}).catch(function onError(err) {
+						//error notification kl data Room ga berhasil di set
+						$.gritter.add({
+							title: 'Error Input Data Room',
+							text: err.code + " : " + err.message,
+							image: './img/bell.png',
+							sticky: false,
+							time: 3500,
+							class_name: 'gritter-custom'
+						});
+					});
 				}).catch(function onError(err) {
-					//error notification
+					//error notification kl history ga berhasil
 					$.gritter.add({
-						title: 'Error Ref Tenant-Room',
-						text: err.code+" : "+err.message,
+						title: 'Error Update history period',
+						text: err.code + " : " + err.message,
 						image: './img/bell.png',
 						sticky: false,
 						time: 3500,
 						class_name: 'gritter-custom'
 					});
-					unlockForm();
-					//stop loading icon
-					$("#cover-spin").fadeOut(250, function() {
-						$(this).hide();
-					});
 				});
 			}).catch(function onError(err) {
-				//error notification
+				//error notification kalau contract ga berhasil di input
 				$.gritter.add({
-					title: 'Error Ref Tenant-Room',
-					text: err.code+" : "+err.message,
+					title: 'Error Input Contract',
+					text: err.code + " : " + err.message,
 					image: './img/bell.png',
 					sticky: false,
 					time: 3500,
 					class_name: 'gritter-custom'
 				});
-				unlockForm();
-				//stop loading icon
-				$("#cover-spin").fadeOut(250, function() {
-					$(this).hide();
-				});
 			});
-		});
+		}
+		
 		//upload id 1
 		if ($("#upBox1")[0].files && $("#upBox1")[0].files[0]) {
 			var photo1 = $("#upBox1")[0].files[0];

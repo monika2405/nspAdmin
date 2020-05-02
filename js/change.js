@@ -8,6 +8,7 @@ var contract = firebase.database().ref("contract");
 var newContract = firebase.database().ref("newContract");
 var dataRoom = firebase.database().ref("dataRoom")
 var tenantRoom = firebase.database().ref("tenant-room");
+var tenant = firebase.database().ref("tenant")
 var recurring = firebase.database().ref("recurring")
 var bookingTenant = firebase.database().ref("booking-tenant")
 var virtualAccount = firebase.database().ref("virtualAccountReport")
@@ -21,39 +22,39 @@ var property = firebase.database().ref("property/residential")
 var contractLedger = firebase.database().ref("contractLedger")
 
 function reformatDate2(inputDate) {
-	months=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Aug","Sep","Oct","Nov","Des","Dec","May"];
-	months2=["01","02","03","04","05","06","07","08","09","10","11","12","12","05"];
-	inputBroke=inputDate.split("-");
-	inputDay=inputBroke[0];
-	inputMonth=inputBroke[1];
-	inputYear=inputBroke[2];
+	months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Des", "Dec", "May"];
+	months2 = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "12", "05"];
+	inputBroke = inputDate.split("-");
+	inputDay = inputBroke[0];
+	inputMonth = inputBroke[1];
+	inputYear = inputBroke[2];
 	if (parseInt(inputDay) < 10) {
 		outputDay = inputDay;
 	} else {
 		outputDay = inputDay;
 	}
-	for (var i=0;i<months.length;i++) {
+	for (var i = 0; i < months.length; i++) {
 		if (inputMonth == months[i]) {
 			outputMonth = months2[i];
 			break
 		}
 	}
-	outputYear = "20"+inputYear;
-	return (outputMonth+"/"+outputDay+"/"+outputYear);
+	outputYear = "20" + inputYear;
+	return (outputMonth + "/" + outputDay + "/" + outputYear);
 }
 
 function reformatDate(inputDate) {
-	
-	months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-	inputBroke=inputDate.split("/");
-	inputDay=parseInt(inputBroke[1]);
-	inputMonth=parseInt(inputBroke[0]);
-	inputYear=inputBroke[2];
-	outputDay=inputDay;
-	outputMonth=months[inputMonth-1];
-	outputYear="20"+inputYear.split("")[2]+inputYear.split("")[3];
-	return (outputDay+"-"+outputMonth+"-"+outputYear);
-	
+
+	months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+	inputBroke = inputDate.split("/");
+	inputDay = parseInt(inputBroke[1]);
+	inputMonth = parseInt(inputBroke[0]);
+	inputYear = inputBroke[2];
+	outputDay = inputDay;
+	outputMonth = months[inputMonth - 1];
+	outputYear = "20" + inputYear.split("")[2] + inputYear.split("")[3];
+	return (outputDay + "-" + outputMonth + "-" + outputYear);
+
 }
 
 //========================================Buat Child First Payment=====================================
@@ -456,15 +457,15 @@ function reformatDate(inputDate) {
 //                 var rent = snapshot.child("rent").val()
 //                 var last_date = new Date(snapshot.child("prevRecurringDate").val())
 //                 var prevRecurringDate = new Date(snapshot.child("prevRecurringDate").val()).toString("MM")
-
-//                 if (prevRecurringDate=="01"){
+//                 if (prevRecurringDate=="03"){
 //                     if(payPlan=="monthly"){
 //                         console.log(tenant_id)
 //                         payment.child(tenant_id).push({
 //                             "date": last_date.addMonths(1).toString("MM/dd/yyyy"),
 //                             "desc": "Rental Due",
 //                             "list": "ledgerList",
-//                             "invoice": rent
+// 							"invoice": rent ,
+// 							"refnumber": refNumb
 //                         })
 //                         recurringPay.child(tenant_id+"/rental").update({
 //                             "payment": "not pay",
@@ -477,10 +478,7 @@ function reformatDate(inputDate) {
 //                             "receive":0,
 //                             "refNumb":refNumb
 //                         })
-//                         virtualAccount.child(tenant_id+"/"+"02:2020").set({
-//                             "date": last_date.toString("MM/dd/yyyy"),
-//                             "due": rent
-//                         })
+                        
 
 //                     }
 //                 }
@@ -488,6 +486,16 @@ function reformatDate(inputDate) {
 //        }
 //     })
 //  })
+
+// payment.on("child_added", function(snapshot){
+// 	var tenant_id = snapshot.key
+// 	payment.child(tenant_id).on("value", function(snapshot){
+// 		var balance = parseInt(snapshot.child("balance").val())
+// 			if (balance>0){
+// 				console.log(tenant_id, balance)
+// 			}
+// 	})
+// })
 //==============================================================================================
 
 //=========================Push Fine dari Recurring terakhir=============================
@@ -500,37 +508,37 @@ function reformatDate(inputDate) {
 //             var build_no = refNumb.substring(1,3)
 //             recurringPay.child(tenant_id+"/rental").on('value', function(snapshot){
 //                 var payPlan=snapshot.child("payPlan").val()
-//                 var rent = snapshot.child("rent").val()*0.2
+//                 var rent = snapshot.child("rent").val()*0.5
 //                 var paymentChild = snapshot.child("payment").val()
 //                 var prevRecurringDate = new Date(snapshot.child("prevRecurringDate").val()).toString("MM")
-//                 var fineDate =  new Date(snapshot.child("prevRecurringDate").val()).addDays(10).toString("MM/dd/yyyy")
+//                 var fineDate =  new Date(snapshot.child("prevRecurringDate").val()).addDays(20).toString("MM/dd/yyyy")
 
-//                 if (prevRecurringDate=="02"){
+//                 if (prevRecurringDate=="03"){
 //                     if(payPlan=="monthly"){
 //                         if (paymentChild == "not pay"){
 //                             console.log(refNumb,rent,fineDate)
 //                             payment.child(tenant_id).push({
 //                                 "date": fineDate,
-//                                 "desc": "Adjustment - Fine Due - 50% on "+fineDate,
+//                                 "desc": "Fine Due - 50% on "+fineDate,
 //                                 "list": "ledgerList",
-//                                 "payment": rent
+//                                 "invoice": rent
 //                             })
 
 //                             reportAccount2.child(build_no+"/"+tenant_id).push({
 //                                 "date":fineDate,
-//                                 "receive": rent,
-//                                 "inputDate":"02/22/2020",
+//                                 "due": rent,
+//                                 "inputDate":"03/20/2020",
 //                                 "due":0,
 //                                 "refNumb":refNumb
 //                             })
 //                             virtualAccount.child(tenant_id+"/balance").on('value', function(snapshot){
 //                                 var prevBalance = parseInt(snapshot.val())
-//                                 virtualAccount.child(tenant_id+"/balance").update(prevBalance+rent)
+//                                 virtualAccount.child(tenant_id+"/balance").update(prevBalance-rent)
 //                             })
 //                             overdue.child(tenant_id+"/balance").on("value", function(snapshot){
 //                                 var balprev = parseInt(snapshot.val())
 //                                 overdue.child(tenant_id).update({
-//                                     "balance": balprev+rent
+//                                     "balance": balprev-rent
 //                                 })
 //                             })
 //                         }
@@ -786,7 +794,7 @@ function reformatDate(inputDate) {
 //             }).catch(function onError(err) {
 //                 console.log(tenant_id,err)
 //             })
-           
+
 //         })
 //     })
 // })
@@ -838,7 +846,7 @@ function reformatDate(inputDate) {
 //                                     "ref_number":refN,
 //                                     "due": due
 // 								})
-								
+
 //                             }
 
 //                         })
@@ -885,8 +893,8 @@ function reformatDate(inputDate) {
 //                             })
 //                         })
 //                     }
-                    
-                    
+
+
 //                 }
 //             })
 //         }
@@ -913,7 +921,7 @@ function reformatDate(inputDate) {
 //                             var end_date =snapshot.child("end_date").val()
 //                             var start_date =snapshot.child("start_date").val()
 //                             var payPlan = snapshot.child("payPlan").val()
-                         
+
 //                             if(end_date!="Ongoing" && payPlan == "monthly" && end_date != start_date){
 // 								console.log(tenant_id, dueDate)
 //                                 var end_date2 = snapshot.child("end_date").val().split("/")[0]
@@ -929,7 +937,7 @@ function reformatDate(inputDate) {
 //                                     "due": due
 //                                 })
 //                                 }
-                                
+
 //                             }
 
 //                         })
@@ -940,3 +948,106 @@ function reformatDate(inputDate) {
 //     })
 // })
 //=============================================================================================
+
+//==============================Remove overdue child===========================
+// var overdue2 = firebase.database().ref("overdue2")
+// tenant.on("child_added", function(snapshot){
+// 	var t_id = snapshot.key
+// 	console.log(t_id)
+// 	overdue.child(t_id).on("value", function(snapshot){
+// 		overdue2.child(t_id).set(snapshot.val())
+// 	})
+// })
+
+// // overdue.remove()
+// // overdue2.on("child_added", function(snapshot){
+// // 	var t_id = snapshot.key
+// // 	overdue2.child(t_id).on("value", function(snapshot){
+// // 		overdue.child(t_id).set(snapshot.val())
+// // 	})
+// // })
+//=============================================================================================
+
+//==============================Update overdue balance===========================
+// payment.on("child_added", function(snapshot){
+// 	var t_id = snapshot.key
+// 	payment.child(t_id).on("value", function(snapshot){
+// 		var balance = parseInt(snapshot.child("balance").val())
+// 		overdue.child(t_id).update({
+// 			balance : balance
+// 		})
+// 	})
+// })
+//=============================================================================================
+
+//==============================Check 0 overdue===========================
+// overdue.on("child_added", function(snapshot){
+// 	var t_id = snapshot.key
+
+// 	overdue.child(t_id).on("value", function(snapshot){
+// 		var balance = snapshot.child("balance").val()
+// 		if (balance == 0){
+// 			overdue.child(t_id).update({
+// 				date_due : "03/01/2020"
+// 			})
+// 		}
+// 	})
+// })\
+
+// payment.on("child_added", function(snapshot){
+// 	var tenant_id = snapshot.key
+// 	payment.child(tenant_id).on("child_added", function(snapshot){
+// 		var key_id = snapshot.key
+// 		payment.child(tenant_id+"/"+key_id).on("value", function(snapshot){
+// 			var desc = snapshot.child("desc").val();
+// 			var fine = desc.split(" ")[0]
+// 			if (fine == "Fine"){
+// 				var on = desc.split(" ")[5].split("/")[0]
+// 				if(on == "04"){
+// 					payment.child(tenant_id+"/"+key_id).remove()
+// 					console.log(tenant_id+"/"+key_id)
+// 				}
+// 			}
+// 		})
+// 	})
+// })
+
+// reportAccount2.on("child_added",function(snapshot){
+// 	var build_id = snapshot.key
+// 	reportAccount2.child(build_id).on("child_added", function(snapshot){
+// 		var tenant_id = snapshot.key
+// 		reportAccount2.child(build_id+"/"+tenant_id).on("child_added", function(snapshot){
+// 			var key_id = snapshot.key
+// 			reportAccount2.child(build_id+"/"+tenant_id+"/"+key_id).on("value", function(snapshot){
+// 				var inputDate = new Date(snapshot.child("date").val())
+// 				var ref_numb = snapshot.child("refNumb").val()
+// 				var datein =  new Date("03/20/2020")
+// 				if (inputDate > datein){
+// 					console.log(ref_numb,snapshot.child("date").val())
+// 				}
+
+// 			})
+// 		})
+// 	})
+// })
+
+// payment.on("child_added", function (snapshot) {
+// 	var tenant_id = snapshot.key
+// 	payment.child(tenant_id).on("child_added", function (snapshot) {
+// 		var key_id = snapshot.key
+// 		payment.child(tenant_id + "/" + key_id).on("value", function (snapshot) {
+// 			var inputDate = new Date(snapshot.child("date").val())
+// 			var date = snapshot.child("date").val()
+// 			var desc = snapshot.child("desc").val()
+// 			var receive = snapshot.child("payment").val()
+// 			var ref_numb = snapshot.child("refnumber").val()
+// 			var datein = new Date("04/01/2020")
+// 			var dateout = new Date("04/16/2020")
+// 			if (inputDate >= datein && inputDate <= dateout) {
+// 				console.log(tenant_id, date, desc, receive)
+// 			}
+
+// 		})
+// 	})
+// })
+
